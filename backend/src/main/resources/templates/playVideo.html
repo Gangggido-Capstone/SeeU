@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영상 재생 페이지</title>
+    <style>
+        body {
+            background-color: #181818;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        /* 페이지 제목 스타일 */
+        .page-title {
+            font-size: 24px; /* 제목의 글꼴 크기 설정 */
+            font-weight: bold; /* 제목을 굵게 표시 */
+            color: #fff; /* 제목 텍스트 색상 설정 */
+            margin-bottom: 20px; /* 제목과 아래 콘텐츠 사이의 간격 설정 */
+            text-align: left; /* 제목을 왼쪽 정렬 */
+        }
+        /* 비디오 컨테이너 스타일 */
+        .video-container {
+            display: flex;
+            justify-content: center; /* 비디오를 가운데 정렬 */
+            margin-bottom: 20px; /* 비디오와 아래 콘텐츠 사이의 간격 설정 */
+        }
+        /* 비디오 플레이어 스타일 */
+        iframe {
+            width: 100%; /* 비디오 플레이어의 너비를 전체로 설정 */
+            max-width: 800px; /* 최대 너비를 설정 */
+            height: 450px; /* 비디오 플레이어의 높이 설정 */
+            border: none; /* 비디오 플레이어의 경계선 제거 */
+            border-radius: 8px; /* 비디오 플레이어의 모서리를 둥글게 설정 */
+            overflow: hidden; /* 내용이 넘치지 않도록 설정 */
+        }
+        /* 비디오 제목 및 기타 정보 스타일 */
+        .video-details {
+            max-width: 800px; /* 제목과 기타 정보의 최대 너비 설정 */
+            margin: 0 auto; /* 가운데 정렬 */
+            text-align: left; /* 제목을 왼쪽 정렬 */
+        }
+        .video-title {
+            font-size: 20px; /* 비디오 제목의 글꼴 크기 설정 */
+            font-weight: bold; /* 비디오 제목을 굵게 표시 */
+            color: #fff; /* 비디오 제목 텍스트 색상 설정 */
+            margin-bottom: 10px; /* 제목과 조회수 사이의 간격 설정 */
+        }
+        /* 뒤로가기 버튼 스타일 */
+        .back-button-container {
+            display: flex;
+            justify-content: center; /* 버튼을 가운데 정렬 */
+            margin-top: 20px; /* 버튼과 비디오 사이에 간격 설정 */
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #ff0000; /* 빨간색 배경 */
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+        .back-button:hover {
+            background-color: #cc0000; /* 마우스 오버 시 어두운 빨간색으로 변경 */
+        }
+    </style>
+</head>
+<body>
+
+<!-- 페이지 제목 -->
+<h1 class="page-title">영상 재생 페이지</h1>
+
+<!-- 비디오 재생 플레이어 -->
+<div class="video-container">
+    <iframe id="videoPlayer" allowfullscreen></iframe>
+</div>
+
+<!-- 비디오 제목 -->
+<div class="video-details">
+    <div id="videoTitle" class="video-title"></div>
+</div>
+
+<!-- 뒤로가기 버튼 -->
+<div class="back-button-container">
+    <a href="/popular-videos" class="back-button">뒤로가기</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/seeso@latest/dist/seeso.min.js"></script>
+<script>
+    const videoId = new URLSearchParams(window.location.search).get('videoId');
+    document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${videoId}`;
+    document.getElementById('videoTitle').innerText = "비디오 제목을 여기에 설정하세요"; // 실제 비디오 제목을 서버에서 받아올 수 있음
+
+    const licenseKey = 'dev_l6vxptwlbnwimf0kiz8afyad2d8szngymzdho9l2'; // 실제 발급받은 라이센스 키를 여기에 추가하세요
+
+    function onGaze(gazeInfo) {
+        console.log(gazeInfo);
+    }
+
+    function onDebug(FPS, latency_min, latency_max, latency_avg) {
+        console.log(FPS, latency_min, latency_max, latency_avg);
+    }
+
+    async function startTracking() {
+        const seeSo = new EasySeeSo();
+        await seeSo.init(
+            licenseKey,
+            () => {
+                seeSo.setMonitorSize(16);
+                seeSo.setFaceDistance(50);
+                seeSo.setCameraPosition(window.outerWidth / 2, true);
+                seeSo.startTracking(onGaze, onDebug);
+            },
+            () => console.log("Seeso 초기화 실패")
+        );
+    }
+
+    startTracking();
+</script>
+
+</body>
+</html>

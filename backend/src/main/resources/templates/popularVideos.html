@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>유튜브 영상</title>
+    <style>
+        body {
+            background-color: #181818;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* 그리드 컨테이너 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 한 줄에 여러 개의 열 생성 */
+            gap: 16px; /* 그리드 항목 사이의 간격 */
+        }
+
+        /* 그리드 항목 */
+        .grid-item {
+            background-color: #202020; /* 배경색 설정 */
+            border-radius: 12px; /* 모서리를 둥글게 설정 */
+            overflow: hidden; /* 내용이 넘치지 않도록 설정 */
+            transition: transform 0.2s; /* 마우스 오버 시 확대 효과 설정 */
+            text-decoration: none; /* 링크의 기본 밑줄 제거 */
+        }
+
+        /* 그리드 항목에 마우스를 올렸을 때 확대되는 효과 */
+        .grid-item:hover {
+            transform: scale(1.05); /* 항목 확대 */
+        }
+
+        /* 링크 텍스트에 밑줄 제거 */
+        .grid-item a {
+            text-decoration: none; /* 링크의 기본 밑줄 제거 */
+            color: inherit; /* 부모 요소의 텍스트 색상을 상속 */
+        }
+
+        /* 썸네일 이미지 스타일 */
+        img {
+            width: 100%; /* 이미지가 항목의 전체 너비를 차지하도록 설정 */
+            height: auto; /* 비율을 유지하면서 이미지 높이를 자동으로 조정 */
+            cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+            border-bottom: 1px solid #333; /* 이미지 아래쪽에 경계선 추가 */
+        }
+
+        /* 제목 스타일 */
+        .title {
+            padding: 12px; /* 제목과 항목 가장자리 사이의 여백 설정 */
+            font-size: 18px; /* 제목의 글꼴 크기 설정 */
+            font-weight: bold; /* 제목을 굵게 표시 */
+            color: #fff; /* 제목 텍스트 색상 설정 */
+            text-align: left; /* 제목을 왼쪽 정렬 */
+        }
+
+        /* 조회수 스타일 */
+        .views {
+            padding: 8px 12px 16px 12px; /* 조회수 텍스트와 항목 가장자리 사이의 여백 설정 */
+            font-size: 16px; /* 조회수 글꼴 크기 설정 */
+            color: #aaa; /* 조회수 텍스트 색상 설정 */
+            text-align: left; /* 조회수를 왼쪽 정렬 */
+        }
+    </style>
+</head>
+<body>
+<h1>유튜브 영상</h1>
+
+<!-- 오류 발생 시 오류 메시지 표시 -->
+<div th:if="${error}">
+    <p th:text="${error}"></p>
+</div>
+
+<!-- Grid 컨테이너에 동영상 썸네일과 정보를 표시 -->
+<div class="grid-container">
+    <div class="grid-item" th:each="video : ${videos}">
+        <a th:href="@{/play-video(videoId=${video.id})}">
+            <!-- 썸네일 이미지 -->
+            <img th:src="${video.snippet.thumbnails.high.url}" th:alt="${video.snippet.title}"/>
+            <!-- 비디오 제목 -->
+            <div class="title" th:text="${video.snippet.title}"></div>
+            <!-- 비디오 조회수 -->
+            <div class="views" th:text="'조회수 ' + ${video.statistics.viewCount.toString().replaceAll('(\\d)(?=(\\d{3})+$)', '$1,')} + '회'"></div>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
