@@ -1,1 +1,1 @@
-# youtube_seeso_demo
+# youtube-seeso-demo
