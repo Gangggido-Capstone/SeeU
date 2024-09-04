@@ -1,9 +1,9 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import InitSeeso from "./InitSeeso";
-import "../../css/VideoPlayerWrapper.css";
+import "../../css/VideoGazeTracker.css";
 
-const VideoPlayerWrapper = () => {
+const VideoGazeTracker = () => {
     const { videoId } = useParams();
 
     return (
@@ -34,4 +34,4 @@ const VideoPlayerWrapper = () => {
     );
 };
 
-export default VideoPlayerWrapper;
+export default VideoGazeTracker;

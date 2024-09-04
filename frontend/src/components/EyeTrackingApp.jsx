@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainPage from "./MainPage";
-import VideoPlayerWrapper from "./VideoPlayerWrapper";
+import VideoGazeTracker from "./videoGazeTracker";
 import InitSeeso from "./InitSeeso";
 
 const EyeTrackingApp = () => {
@@ -11,10 +11,10 @@ const EyeTrackingApp = () => {
                 <Route path='/' element={<MainPage />} />
                 <Route
                     path='/play-video/:videoId'
-                    element={<VideoPlayerWrapper />}
+                    element={<VideoGazeTracker />}
                 />
                 <Route path='/seeso' element={<InitSeeso />} />
-                <Route path='/youtube' element={<VideoPlayerWrapper />} />
+                <Route path='/youtube' element={<VideoGazeTracker />} />
             </Routes>
         </BrowserRouter>
     );
