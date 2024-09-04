@@ -1,0 +1,14 @@
+#output {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1; /* 시선 추적 캔버스가 가장 아래에 표시되도록 설정 */
+    pointer-events: none;
+}
+
+#gazeInfo {
+    text-align: center;
+    z-index: 2;
+}
