@@ -3,9 +3,6 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import "../../css/VideoPlayer.css";
 
-// 이 코드는 VideoId를 스프링에 넘겨서 api로 데이터 불러올 수 있도록 한 코드
-// 지금 사용하고 있지는 않음
-
 const VideoPlayer = () => {
     const { videoId } = useParams();
     const [videoData, setVideoData] = useState(null);
