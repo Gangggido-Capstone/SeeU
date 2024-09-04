@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import "regenerator-runtime/runtime";
 import EasySeeSo from "seeso/easy-seeso";
 import { showGaze } from "./showGaze.js";
-
+import "../../css/styles.css";
 const InitSeeso = () => {
     const licenseKey = process.env.REACT_APP_EYEDID_KEY;
 
