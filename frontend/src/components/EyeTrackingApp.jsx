@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainPage from "./MainPage";
 import VideoPlayerWrapper from "./VideoPlayerWrapper";
 import InitSeeso from "./InitSeeso";
-import SeesoTracker from "./SeesoTracker";
+
 const EyeTrackingApp = () => {
     return (
         <BrowserRouter>
