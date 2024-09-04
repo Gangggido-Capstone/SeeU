@@ -37,7 +37,7 @@ const InitSeeso = () => {
                     seeSo.setCameraPosition(window.outerWidth / 2, true);
                     seeSo.startTracking(onGaze, onDebug);
                 }, // callback when init succeeded.
-                () => console.log("callback when init failed") // callback when init failed.
+                () => console.log("seeso api error") // callback when init failed.
             );
         }
 
@@ -46,21 +46,8 @@ const InitSeeso = () => {
 
     return (
         <div>
-            <canvas
-                id='output'
-                style={{
-                    position: "fixed",
-                    top: 0,
-                    left: 0,
-                    width: "100vw",
-                    height: "100vh",
-                    zIndex: 1, // 시선 추적 캔버스가 가장 아래에 표시되도록 설정
-                    pointerEvents: "none",
-                }}></canvas>
-
-            <p id='gazeInfo' style={{ textAlign: "center", zIndex: 2 }}>
-                시선 추적 중...
-            </p>
+            <canvas id='output'></canvas>
+            <p id='gazeInfo'>시선 추적 중...</p>
         </div>
     );
 };
