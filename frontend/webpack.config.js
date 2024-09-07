@@ -22,9 +22,11 @@ module.exports = {
         open: true, // 브라우저 자동 실행 설정
 
         headers: {
-            "Cross-Origin-Embedder-Policy": "credentialless",
+            "Cross-Origin-Embedder-Policy": "require-corp",
             "Cross-Origin-Opener-Policy": "same-origin",
             "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
         },
 
         historyApiFallback: {
@@ -38,7 +40,6 @@ module.exports = {
         static: {
             watch: true, // 파일 변경을 감지하도록 설정
         },
-
     },
     plugins: [
         new HtmlWebpackPlugin({
