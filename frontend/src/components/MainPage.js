@@ -31,6 +31,7 @@ const MainPage = () => {
 
     return (
         <div>
+            <img src='/eye_logo.gif' alt='Logo' className='logo' />
             <SearchBar onSearch={handleSearch} />
             <VideoList
                 videos={searchResults.length > 0 ? searchResults : videos}
