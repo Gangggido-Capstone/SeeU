@@ -14,6 +14,7 @@ function onClickCalibrationBtn() {
         redirectUrl,
         calibrationPoint
     );
+    EasySeeSo.getAttentionScore();
 }
 
 // in redirected page

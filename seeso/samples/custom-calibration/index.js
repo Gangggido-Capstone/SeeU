@@ -123,7 +123,7 @@ async function main() {
                 await eyeTracker.startTracking(onGaze, onDebug);
                 eyeTracker.showImage();
                 if (!eyeTracker.checkMobile()) {
-                    eyeTracker.setMonitorSize(14); // 14 inch
+                    eyeTracker.setMonitorSize(27); // 14 inch
                     eyeTracker.setFaceDistance(50);
                     eyeTracker.setCameraPosition(window.outerWidth / 2, true);
                 }

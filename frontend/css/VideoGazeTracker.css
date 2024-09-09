@@ -18,8 +18,8 @@
 }
 
 .youtube-iframe {
-    width: 640px; /* 유튜브 기본 제공 크기 */
-    height: 360px; /* 유튜브 기본 제공 크기 */
+    width: 1024px;
+    height: 576px;
     border: none;
     z-index: 2;
     margin-bottom: 20px;
@@ -35,7 +35,7 @@
 .back-button {
     display: block;
     text-align: center;
-    margin: 20px auto 0; /* 영상 아래에 중앙에 위치하도록 설정 */
+    margin: 10px auto 0;
     z-index: 2;
     background-color: red;
     color: white;
@@ -44,4 +44,20 @@
     text-decoration: none;
     font-size: 16px;
     width: 80px;
+}
+
+.video-controls button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.video-controls {
+    display: flex;
+    justify-content: center;
 }

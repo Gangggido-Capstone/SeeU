@@ -32,8 +32,8 @@ const InitSeeso = () => {
             await seeSo.init(
                 licenseKey,
                 () => {
-                    seeSo.setMonitorSize(16);
-                    seeSo.setFaceDistance(50);
+                    seeSo.setMonitorSize(27);
+                    seeSo.setFaceDistance(70);
                     seeSo.setCameraPosition(window.outerWidth / 2, true);
                     seeSo.startTracking(onGaze, onDebug);
                 }, // callback when init succeeded.
