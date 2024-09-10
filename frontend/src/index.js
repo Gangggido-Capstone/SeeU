@@ -6,6 +6,7 @@ const container = document.getElementById("root");
 const root = createRoot(container);
 
 root.render(
+    // StricMode 비활성화
     <React.StrictMode>
         <App />
     </React.StrictMode>
