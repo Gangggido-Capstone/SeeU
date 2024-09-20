@@ -18,8 +18,8 @@
 }
 
 .youtube-iframe {
-    width: 1024px;
-    height: 576px;
+    width: 854px; /*1024 x 576*/
+    height: 480px;
     border: none;
     z-index: 2;
     /* margin-bottom: 10px; */
@@ -37,7 +37,7 @@
     text-align: center;
     margin: 10px auto 0;
     z-index: 2;
-    background-color: red;
+    background-color: red; /*RGB (0,145,250)*/
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
@@ -65,4 +65,5 @@
 p {
     padding: 3px;
     margin: 3px;
+    font-size: 20px;
 }
