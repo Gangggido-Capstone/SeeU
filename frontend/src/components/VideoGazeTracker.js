@@ -105,7 +105,7 @@ const VideoGazeTracker = () => {
     return (
         <div className='video-player-wrapper'>
             <div>
-                <h4 className='page-title'>영상 재생페이지</h4>
+                <h4 className='page-title'>영상 시선 추적 페이지</h4>
             </div>
 
             <iframe
