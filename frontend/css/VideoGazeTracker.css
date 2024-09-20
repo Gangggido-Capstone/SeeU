@@ -22,7 +22,7 @@
     height: 576px;
     border: none;
     z-index: 2;
-    margin-bottom: 20px;
+    /* margin-bottom: 10px; */
 }
 
 .back-button-container {
@@ -50,8 +50,8 @@
     background-color: red;
     color: white;
     border: none;
-    padding: 10px 20px;
-    margin: 10px;
+    padding: 10px 10px;
+    margin: 5px;
     cursor: pointer;
     font-size: 16px;
     border-radius: 5px;
@@ -60,4 +60,9 @@
 .video-controls {
     display: flex;
     justify-content: center;
+}
+
+p {
+    padding: 3px;
+    margin: 3px;
 }
