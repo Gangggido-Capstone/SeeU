@@ -3,11 +3,14 @@
 // show gaze information on screen.
 function showGazeInfoOnDom(gazeInfo) {
     let gazeInfoDiv = document.getElementById("gazeInfo");
+    //let faceInfoDiv = document.getElementById("faceInfo");
     gazeInfoDiv.innerText = `Gaze Information Below
-                          \nx: ${gazeInfo.x}
-                          \ny: ${gazeInfo.y}
+                        \nTimestamp: ${gazeInfo.timestamp}
+                          \nGaze position (x, y): (${gazeInfo.x}, ${gazeInfo.y})
+                          \nFixation position (x, y): (${gazeInfo.fixationX}, ${gazeInfo.fixationY})
+                          \nEye movement state: ${gazeInfo.eyemovementState}
+                          \nTracking state: ${gazeInfo.trackingState}
                           `;
-    console.log(gazeInfo.x, gazeInfo.y);
 }
 
 // hide gaze information on screen.

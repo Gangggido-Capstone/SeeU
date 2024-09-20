@@ -5,7 +5,7 @@ import { showGaze } from "../showGaze";
 const licenseKey = process.env.EYEDID_KEY;
 
 function onClickCalibrationBtn() {
-    const userId = "YOUR_USER_ID"; // ex) 5e9easf293
+    const userId = "5e9easf293"; // ex) 5e9easf293
     const redirectUrl = "http://localhost:8082";
     const calibrationPoint = 5;
     EasySeeSo.openCalibrationPage(
@@ -14,7 +14,6 @@ function onClickCalibrationBtn() {
         redirectUrl,
         calibrationPoint
     );
-    EasySeeSo.getAttentionScore();
 }
 
 // in redirected page
@@ -27,6 +26,7 @@ function parseCalibrationDataInQueryString() {
         "calibrationData=".length,
         queryString.length
     );
+    console.log(jsonString);
     return jsonString;
 }
 
