@@ -9,6 +9,8 @@ const VideoGazeTracker = () => {
     const [currentTime, setCurrentTime] = useState(0); // 현재 재생 시간을 저장하는 상태
     const [isPlaying, setIsPlaying] = useState(false); // 재생 상태를 저장하는 상태
     const [isApiReady, setIsApiReady] = useState(false); // YouTube API 로드 상태를 저장하는 상태
+    const [startTracking, setStartTracking] = useState(() => {}); // seeso 시선 추적 시작
+    const [stopTracking, setStopTracking] = useState(() => {}); // seeso 시선 추적 정지
 
     useEffect(() => {
         // YouTube IFrame Player API가 로드되었을 때 호출되는 함수
@@ -79,6 +81,7 @@ const VideoGazeTracker = () => {
         if (player && player.playVideo) {
             // 플레이어가 준비되었고, playVideo 함수가 있을 경우
             player.playVideo(); // 동영상을 재생
+            startTracking(); // 시선 추적 시작
         } else {
             console.error("Player is not ready or playVideo is not available"); // 플레이어가 준비되지 않은 경우 에러 출력
         }
@@ -89,55 +92,27 @@ const VideoGazeTracker = () => {
         if (player && player.pauseVideo) {
             // 플레이어가 준비되었고, pauseVideo 함수가 있을 경우
             player.pauseVideo(); // 동영상을 정지
+            stopTracking(); // 시선 추적 정지
         } else {
             console.error("Player is not ready or pauseVideo is not available"); // 플레이어가 준비되지 않은 경우 에러 출력
         }
     };
 
-    // return (
-    //     <div className='video-player-wrapper'>
-    //         <div>
-    //             <h4 className='page-title'>영상 재생페이지</h4>
-    //         </div>
-    //         <div>
-    //             {/* YouTube Iframe */}
-    //             <iframe
-    //                 id='youtube-player' // YouTube Player API와 연결하기 위한 ID
-    //                 credentialless='true' // Cross-Origin 관련 속성
-    //                 title='YouTube video player'
-    //                 src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1`} // enablejsapi=1 옵션을 통해 JavaScript API 활성화
-    //                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-    //                 allowFullScreen
-    //                 loading='lazy'
-    //                 className='youtube-iframe'
-    //             />
-    //             {/* 시선 추적을 위한 컴포넌트 */}
-    //             <InitSeeso />
+    const handleBack = () => {
+        stopTracking(); // 뒤로가기 시 시선 추적 중지
+    };
 
-    //             {/* 영상 재생 시간 */}
-    //             <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
-
-    //             {/* 재생 및 정지 버튼 */}
-    //             <div className='video-controls'>
-    //                 <button onClick={handlePlay}>재생</button>
-    //                 <button onClick={handlePause}>정지</button>
-    //             </div>
-
-    //             <div className='back-button-container'>
-    //                 <a href='/' className='back-button'>
-    //                     뒤로가기
-    //                 </a>
-    //             </div>
-    //         </div>
-    //     </div>
-    // );
     return (
         <div className='video-player-wrapper'>
+            <div>
+                <h4 className='page-title'>영상 재생페이지</h4>
+            </div>
+
             <iframe
-                id='youtube-player'
-                credentialless='true'
+                id='youtube-player' // YouTube Player API와 연결하기 위한 ID
+                credentialless='true' // Cross-Origin 관련 속성
                 title='YouTube video player'
-                src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1`}
+                src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1`} // enablejsapi=1 옵션을 통해 JavaScript API 활성화
                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
                 allowFullScreen
                 loading='lazy'
@@ -146,7 +121,10 @@ const VideoGazeTracker = () => {
 
             <div className='info-container'>
                 {/* 시선 추적을 위한 컴포넌트 */}
-                <InitSeeso />
+                <InitSeeso
+                    onTrackingStart={(start) => setStartTracking(() => start)}
+                    onTrackingStop={(stop) => setStopTracking(() => stop)}
+                />
 
                 {/* 영상 재생 시간 및 좌표 */}
 
@@ -159,7 +137,7 @@ const VideoGazeTracker = () => {
                 </div>
 
                 {/* 뒤로가기 버튼 */}
-                <a href='/' className='back-button'>
+                <a href='/' className='back-button' onClick={handleBack}>
                     뒤로가기
                 </a>
             </div>
