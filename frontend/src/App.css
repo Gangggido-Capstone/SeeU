@@ -4,22 +4,22 @@
 }
 
 .logo {
-    max-width: 100%; 
-    height: auto; 
-    width: 150px; 
-    transition: width 0.3s ease; 
-  }
-  
-  /* 화면 너비가 600px 이하일 때 */
-  @media (max-width: 600px) {
+    max-width: 100%;
+    height: auto;
+    width: 150px;
+    transition: width 0.3s ease;
+}
+
+/* 화면 너비가 600px 이하일 때 */
+@media (max-width: 600px) {
     .logo {
-      width: 100px; 
+        width: 100px;
     }
-  }
-  
-  /* 화면 너비가 1024px 이하일 때 */
-  @media (max-width: 1024px) {
+}
+
+/* 화면 너비가 1024px 이하일 때 */
+@media (max-width: 1024px) {
     .logo {
-      width: 120px; 
+        width: 120px;
     }
-  }
+}

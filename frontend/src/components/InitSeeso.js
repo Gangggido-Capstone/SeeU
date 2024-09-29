@@ -3,7 +3,8 @@ import "regenerator-runtime/runtime";
 import EasySeeSo from "seeso/easy-seeso";
 import { showGaze } from "./showGaze.js";
 import "../../css/styles.css";
-const InitSeeso = () => {
+
+const InitSeeso = ({ onTrackingStart, onTrackingStop }) => {
     const licenseKey = process.env.REACT_APP_EYEDID_KEY;
 
     if (!licenseKey) {
@@ -15,9 +16,9 @@ const InitSeeso = () => {
         };
 
         const onDebug = (FPS, latency_min, latency_max, latency_avg) => {
-            // console.log(
-            //     `FPS: ${FPS}, Latency: ${latency_min}-${latency_max}ms (Avg: ${latency_avg}ms)`
-            // );
+            console.log(
+                `FPS: ${FPS}, Latency: ${latency_min}-${latency_max}ms (Avg: ${latency_avg}ms)`
+            );
         };
 
         async function initializeSeeso() {
@@ -32,17 +33,19 @@ const InitSeeso = () => {
             await seeSo.init(
                 licenseKey,
                 () => {
-                    seeSo.setMonitorSize(16);
-                    seeSo.setFaceDistance(50);
+                    seeSo.setMonitorSize(27);
+                    seeSo.setFaceDistance(60);
                     seeSo.setCameraPosition(window.outerWidth / 2, true);
-                    seeSo.startTracking(onGaze, onDebug);
+                    // Tracking 시작과 정지를 위한 콜백 함수 설정
+                    onTrackingStart(() => seeSo.startTracking(onGaze, onDebug));
+                    onTrackingStop(() => seeSo.stopTracking());
                 }, // callback when init succeeded.
-                () => console.log("seeso api error") // callback when init failed.
+                () => console.log("=== seeso api error ===") // callback when init failed.
             );
         }
 
         initializeSeeso();
-    }, []);
+    }, [onTrackingStart, onTrackingStop]);
 
     return (
         <div>

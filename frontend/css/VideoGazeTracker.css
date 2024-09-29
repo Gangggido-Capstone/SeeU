@@ -18,11 +18,11 @@
 }
 
 .youtube-iframe {
-    width: 640px; /* 유튜브 기본 제공 크기 */
-    height: 360px; /* 유튜브 기본 제공 크기 */
+    width: 854px; /*1024 x 576*/
+    height: 480px;
     border: none;
     z-index: 2;
-    margin-bottom: 20px;
+    /* margin-bottom: 10px; */
 }
 
 .back-button-container {
@@ -35,13 +35,35 @@
 .back-button {
     display: block;
     text-align: center;
-    margin: 20px auto 0; /* 영상 아래에 중앙에 위치하도록 설정 */
+    margin: 10px auto 0;
     z-index: 2;
-    background-color: red;
+    background-color: red; /*RGB (0,145,250)*/
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
     text-decoration: none;
     font-size: 16px;
     width: 80px;
+}
+
+.video-controls button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 10px;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.video-controls {
+    display: flex;
+    justify-content: center;
+}
+
+p {
+    padding: 3px;
+    margin: 3px;
+    font-size: 20px;
 }
