@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainPage from "./MainPage";
 import VideoGazeTracker from "./VideoGazeTracker";
 import InitSeeso from "./InitSeeso";
+import SettingsPage from "./components/SettingsPage";
+import RecordPage from "./components/RecordPagePage";
 
 const EyeTrackingApp = () => {
     return (
@@ -15,6 +17,10 @@ const EyeTrackingApp = () => {
                 />
                 <Route path='/seeso' element={<InitSeeso />} />
                 <Route path='/youtube' element={<VideoGazeTracker />} />
+                <Route path='/settings' element={<SettingsPage />} />{" "}
+                {/* SettingsPage 추가 */}
+                <Route path='/record' element={<RecordPage />} />{" "}
+                {/* RecordPagePage 추가 */}
             </Routes>
         </BrowserRouter>
     );
