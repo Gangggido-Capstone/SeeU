@@ -5,6 +5,7 @@ import { fetchPopularVideos, searchVideos } from "./api/youtubeApi";
 import { useNavigate } from "react-router-dom";
 import '../../css/main.css';
 
+
 const MainPage = () => {
     const [videos, setVideos] = useState([]);
     const [searchResults, setSearchResults] = useState([]);

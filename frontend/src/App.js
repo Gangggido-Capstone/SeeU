@@ -1,35 +1,13 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import MainPage from "./components/MainPage";
-import EyeTrackingApp from "./components/EyeTrackingApp";
-import SettingsPage from "./components/SettingsPage";
 import "./App.css";
+import EyeTrackingApp from "./components/EyeTrackingApp.jsx";
+import React from "react";
 
-const App = () => {
+function App() {
     return (
-        <Router>
-            <div className="App">
-                <DisplayLogo />
-                <Routes>
-                    <Route path="/" element={<MainPage />} />
-                    <Route path="/eye-tracking" element={<EyeTrackingApp />} />
-                    <Route path="/settings" element={<SettingsPage />} />
-                </Routes>
-            </div>
-        </Router>
+        <div className='App'>
+            <EyeTrackingApp />
+        </div>
     );
-};
-
-// 로고 메인 페이지만
-const DisplayLogo = () => {
-    const location = useLocation();
-    const isMainPage = location.pathname === '/';
-
-    return (
-        <>
-            {isMainPage && <img src="/eye_logo.gif" alt="Logo" className="logo" />}
-        </>
-    );
-};
+}
 
 export default App;
