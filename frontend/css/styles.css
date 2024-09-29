@@ -11,4 +11,6 @@
 #gazeInfo {
     text-align: center;
     z-index: 2;
+    padding: 3px;
+    margin: 3px;
 }

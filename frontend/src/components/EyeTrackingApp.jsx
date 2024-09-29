@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainPage from "./MainPage";
-import VideoGazeTracker from "./videoGazeTracker";
+import VideoGazeTracker from "./VideoGazeTracker";
 import InitSeeso from "./InitSeeso";
 
 const EyeTrackingApp = () => {
