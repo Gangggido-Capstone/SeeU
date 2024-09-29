@@ -3,6 +3,7 @@ import VideoList from "./VideoList";
 import SearchBar from "./SearchBar";
 import { fetchPopularVideos, searchVideos } from "./api/youtubeApi";
 
+
 const MainPage = () => {
     const [videos, setVideos] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
