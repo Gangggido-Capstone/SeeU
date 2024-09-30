@@ -3,8 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import MainPage from "./MainPage";
 import VideoGazeTracker from "./VideoGazeTracker";
 import InitSeeso from "./InitSeeso";
-import SettingsPage from "./components/SettingsPage";
-import RecordPage from "./components/RecordPagePage";
+import SettingsPage from "./SettingsPage";
+import RecordPage from "./RecordPagePage";
 
 const EyeTrackingApp = () => {
     return (
