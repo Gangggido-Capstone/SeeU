@@ -1,6 +1,6 @@
-import "./App.css";
 import EyeTrackingApp from "./components/EyeTrackingApp.jsx";
 import React from "react";
+import "./App.css";
 
 function App() {
     return (

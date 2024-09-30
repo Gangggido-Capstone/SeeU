@@ -104,10 +104,6 @@ const VideoGazeTracker = () => {
 
     return (
         <div className='video-player-wrapper'>
-            <div>
-                <h4 className='page-title'>영상 시선 추적 페이지</h4>
-            </div>
-
             <iframe
                 id='youtube-player' // YouTube Player API와 연결하기 위한 ID
                 credentialless='true' // Cross-Origin 관련 속성
@@ -127,19 +123,16 @@ const VideoGazeTracker = () => {
                 />
 
                 {/* 영상 재생 시간 및 좌표 */}
-
-                <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
+                {/* <p>현재 재생 시간: {Math.floor(currentTime)}초</p> */}
 
                 {/* 재생 및 정지 버튼 */}
                 <div className='video-controls'>
                     <button onClick={handlePlay}>재생</button>
                     <button onClick={handlePause}>정지</button>
+                    <a href='/' className='back-button' onClick={handleBack}>
+                        뒤로가기
+                    </a>
                 </div>
-
-                {/* 뒤로가기 버튼 */}
-                <a href='/' className='back-button' onClick={handleBack}>
-                    뒤로가기
-                </a>
             </div>
         </div>
     );

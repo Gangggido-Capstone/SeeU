@@ -6,64 +6,61 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
+/* 페이지 제목 숨김 */
 .page-title {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    z-index: 2;
-    color: white;
-    font-size: 24px;
+    display: none;
 }
 
+/* 영상 크기 조절 및 중앙 배치 */
 .youtube-iframe {
-    width: 854px; /*1024 x 576*/
-    height: 480px;
+    width: 66vw; /* 화면의 3분의 2 */
+    height: calc(66vw * 9 / 16); /* 16:9 비율 유지 */
     border: none;
     z-index: 2;
-    /* margin-bottom: 10px; */
 }
 
-.back-button-container {
-    z-index: 2;
-    position: relative;
-    text-align: center;
-    margin-top: 20px;
-}
-
-.back-button {
-    display: block;
-    text-align: center;
-    margin: 10px auto 0;
-    z-index: 2;
-    background-color: red; /*RGB (0,145,250)*/
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 16px;
-    width: 80px;
-}
-
-.video-controls button {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 10px 10px;
-    margin: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
+/* 버튼 및 정보 중앙 정렬 */
+.info-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 5px;
 }
 
 .video-controls {
     display: flex;
-    justify-content: center;
+    justify-content: space-around; /* 버튼 간격 조절 */
+    width: 100%; /* 전체 화면에 맞춤 */
+    max-width: 600px; /* 버튼이 화면에서 넘치지 않도록 최대 너비 설정 */
 }
 
+.video-controls button,
+.back-button {
+    background-color: red;
+    color: white;
+    border: none;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    width: 120px; /* 모든 버튼의 너비 동일하게 설정 */
+    height: 50px; /* 모든 버튼의 높이 동일하게 설정 */
+    text-align: center;
+    text-decoration: none; /* 밑줄 제거 */
+    display: inline-block; /* a 태그도 버튼처럼 동작하도록 설정 */
+    line-height: 50px; /* 텍스트를 수직으로 가운데 정렬 */
+}
+
+.video-controls {
+    display: flex;
+    justify-content: space-between; /* 버튼 간격을 더 좁게 조정 */
+    width: 300px; /* 전체 너비 조정 */
+}
 p {
-    padding: 3px;
-    margin: 3px;
+    padding: 1px;
+    margin: 1px;
     font-size: 20px;
 }
