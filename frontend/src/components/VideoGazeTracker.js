@@ -123,7 +123,7 @@ const VideoGazeTracker = () => {
                 />
 
                 {/* 영상 재생 시간 및 좌표 */}
-                {/* <p>현재 재생 시간: {Math.floor(currentTime)}초</p> */}
+                <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
 
                 {/* 재생 및 정지 버튼 */}
                 <div className='video-controls'>
