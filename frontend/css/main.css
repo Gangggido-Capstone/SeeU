@@ -28,3 +28,13 @@ body {
     cursor: pointer;
     z-index: 10; /* 상위 요소에 가리지 않도록 설정 */
 }
+
+.record-icon {
+    position: fixed;
+    top: 30px; 
+    right: 130px; 
+    width: 50px;
+    height: auto;
+    cursor: pointer;
+    z-index: 10; 
+}

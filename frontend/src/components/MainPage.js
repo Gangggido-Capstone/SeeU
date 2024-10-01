@@ -35,6 +35,9 @@ const MainPage = () => {
     const handleSettingsClick = () => {
         navigate("/Settings"); // 설정 페이지로 이동
     };
+    const handleRecordClick =() => {
+        navigate("/Records");
+    };
 
     return (
         <div>
@@ -51,8 +54,18 @@ const MainPage = () => {
                 className='settings-icon'
                 onClick={handleSettingsClick}
             />
+            <img
+                src='/record.png'
+                alt='Record Icon'
+                className='record-icon'
+                onClick={handleRecordClick}
+            />
         </div>
     );
+
+
+
+
 };
 
 export default MainPage;
