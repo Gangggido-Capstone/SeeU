@@ -11,6 +11,7 @@ const VideoGazeTracker = () => {
     const [isApiReady, setIsApiReady] = useState(false); // YouTube API 로드 상태를 저장하는 상태
     const [startTracking, setStartTracking] = useState(() => {}); // seeso 시선 추적 시작
     const [stopTracking, setStopTracking] = useState(() => {}); // seeso 시선 추적 정지
+    const [gazeData, setGazeData] = useState({ x: NaN, y: NaN }); // 시선 좌표
 
     useEffect(() => {
         // YouTube IFrame Player API가 로드되었을 때 호출되는 함수
@@ -76,6 +77,11 @@ const VideoGazeTracker = () => {
         }
     };
 
+    // 시선 추적 데이터를 받는 콜백 함수
+    const handleGaze = (gazeData) => {
+        setGazeData(gazeData); // 시선 좌표를 상태에 저장
+    };
+
     // 재생 버튼을 클릭했을 때 호출되는 함수
     const handlePlay = () => {
         if (player && player.playVideo) {
@@ -120,8 +126,12 @@ const VideoGazeTracker = () => {
                 <InitSeeso
                     onTrackingStart={(start) => setStartTracking(() => start)}
                     onTrackingStop={(stop) => setStopTracking(() => stop)}
+                    GazeData={handleGaze} // 시선 추적 데이터를 받기 위한 콜백 전달
                 />
-
+                {/* 시선 좌표를 화면에 표시 */}
+                <p>
+                    시선 좌표: x: {gazeData.x}, y: {gazeData.y}
+                </p>
                 {/* 영상 재생 시간 및 좌표 */}
                 <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
 
