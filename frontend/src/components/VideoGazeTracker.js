@@ -13,8 +13,13 @@ const VideoGazeTracker = () => {
     const [stopTracking, setStopTracking] = useState(() => {}); // seeso 시선 추적 정지
     const [gazeData, setGazeData] = useState({ x: NaN, y: NaN }); // 시선 좌표
     const [videoGaze, setVideoGaze] = useState({ x: NaN, y: NaN }); // 교정된 시선 좌표
-    const [videoFrame, setVideoFrame] = useState({ top: 0, left: 0, height: 0, width: 0 }); // 영상 위치와 크기
-    
+    const [videoFrame, setVideoFrame] = useState({
+        top: 0,
+        left: 0,
+        height: 0,
+        width: 0,
+    }); // 영상 위치와 크기
+
     useEffect(() => {
         // YouTube IFrame Player API가 로드되었을 때 호출되는 함수
         const onYouTubeIframeAPIReady = () => {
@@ -134,9 +139,8 @@ const VideoGazeTracker = () => {
             // 플레이어가 준비되었고, pauseVideo 함수가 있을 경우
             player.pauseVideo(); // 동영상을 정지
             stopTracking(); // 시선 추적 정지
-            
+
             // 여기에 csv 파일 저장 코드 추가
-        
         } else {
             console.error("Player is not ready or pauseVideo is not available"); // 플레이어가 준비되지 않은 경우 에러 출력
         }
@@ -171,7 +175,9 @@ const VideoGazeTracker = () => {
                 {/* <p>
                     시선 좌표: x: {gazeData.x}, y: {gazeData.y}
                 </p> */}
-                 <p>교정된 시선 좌표: x: {videoGaze.x}, y: {videoGaze.y}</p>
+                <p>
+                    교정된 시선 좌표: x: {videoGaze.x}, y: {videoGaze.y}
+                </p>
                 {/* 영상 재생 시간 및 좌표 */}
                 {/* <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
                 <p>
