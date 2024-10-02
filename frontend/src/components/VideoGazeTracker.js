@@ -12,8 +12,8 @@ const VideoGazeTracker = () => {
     const [startTracking, setStartTracking] = useState(() => {}); // seeso 시선 추적 시작
     const [stopTracking, setStopTracking] = useState(() => {}); // seeso 시선 추적 정지
     const [gazeData, setGazeData] = useState({ x: NaN, y: NaN }); // 시선 좌표
-    const [correctedGaze, setCorrectedGaze] = useState({ x: NaN, y: NaN }); // 교정된 시선 좌표
-    const [videoPosition, setVideoPosition] = useState({ top: 0, left: 0, height: 0, width: 0 }); // 영상 위치와 크기
+    const [videoGaze, setVideoGaze] = useState({ x: NaN, y: NaN }); // 교정된 시선 좌표
+    const [videoFrame, setVideoFrame] = useState({ top: 0, left: 0, height: 0, width: 0 }); // 영상 위치와 크기
     
     useEffect(() => {
         // YouTube IFrame Player API가 로드되었을 때 호출되는 함수
@@ -60,12 +60,12 @@ const VideoGazeTracker = () => {
     useEffect(() => {
         const videoElement = document.getElementById("youtube-player");
         if (videoElement) {
-            const videoRect = videoElement.getBoundingClientRect(); // 영상 위치와 크기
-            setVideoPosition({
-                top: videoRect.top,
-                left: videoRect.left,
-                height: videoRect.height,
-                width: videoRect.width,
+            const video = videoElement.getBoundingClientRect(); // 영상 위치와 크기
+            setVideoFrame({
+                top: video.top,
+                left: video.left,
+                height: video.height,
+                width: video.width,
             });
         }
     }, [player]);
@@ -95,11 +95,11 @@ const VideoGazeTracker = () => {
     // 교정 시선 좌표 업데이트
     useEffect(() => {
         if (!isNaN(gazeData.x) && !isNaN(gazeData.y)) {
-            const correctedX = gazeData.x - videoPosition.left;
-            const correctedY = gazeData.y - videoPosition.top;
-            setCorrectedGaze({ x: correctedX, y: correctedY });
+            const videoX = gazeData.x - videoFrame.left;
+            const videoY = gazeData.y - videoFrame.top;
+            setVideoGaze({ x: videoX, y: videoY });
         }
-    }, [gazeData, videoPosition]);
+    }, [gazeData, videoFrame]);
 
     // 시선 추적 데이터를 받는 콜백 함수
     const handleGaze = (gazeData) => {
@@ -171,7 +171,7 @@ const VideoGazeTracker = () => {
                 {/* <p>
                     시선 좌표: x: {gazeData.x}, y: {gazeData.y}
                 </p> */}
-                 <p>교정된 시선 좌표: x: {correctedGaze.x}, y: {correctedGaze.y}</p>
+                 <p>교정된 시선 좌표: x: {videoGaze.x}, y: {videoGaze.y}</p>
                 {/* 영상 재생 시간 및 좌표 */}
                 {/* <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
                 <p>
