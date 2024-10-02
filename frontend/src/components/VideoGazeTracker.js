@@ -12,6 +12,7 @@ const VideoGazeTracker = () => {
     const [startTracking, setStartTracking] = useState(() => {}); // seeso 시선 추적 시작
     const [stopTracking, setStopTracking] = useState(() => {}); // seeso 시선 추적 정지
     const [gazeData, setGazeData] = useState({ x: NaN, y: NaN }); // 시선 좌표
+    const [correctedGaze, setCorrectedGaze] = useState({ x: NaN, y: NaN }); // 교정된 시선 좌표
     const [videoPosition, setVideoPosition] = useState({ top: 0, left: 0, height: 0, width: 0 }); // 영상 위치와 크기
     
     useEffect(() => {
@@ -59,12 +60,12 @@ const VideoGazeTracker = () => {
     useEffect(() => {
         const videoElement = document.getElementById("youtube-player");
         if (videoElement) {
-            const rect = videoElement.getBoundingClientRect(); // 영상 위치와 크기
+            const videoRect = videoElement.getBoundingClientRect(); // 영상 위치와 크기
             setVideoPosition({
-                top: rect.top,
-                left: rect.left,
-                height: rect.height,
-                width: rect.width,
+                top: videoRect.top,
+                left: videoRect.left,
+                height: videoRect.height,
+                width: videoRect.width,
             });
         }
     }, [player]);
@@ -91,6 +92,15 @@ const VideoGazeTracker = () => {
         }
     };
 
+    // 교정 시선 좌표 업데이트
+    useEffect(() => {
+        if (!isNaN(gazeData.x) && !isNaN(gazeData.y)) {
+            const correctedX = gazeData.x - videoPosition.left;
+            const correctedY = gazeData.y - videoPosition.top;
+            setCorrectedGaze({ x: correctedX, y: correctedY });
+        }
+    }, [gazeData, videoPosition]);
+
     // 시선 추적 데이터를 받는 콜백 함수
     const handleGaze = (gazeData) => {
         setGazeData(gazeData); // 시선 좌표를 상태에 저장
@@ -113,6 +123,20 @@ const VideoGazeTracker = () => {
             // 플레이어가 준비되었고, pauseVideo 함수가 있을 경우
             player.pauseVideo(); // 동영상을 정지
             stopTracking(); // 시선 추적 정지
+        } else {
+            console.error("Player is not ready or pauseVideo is not available"); // 플레이어가 준비되지 않은 경우 에러 출력
+        }
+    };
+
+    // 시선 데이터 저장 & 분석 짜는 중....
+    const handleAnalysis = () => {
+        if (player && player.pauseVideo) {
+            // 플레이어가 준비되었고, pauseVideo 함수가 있을 경우
+            player.pauseVideo(); // 동영상을 정지
+            stopTracking(); // 시선 추적 정지
+            
+            // 여기에 csv 파일 저장 코드 추가
+        
         } else {
             console.error("Player is not ready or pauseVideo is not available"); // 플레이어가 준비되지 않은 경우 에러 출력
         }
@@ -147,9 +171,7 @@ const VideoGazeTracker = () => {
                 {/* <p>
                     시선 좌표: x: {gazeData.x}, y: {gazeData.y}
                 </p> */}
-                <p>
-                    교정된 시선 좌표: x: {gazeData.x - videoPosition.left}, y: {gazeData.y - videoPosition.top}
-                </p> 
+                 <p>교정된 시선 좌표: x: {correctedGaze.x}, y: {correctedGaze.y}</p>
                 {/* 영상 재생 시간 및 좌표 */}
                 {/* <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
                 <p>
@@ -162,8 +184,9 @@ const VideoGazeTracker = () => {
                 <div className='video-controls'>
                     <button onClick={handlePlay}>재생</button>
                     <button onClick={handlePause}>정지</button>
+                    <button onClick={handleAnalysis}>분석</button>
                     <a href='/' className='back-button' onClick={handleBack}>
-                        뒤로가기
+                        홈
                     </a>
                 </div>
             </div>
