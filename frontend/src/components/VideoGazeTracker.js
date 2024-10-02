@@ -146,10 +146,10 @@ const VideoGazeTracker = () => {
                 {/* 시선 좌표를 화면에 표시 */}
                 {/* <p>
                     시선 좌표: x: {gazeData.x}, y: {gazeData.y}
-                </p>
+                </p> */}
                 <p>
                     교정된 시선 좌표: x: {gazeData.x - videoPosition.left}, y: {gazeData.y - videoPosition.top}
-                </p> */}
+                </p> 
                 {/* 영상 재생 시간 및 좌표 */}
                 {/* <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
                 <p>
