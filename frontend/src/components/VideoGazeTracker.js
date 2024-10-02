@@ -153,6 +153,7 @@ const VideoGazeTracker = () => {
     };
 
     // api
+    // + 영상 ID, 영상 크기(W,H), 시청 날짜(시간) 세부정보도 같이 전달 코드 추가하기
     const saveCSVToServer = async () => {
         try {
             const response = await fetch(
