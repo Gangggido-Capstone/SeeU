@@ -144,17 +144,20 @@ const VideoGazeTracker = () => {
                     GazeData={handleGaze} // 시선 추적 데이터를 받기 위한 콜백 전달
                 />
                 {/* 시선 좌표를 화면에 표시 */}
-                <p>
+                {/* <p>
                     시선 좌표: x: {gazeData.x}, y: {gazeData.y}
                 </p>
+                <p>
+                    교정된 시선 좌표: x: {gazeData.x - videoPosition.left}, y: {gazeData.y - videoPosition.top}
+                </p> */}
                 {/* 영상 재생 시간 및 좌표 */}
-                <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
+                {/* <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
                 <p>
                     영상 위치 : Left: {videoPosition.left}, Top: {videoPosition.top}
                 </p>
                 <p>
                     영상 크기 : Width: {videoPosition.width}, Height: {videoPosition.height}
-                </p>
+                </p> */}
                 {/* 재생 및 정지 버튼 */}
                 <div className='video-controls'>
                     <button onClick={handlePlay}>재생</button>

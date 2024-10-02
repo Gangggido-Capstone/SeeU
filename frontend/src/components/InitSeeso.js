@@ -53,7 +53,6 @@ const InitSeeso = ({ onTrackingStart, onTrackingStop, GazeData }) => {
     return (
         <div>
             <canvas id='output'></canvas>
-            <p id='gazeInfo'>시선 추적 중...</p>
         </div>
     );
 };
