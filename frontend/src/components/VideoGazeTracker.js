@@ -12,7 +12,8 @@ const VideoGazeTracker = () => {
     const [startTracking, setStartTracking] = useState(() => {}); // seeso 시선 추적 시작
     const [stopTracking, setStopTracking] = useState(() => {}); // seeso 시선 추적 정지
     const [gazeData, setGazeData] = useState({ x: NaN, y: NaN }); // 시선 좌표
-
+    const [videoPosition, setVideoPosition] = useState({ top: 0, left: 0, height: 0, width: 0 }); // 영상 위치와 크기
+    
     useEffect(() => {
         // YouTube IFrame Player API가 로드되었을 때 호출되는 함수
         const onYouTubeIframeAPIReady = () => {
@@ -54,6 +55,19 @@ const VideoGazeTracker = () => {
             }
         };
     }, [videoId]); // videoId가 변경될 때마다 이 효과 함수 실행
+
+    useEffect(() => {
+        const videoElement = document.getElementById("youtube-player");
+        if (videoElement) {
+            const rect = videoElement.getBoundingClientRect(); // 영상 위치와 크기
+            setVideoPosition({
+                top: rect.top,
+                left: rect.left,
+                height: rect.height,
+                width: rect.width,
+            });
+        }
+    }, [player]);
 
     // YouTube 플레이어가 준비되었을 때 호출되는 함수
     const onPlayerReady = (event) => {
@@ -110,6 +124,7 @@ const VideoGazeTracker = () => {
 
     return (
         <div className='video-player-wrapper'>
+            <div>test</div>
             <iframe
                 id='youtube-player' // YouTube Player API와 연결하기 위한 ID
                 credentialless='true' // Cross-Origin 관련 속성
@@ -134,7 +149,12 @@ const VideoGazeTracker = () => {
                 </p>
                 {/* 영상 재생 시간 및 좌표 */}
                 <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
-
+                <p>
+                    영상 위치 : Left: {videoPosition.left}, Top: {videoPosition.top}
+                </p>
+                <p>
+                    영상 크기 : Width: {videoPosition.width}, Height: {videoPosition.height}
+                </p>
                 {/* 재생 및 정지 버튼 */}
                 <div className='video-controls'>
                     <button onClick={handlePlay}>재생</button>
