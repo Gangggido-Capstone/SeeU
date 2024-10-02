@@ -11,7 +11,10 @@ const VideoGazeTracker = () => {
     const [isApiReady, setIsApiReady] = useState(false); // YouTube API 로드 상태를 저장하는 상태
     const [startTracking, setStartTracking] = useState(() => {}); // seeso 시선 추적 시작
     const [stopTracking, setStopTracking] = useState(() => {}); // seeso 시선 추적 정지
-
+    const [gazeData, setGazeData] = useState({ x: NaN, y: NaN }); // 시선 좌표
+    const [videoGaze, setVideoGaze] = useState({ x: NaN, y: NaN }); // 교정된 시선 좌표
+    const [videoFrame, setVideoFrame] = useState({ top: 0, left: 0, height: 0, width: 0 }); // 영상 위치와 크기
+    
     useEffect(() => {
         // YouTube IFrame Player API가 로드되었을 때 호출되는 함수
         const onYouTubeIframeAPIReady = () => {
@@ -54,6 +57,19 @@ const VideoGazeTracker = () => {
         };
     }, [videoId]); // videoId가 변경될 때마다 이 효과 함수 실행
 
+    useEffect(() => {
+        const videoElement = document.getElementById("youtube-player");
+        if (videoElement) {
+            const video = videoElement.getBoundingClientRect(); // 영상 위치와 크기
+            setVideoFrame({
+                top: video.top,
+                left: video.left,
+                height: video.height,
+                width: video.width,
+            });
+        }
+    }, [player]);
+
     // YouTube 플레이어가 준비되었을 때 호출되는 함수
     const onPlayerReady = (event) => {
         console.log("Player is ready"); // 플레이어가 준비되었음을 콘솔에 출력
@@ -74,6 +90,20 @@ const VideoGazeTracker = () => {
         } else {
             setIsPlaying(false); // 동영상이 일시정지 또는 종료된 경우 재생 상태를 false로 설정
         }
+    };
+
+    // 교정 시선 좌표 업데이트
+    useEffect(() => {
+        if (!isNaN(gazeData.x) && !isNaN(gazeData.y)) {
+            const videoX = gazeData.x - videoFrame.left;
+            const videoY = gazeData.y - videoFrame.top;
+            setVideoGaze({ x: videoX, y: videoY });
+        }
+    }, [gazeData, videoFrame]);
+
+    // 시선 추적 데이터를 받는 콜백 함수
+    const handleGaze = (gazeData) => {
+        setGazeData(gazeData); // 시선 좌표를 상태에 저장
     };
 
     // 재생 버튼을 클릭했을 때 호출되는 함수
@@ -98,12 +128,27 @@ const VideoGazeTracker = () => {
         }
     };
 
+    // 시선 데이터 저장 & 분석 짜는 중....
+    const handleAnalysis = () => {
+        if (player && player.pauseVideo) {
+            // 플레이어가 준비되었고, pauseVideo 함수가 있을 경우
+            player.pauseVideo(); // 동영상을 정지
+            stopTracking(); // 시선 추적 정지
+            
+            // 여기에 csv 파일 저장 코드 추가
+        
+        } else {
+            console.error("Player is not ready or pauseVideo is not available"); // 플레이어가 준비되지 않은 경우 에러 출력
+        }
+    };
+
     const handleBack = () => {
         stopTracking(); // 뒤로가기 시 시선 추적 중지
     };
 
     return (
         <div className='video-player-wrapper'>
+            <div>test</div>
             <iframe
                 id='youtube-player' // YouTube Player API와 연결하기 위한 ID
                 credentialless='true' // Cross-Origin 관련 속성
@@ -120,17 +165,28 @@ const VideoGazeTracker = () => {
                 <InitSeeso
                     onTrackingStart={(start) => setStartTracking(() => start)}
                     onTrackingStop={(stop) => setStopTracking(() => stop)}
+                    GazeData={handleGaze} // 시선 추적 데이터를 받기 위한 콜백 전달
                 />
-
+                {/* 시선 좌표를 화면에 표시 */}
+                {/* <p>
+                    시선 좌표: x: {gazeData.x}, y: {gazeData.y}
+                </p> */}
+                 <p>교정된 시선 좌표: x: {videoGaze.x}, y: {videoGaze.y}</p>
                 {/* 영상 재생 시간 및 좌표 */}
-                {/* <p>현재 재생 시간: {Math.floor(currentTime)}초</p> */}
-
+                {/* <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
+                <p>
+                    영상 위치 : Left: {videoPosition.left}, Top: {videoPosition.top}
+                </p>
+                <p>
+                    영상 크기 : Width: {videoPosition.width}, Height: {videoPosition.height}
+                </p> */}
                 {/* 재생 및 정지 버튼 */}
                 <div className='video-controls'>
                     <button onClick={handlePlay}>재생</button>
                     <button onClick={handlePause}>정지</button>
+                    <button onClick={handleAnalysis}>분석</button>
                     <a href='/' className='back-button' onClick={handleBack}>
-                        뒤로가기
+                        홈
                     </a>
                 </div>
             </div>

@@ -4,7 +4,7 @@ import EasySeeSo from "seeso/easy-seeso";
 import { showGaze } from "./showGaze.js";
 import "../../css/styles.css";
 
-const InitSeeso = ({ onTrackingStart, onTrackingStop }) => {
+const InitSeeso = ({ onTrackingStart, onTrackingStop, GazeData }) => {
     const licenseKey = process.env.REACT_APP_EYEDID_KEY;
 
     if (!licenseKey) {
@@ -12,7 +12,10 @@ const InitSeeso = ({ onTrackingStart, onTrackingStop }) => {
     }
     useEffect(() => {
         const onGaze = (gazeInfo) => {
-            showGaze(gazeInfo); // 시선 정보를 화면에 표시
+            showGaze(gazeInfo); // 화면에 시선 정보를 표시
+            if (GazeData) {
+                GazeData(gazeInfo); // 전달된 콜백에 시선 좌표 전달
+            }
         };
 
         const onDebug = (FPS, latency_min, latency_max, latency_avg) => {
@@ -45,12 +48,11 @@ const InitSeeso = ({ onTrackingStart, onTrackingStop }) => {
         }
 
         initializeSeeso();
-    }, [onTrackingStart, onTrackingStop]);
+    }, [onTrackingStart, onTrackingStop, GazeData]);
 
     return (
         <div>
             <canvas id='output'></canvas>
-            <p id='gazeInfo'>시선 추적 중...</p>
         </div>
     );
 };
