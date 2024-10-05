@@ -169,16 +169,34 @@ const VideoGazeTracker = () => {
         }
     };
 
-    // api
-    // + 영상 ID, 영상 크기(W,H), 시청 날짜와 현재 시간 세부정보도 같이 전달 코드 추가하기
+    const getFormattedKSTDate = () => {
+        const now = new Date();
+        return now
+            .toLocaleString("ko-KR", {
+                timeZone: "Asia/Seoul",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false, // 24시간 형식 적용
+            })
+            .replace(/\./g, "-")
+            .replace(/\s/g, "")
+            .replace(/:/g, "-");
+    };
     const saveCSVToServer = async () => {
+        // 시간
+        const formattedDate = getFormattedKSTDate();
+
         try {
             // 전송할 데이터 구성
             const dataToSend = {
-                videoId: videoId, // 영상 ID
-                videoFrame: videoFrame, // 영상 위치 및 크기
-                watchDate: new Date().toISOString(), // 시청 날짜와 현재 시간 (ISO 8601 형식)
-                gazeData: videoGazeData, // 시선 좌표 데이터
+                videoId: videoId,
+                videoFrame: videoFrame,
+                watchDate: formattedDate,
+                gazeData: videoGazeData,
             };
 
             const response = await fetch(
