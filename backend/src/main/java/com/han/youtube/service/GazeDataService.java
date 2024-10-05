@@ -27,7 +27,7 @@ public class GazeDataService {
         }
 
         // CSV 파일 경로 설정
-        String filePath = "C:/youtube-seeso-demo/Data/GazeData/" + videoId + "_" + watchDate.replace(":", "-") + ".csv";
+        String filePath = "C:/youtube-seeso-demo/Data/GazeData/" + videoId + "_" + watchDate + ".csv";
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             // 헤더
@@ -41,7 +41,7 @@ public class GazeDataService {
                         .append(",")
                         .append(record.get("y") != null ? record.get("y").toString() : "null")
                         .append(",")
-                        .append(record.get("attention") != null ? record.get("attention").toString() : "null")
+                        .append(record.get("attention") != null ? record.get("attention").toString() : "3")
                         .append("\n");
             }
 
