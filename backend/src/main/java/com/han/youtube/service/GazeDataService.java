@@ -1,5 +1,9 @@
 package com.han.youtube.service;
 
+import com.han.youtube.Domain.ReceiveId;
+import com.han.youtube.Dto.ReceiveIdDto;
+import com.han.youtube.Repository.MongoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
@@ -9,10 +13,22 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class GazeDataService {
+
+    private final MongoRepository mongoRepository;
     public void saveGazeData(Map<String, Object> payload) throws IOException {
         String videoId = (String) payload.get("videoId");
         String watchDate = (String) payload.get("watchDate");
+
+
+        //id 저장
+        ReceiveIdDto receiveIdDto = new ReceiveIdDto();
+        ReceiveId receiveId = receiveIdDto.toEntity(videoId,watchDate);
+
+        mongoRepository.save(receiveId);
+
+
 
         // 비디오 크기 값 videoFrame.get("width"), videoFrame.get("height")
         Map<String, Object> videoFrame = null;
@@ -27,7 +43,7 @@ public class GazeDataService {
         }
 
         // CSV 파일 경로 설정
-        String filePath = "C:/youtube-seeso-demo/Data/GazeData/" + videoId + "_" + watchDate + ".csv";
+        String filePath = "C:/Users/LG/OneDrive/바탕 화면/capstone/youtube-seeso-demo/Data/GazeData/" + videoId + "_" + watchDate + ".csv";
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             // 헤더
