@@ -7,14 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 
 @Service
@@ -26,11 +23,7 @@ public class GazeDataService {
         String videoId = (String) payload.get("videoId");
         String watchDate = (String) payload.get("watchDate");
 
-<<<<<<< HEAD
-        //id 저장
-=======
         // 영상 ID, 시간 저장
->>>>>>> c12da3c243e266e0fee9e58f7365d4af4166e11c
         ReceiveIdDto receiveIdDto = new ReceiveIdDto();
         ReceiveId receiveId = receiveIdDto.toEntity(videoId,watchDate);
         mongoRepository.save(receiveId);
