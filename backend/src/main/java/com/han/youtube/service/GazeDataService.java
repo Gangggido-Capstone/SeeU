@@ -21,14 +21,11 @@ public class GazeDataService {
         String videoId = (String) payload.get("videoId");
         String watchDate = (String) payload.get("watchDate");
 
-
         //id 저장
         ReceiveIdDto receiveIdDto = new ReceiveIdDto();
         ReceiveId receiveId = receiveIdDto.toEntity(videoId,watchDate);
 
         mongoRepository.save(receiveId);
-
-
 
         // 비디오 크기 값 videoFrame.get("width"), videoFrame.get("height")
         Map<String, Object> videoFrame = null;
