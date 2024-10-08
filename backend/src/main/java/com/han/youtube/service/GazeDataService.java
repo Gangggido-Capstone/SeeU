@@ -7,10 +7,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+
 
 @Service
 @RequiredArgsConstructor
@@ -21,10 +26,13 @@ public class GazeDataService {
         String videoId = (String) payload.get("videoId");
         String watchDate = (String) payload.get("watchDate");
 
+<<<<<<< HEAD
         //id 저장
+=======
+        // 영상 ID, 시간 저장
+>>>>>>> c12da3c243e266e0fee9e58f7365d4af4166e11c
         ReceiveIdDto receiveIdDto = new ReceiveIdDto();
         ReceiveId receiveId = receiveIdDto.toEntity(videoId,watchDate);
-
         mongoRepository.save(receiveId);
 
         // 비디오 크기 값 videoFrame.get("width"), videoFrame.get("height")
@@ -40,7 +48,7 @@ public class GazeDataService {
         }
 
         // CSV 파일 경로 설정
-        String filePath = "/youtube-seeso-demo/Data/GazeData/" + videoId + "_" + watchDate + ".csv";
+        String filePath = "../Data/GazeData/" + videoId + "_" + watchDate + ".csv";
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             // 헤더
