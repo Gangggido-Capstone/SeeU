@@ -196,9 +196,6 @@ const VideoGazeTracker = () => {
             .replace(/:/g, "-");
     };
 
-    const aaa = (videoGazeData) => {
-        videoGazeData;
-    };
     const saveCSVToServer = async () => {
         // 시간
         const formattedDate = getFormattedKSTDate();
