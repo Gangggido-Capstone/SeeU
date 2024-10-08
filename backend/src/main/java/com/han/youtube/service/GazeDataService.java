@@ -43,7 +43,7 @@ public class GazeDataService {
         }
 
         // CSV 파일 경로 설정
-        String filePath = "C:/Users/LG/OneDrive/바탕 화면/capstone/youtube-seeso-demo/Data/GazeData/" + videoId + "_" + watchDate + ".csv";
+        String filePath = "/youtube-seeso-demo/Data/GazeData/" + videoId + "_" + watchDate + ".csv";
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             // 헤더
