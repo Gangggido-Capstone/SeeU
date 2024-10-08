@@ -112,6 +112,15 @@ const VideoGazeTracker = () => {
         let videoY = gazeData.y - videoFrame.top;
         let attention = gazeData.eyemovementState;
 
+        if (
+            !(0 <= videoX && videoX <= videoFrame.width) ||
+            !(0 <= videoY && videoY <= videoFrame.height)
+        ) {
+            videoX = NaN;
+            videoY = NaN;
+            attention = 3;
+        }
+
         setVideoGaze({
             x: videoX,
             y: videoY,
@@ -185,6 +194,10 @@ const VideoGazeTracker = () => {
             .replace(/\./g, "-")
             .replace(/\s/g, "")
             .replace(/:/g, "-");
+    };
+
+    const aaa = (videoGazeData) => {
+        videoGazeData;
     };
     const saveCSVToServer = async () => {
         // 시간
@@ -265,21 +278,11 @@ const VideoGazeTracker = () => {
                 />
 
                 {/* 시선 좌표를 화면에 표시 */}
-                {/* <p>
-                    시선 좌표: x: {gazeData.x}, y: {gazeData.y}
-                </p> */}
                 <p>
-                    교정된 시선 좌표: x: {videoGaze.x}, y: {videoGaze.y},
-                    attention: {videoGaze.attention}
+                    시선 좌표: x: {videoGaze.x}, y: {videoGaze.y}, attention:{" "}
+                    {videoGaze.attention}
                 </p>
-                {/* 영상 재생 시간 및 좌표 */}
-                {/* <p>현재 재생 시간: {Math.floor(currentTime)}초</p>
-                <p>
-                    영상 위치 : Left: {videoPosition.left}, Top: {videoPosition.top}
-                </p>
-                <p>
-                    영상 크기 : Width: {videoPosition.width}, Height: {videoPosition.height}
-                </p> */}
+
                 {/* 재생 및 정지 버튼 */}
 
                 <div className='video-controls'>
