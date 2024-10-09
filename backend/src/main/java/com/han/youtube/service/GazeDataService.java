@@ -6,6 +6,9 @@ import com.han.youtube.Repository.MongoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -41,6 +44,8 @@ public class GazeDataService {
         }
 
         // CSV 파일 경로 설정
+        Path path = Paths.get("");
+        System.out.println(path.toAbsolutePath().toString());
         String filePath = "../Data/GazeData/" + videoId + "_" + watchDate + ".csv";
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
