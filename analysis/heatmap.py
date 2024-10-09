@@ -6,7 +6,7 @@ import pandas as pd
 from datetime import datetime
 
 # CSV 파일 경로
-csv_file = "Data\\GazeData\\RoER-ab1QYw_2024-10-08-22-02-29.csv"
+csv_file = "Data\\GazeData\\RoER-ab1QYw_2024-10-09-20-55-37.csv"
 
 # CSV 데이터 로드
 df = pd.read_csv(csv_file)
@@ -47,9 +47,9 @@ width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))  # 비디오 너비
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))  # 비디오 높이
 frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))  # 총 프레임 수
 
-# 비디오를 1207x679 크기로 변환
-output_width = 1207
-output_height = 679
+# 비디오를 1207x679 크기로 변환 (노트북: 965X543)
+output_width = 965
+output_height = 543
 
 # 비디오 출력 설정
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
