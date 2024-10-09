@@ -36,7 +36,8 @@ public class GazeDataService {
         if (payload.get("videoFrame") instanceof Map) {
             videoFrame = (Map<String, Object>) payload.get("videoFrame");
         }
-
+        System.out.println(videoFrame.get("width"));
+        System.out.println(videoFrame.get("height"));
         // 시선 데이터
         List<Map<String, Object>> gazeData = null;
         if (payload.get("gazeData") instanceof List) {
