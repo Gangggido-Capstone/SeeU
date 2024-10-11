@@ -4,19 +4,25 @@ import com.han.youtube.Domain.ReceiveId;
 import com.han.youtube.Dto.ReceiveIdDto;
 import com.han.youtube.Repository.MongoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 @RequiredArgsConstructor
 public class GazeDataService {
 
     private final MongoRepository mongoRepository;
+
+    @Transactional
     public void saveGazeData(Map<String, Object> payload) throws IOException {
         String videoId = (String) payload.get("videoId");
         String watchDate = (String) payload.get("watchDate");
@@ -42,8 +48,11 @@ public class GazeDataService {
             gazeData = (List<Map<String, Object>>) payload.get("gazeData");
         }
 
+        Path path = Paths.get("");
+        System.out.println(path.toAbsolutePath().toString());
+
         // CSV 파일 경로 설정
-        String filePath = "/youtube-seeso-demo/Data/GazeData/" + videoId + "_" + watchDate + ".csv";
+        String filePath = "C:/Users/d0205/Desktop/capstone/youtube-seeso-demo/Data/GazeData/" + videoId + "_" + watchDate + ".csv";
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             // 헤더
@@ -64,4 +73,10 @@ public class GazeDataService {
             writer.flush();  // 파일에 데이터 저장
         }
     }
+
+    @Transactional
+    public List<ReceiveIdDto> dbData(){
+        return mongoRepository.findBy(PageRequest.of(0,10));
+    }
+
 }
