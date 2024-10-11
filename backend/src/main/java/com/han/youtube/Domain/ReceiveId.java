@@ -1,7 +1,7 @@
 package com.han.youtube.Domain;
 
 
-import jakarta.persistence.Id;
+import com.google.api.services.youtube.model.VideoSnippet;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,14 +11,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @NoArgsConstructor
 public class ReceiveId {
-    @Id
-    private String id;
     private String videoId;
     private String watchdata;
+    private VideoSnippet snippet;
 
     @Builder
-    public ReceiveId(String videoId, String watchdata){
+    public ReceiveId(String videoId, String watchdata, VideoSnippet snippet) {
         this.videoId = videoId;
         this.watchdata = watchdata;
+        this.snippet = snippet;
     }
 }

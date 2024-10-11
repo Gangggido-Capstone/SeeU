@@ -1,10 +1,19 @@
 package com.han.youtube.service;
 
+import com.google.api.services.youtube.model.VideoSnippet;
 import com.han.youtube.Domain.ReceiveId;
 import com.han.youtube.Dto.ReceiveIdDto;
 import com.han.youtube.Repository.MongoRepository;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.transaction.annotation.Transactional;
+import com.google.api.services.youtube.model.Video;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -13,27 +22,41 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-
 @Service
 @RequiredArgsConstructor
 public class GazeDataService {
 
+    @Autowired
+    private YoutubeService youtubeService;
     private final MongoRepository mongoRepository;
+
+    @Transactional
     public void saveGazeData(Map<String, Object> payload) throws IOException {
         String videoId = (String) payload.get("videoId");
         String watchDate = (String) payload.get("watchDate");
 
-        // 영상 ID, 시간 저장
-        ReceiveIdDto receiveIdDto = new ReceiveIdDto();
-        ReceiveId receiveId = receiveIdDto.toEntity(videoId,watchDate);
-        mongoRepository.save(receiveId);
+        // youtubeService.getVideoById 사용해서 영상 정보 불러오기
+        Video video = youtubeService.getVideoById(videoId);
+
+        if (video != null) {
+            // 영상 ID, snippet, 시간 값을 MongoDB에 저장
+            VideoSnippet snippet = video.getSnippet();
+            ReceiveIdDto receiveIdDto = new ReceiveIdDto();
+            ReceiveId receiveId = receiveIdDto.toEntity(videoId, watchDate, snippet);
+
+            // JSON 형태로 MongoDB에 저장
+            mongoRepository.save(receiveId);
+        } else {
+            System.out.println("해당 ID의 영상을 찾지 못했습니다.");
+        }
 
         // 비디오 크기 값 videoFrame.get("width"), videoFrame.get("height")
         Map<String, Object> videoFrame = null;
         if (payload.get("videoFrame") instanceof Map) {
             videoFrame = (Map<String, Object>) payload.get("videoFrame");
         }
-
+        System.out.println(videoFrame.get("width"));
+        System.out.println(videoFrame.get("height"));
         // 시선 데이터
         List<Map<String, Object>> gazeData = null;
         if (payload.get("gazeData") instanceof List) {
@@ -41,6 +64,8 @@ public class GazeDataService {
         }
 
         // CSV 파일 경로 설정
+        Path path = Paths.get("");
+        System.out.println(path.toAbsolutePath().toString());
         String filePath = "../Data/GazeData/" + videoId + "_" + watchDate + ".csv";
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
@@ -61,5 +86,10 @@ public class GazeDataService {
 
             writer.flush();  // 파일에 데이터 저장
         }
+    }
+
+    @Transactional
+    public List<ReceiveIdDto> dbData(){
+        return mongoRepository.findBy(PageRequest.of(0,10));
     }
 }
