@@ -3,7 +3,6 @@ package com.han.youtube.controller;
 import com.han.youtube.Dto.ReceiveIdDto;
 import com.han.youtube.service.GazeDataService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +29,8 @@ public class GazeDataController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<ReceiveIdDto>> dbList(){
-        List<ReceiveIdDto> dbData = gazeDataService.dbData();
-        return ResponseEntity.ok(dbData);
+    public List<ReceiveIdDto> dbList() {
+        return gazeDataService.dbData();
     }
+
 }
