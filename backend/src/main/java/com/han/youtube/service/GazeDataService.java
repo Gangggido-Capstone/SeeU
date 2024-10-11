@@ -7,8 +7,8 @@ import com.han.youtube.Repository.MongoRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.google.api.services.youtube.model.Video;
 
@@ -19,6 +19,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,12 +40,24 @@ public class GazeDataService {
         Video video = youtubeService.getVideoById(videoId);
 
         if (video != null) {
-            // 영상 ID, snippet, 시간 값을 MongoDB에 저장
             VideoSnippet snippet = video.getSnippet();
-            ReceiveIdDto receiveIdDto = new ReceiveIdDto();
-            ReceiveId receiveId = receiveIdDto.toEntity(videoId, watchDate, snippet);
 
-            // JSON 형태로 MongoDB에 저장
+            // VideoSnippet을 LinkedHashMap으로 변환
+            LinkedHashMap<String, Object> snippetMap = new LinkedHashMap<>();
+            snippetMap.put("title", snippet.getTitle());
+            snippetMap.put("description", snippet.getDescription());
+            snippetMap.put("categoryId", snippet.getCategoryId());
+            snippetMap.put("channelId", snippet.getChannelId());
+            snippetMap.put("channelTitle", snippet.getChannelTitle());
+            snippetMap.put("defaultAudioLanguage", snippet.getDefaultAudioLanguage());
+            snippetMap.put("publishedAt", snippet.getPublishedAt().toString());
+            snippetMap.put("thumbnails", snippet.getThumbnails());
+            snippetMap.put("localized", snippet.getLocalized());
+
+            // id 저장
+            ReceiveIdDto receiveIdDto = new ReceiveIdDto();
+            ReceiveId receiveId = receiveIdDto.toEntity(videoId, watchDate, snippetMap);
+
             mongoRepository.save(receiveId);
         } else {
             System.out.println("해당 ID의 영상을 찾지 못했습니다.");
@@ -92,4 +105,5 @@ public class GazeDataService {
     public List<ReceiveIdDto> dbData(){
         return mongoRepository.findBy(PageRequest.of(0,10));
     }
+
 }
