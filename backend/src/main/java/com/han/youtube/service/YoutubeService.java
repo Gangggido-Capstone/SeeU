@@ -86,8 +86,6 @@ public class YoutubeService {
         if (videoList.isEmpty()) {
             return null; // 해당 ID로 영상을 찾지 못한 경우
         }
-
         return videoList.get(0); // 첫 번째 결과를 반환
     }
-
 }
