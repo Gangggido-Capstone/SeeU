@@ -34,7 +34,7 @@ if not os.path.exists(split_video_directory):
 
     # `get_scene_list` 리스트의 시작과 끝 timecode pairs 을 리턴
     scene_list = scene_manager.get_scene_list()
-
+    print(scene_list)
     #장면 시작하는 시간을 저장하는 리스트
     sceneTime = [] 
 
@@ -48,6 +48,7 @@ if not os.path.exists(split_video_directory):
 
         print(start, "~", end)   
     print()    
+    #이 값은 몽고디비에 같이 저장 할 수 있도록 해야 함
     print(sceneTime)
 
     # 영상 자르기 (파일로 저장)
