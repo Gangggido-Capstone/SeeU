@@ -98,7 +98,7 @@ const VideoGazeTracker = () => {
             const interval = setInterval(() => {
                 const time = event.target.getCurrentTime(); // 현재 재생 시간
                 setCurrentTime(time);
-            }, 300);
+            }, 100);
 
             return () => clearInterval(interval); // 정리 함수로 인터벌을 해제
         } else {
@@ -196,9 +196,6 @@ const VideoGazeTracker = () => {
             .replace(/:/g, "-");
     };
 
-    const aaa = (videoGazeData) => {
-        videoGazeData;
-    };
     const saveCSVToServer = async () => {
         // 시간
         const formattedDate = getFormattedKSTDate();

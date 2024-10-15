@@ -1,12 +1,13 @@
 package com.han.youtube.controller;
 
+import com.han.youtube.Dto.ReceiveIdDto;
 import com.han.youtube.service.GazeDataService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,4 +27,10 @@ public class GazeDataController {
             return new ResponseEntity<>("CSV 파일 및 db저장 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/list")
+    public List<ReceiveIdDto> dbList() {
+        return gazeDataService.dbData();
+    }
+
 }

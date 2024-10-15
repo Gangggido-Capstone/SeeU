@@ -1,0 +1,5 @@
+# video 폴더
+video
+
+*.pyc
+yolo11n.pt
