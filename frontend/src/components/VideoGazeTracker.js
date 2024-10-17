@@ -176,7 +176,7 @@ const CombinedVideoGazeTracker = () => {
     const handlePause = () => {
         if (player && player.pauseVideo) {
             player.pauseVideo();
-            stopTracking();
+            if (stopTracking()) stopTracking();
         } else {
             console.error("Player is not ready or pauseVideo is not available");
         }
@@ -184,7 +184,7 @@ const CombinedVideoGazeTracker = () => {
 
     const handleBack = () => {
         if (player && player.pauseVideo) {
-            stopTracking();
+            if (stopTracking()) stopTracking();
         } else {
             console.error("Player is not ready or pauseVideo is not available");
         }
@@ -247,7 +247,7 @@ const CombinedVideoGazeTracker = () => {
     const handleAnalysis = () => {
         if (player && player.pauseVideo) {
             player.pauseVideo();
-            stopTracking();
+            if (stopTracking()) stopTracking();
             saveCSVToServer();
         } else {
             console.error("Player is not ready or pauseVideo is not available");
