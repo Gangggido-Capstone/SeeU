@@ -166,8 +166,12 @@ const CombinedVideoGazeTracker = () => {
 
     const handlePlay = () => {
         if (player && player.playVideo && startTracking()) {
-            player.playVideo();
-            startTracking();
+            try {
+                player.playVideo();
+                startTracking();
+            } catch (error) {
+                console.error("Is not ready startTracking");
+            }
         } else {
             console.error("Player is not ready or playVideo is not available");
         }
