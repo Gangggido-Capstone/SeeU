@@ -165,7 +165,7 @@ const CombinedVideoGazeTracker = () => {
     }, [gazeData, videoFrame, currentTime, isPlaying]);
 
     const handlePlay = () => {
-        if (player && player.playVideo) {
+        if (player && player.playVideo && startTracking()) {
             player.playVideo();
             startTracking();
         } else {
@@ -176,6 +176,14 @@ const CombinedVideoGazeTracker = () => {
     const handlePause = () => {
         if (player && player.pauseVideo) {
             player.pauseVideo();
+            stopTracking();
+        } else {
+            console.error("Player is not ready or pauseVideo is not available");
+        }
+    };
+
+    const handleBack = () => {
+        if (player && player.pauseVideo) {
             stopTracking();
         } else {
             console.error("Player is not ready or pauseVideo is not available");
@@ -244,10 +252,6 @@ const CombinedVideoGazeTracker = () => {
         } else {
             console.error("Player is not ready or pauseVideo is not available");
         }
-    };
-
-    const handleBack = () => {
-        stopTracking();
     };
 
     return (
