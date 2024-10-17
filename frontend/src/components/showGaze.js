@@ -2,11 +2,11 @@
 
 // show gaze information on screen.
 function showGazeInfoOnDom(gazeInfo) {
-    let gazeInfoDiv = document.getElementById("gazeInfo");
-    if (gazeInfoDiv) {
-        // 요소가 존재하는지 확인
-        // gazeInfoDiv.innerText = `x: ${gazeInfo.x} y: ${gazeInfo.y}`;
-    }
+    // let gazeInfoDiv = document.getElementById("gazeInfo");
+    // if (gazeInfoDiv) {
+    //     // 요소가 존재하는지 확인
+    //     gazeInfoDiv.innerText = `x: ${gazeInfo.x} y: ${gazeInfo.y}`;
+    // }
     // console.log(gazeInfo.x, gazeInfo.y);
 }
 
