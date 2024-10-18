@@ -6,7 +6,7 @@ import { showGaze } from "./showGaze.js";
 import "../../css/styles.css";
 import "../../css/VideoGazeTracker.css";
 
-const CombinedVideoGazeTracker = () => {
+const VideoGazeTracker = () => {
     const { videoId } = useParams();
     const [player, setPlayer] = useState(null);
     const [currentTime, setCurrentTime] = useState(0);
@@ -287,4 +287,4 @@ const CombinedVideoGazeTracker = () => {
     );
 };
 
-export default CombinedVideoGazeTracker;
+export default VideoGazeTracker;
