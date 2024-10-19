@@ -5,9 +5,12 @@ from scenedetect.video_splitter import split_video_ffmpeg
 from video_download import download
 import os
 import cv2
+import csv
+
 # "HdOhm3v4Sg8"
 # 0gkPFSvVvFw 전란
-video_id = "0gkPFSvVvFw"
+# fRaIcUhaXXQ 핫초코
+video_id = "fRaIcUhaXXQ"
 
 # 유튜브 영상 다운로드
 video_only, audio_only, video_filename = download(video_id)
@@ -35,21 +38,28 @@ if not os.path.exists(split_video_directory):
     # `get_scene_list` 리스트의 시작과 끝 timecode pairs 을 리턴
     scene_list = scene_manager.get_scene_list()
     print(scene_list)
-    #장면 시작하는 시간을 저장하는 리스트
-    sceneTime = [] 
+    
+    sceneTime = []
+    scene_times_csv = f"analysis/video/{video_id}/split_video/scene_times.csv"
+    os.makedirs(os.path.dirname(scene_times_csv), exist_ok=True)
+    with open(scene_times_csv, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Start", "End"])  # CSV 헤더
 
-    # 장면 분할 결과 출력
-    for scene in scene_list:
-        start, end = scene
-        if start.get_seconds()== 0:
-            sceneTime.append(round(start.get_seconds(), 4))
-        else:
-            sceneTime.append(round(start.get_seconds(), 4) - 0.3)
+        for scene in scene_list:
+            start, end = scene
+            # 시작 시간과 끝 시간을 초 단위로 반올림하여 저장
+            if start.get_seconds() == 0:
+                start_time = round(start.get_seconds(), 4)
+            else:
+                start_time = round(start.get_seconds(), 4) - 0.3
 
-        print(start, "~", end)   
-    print()    
-    #이 값은 몽고디비에 같이 저장 할 수 있도록 해야 함
-    print(sceneTime)
+            end_time = round(end.get_seconds(), 4)
+
+            writer.writerow([start_time, end_time])
+            sceneTime.append((start_time, end_time))
+
+    print("CSV 파일에서 저장된 분할된 시간:", sceneTime)
 
     # 영상 자르기 (파일로 저장)
     split_video_ffmpeg(video_filename, scene_list, output_dir=split_video_directory,show_progress=True)
@@ -65,3 +75,21 @@ if not os.path.exists(split_video_directory):
     print(f"{video_id} 영상 분할 완료")
 else:
     print(f"{video_id} split_video가 이미 존재합니다. 다운로드를 건너뜁니다.")
+
+    scene_times_csv = f"analysis/video/{video_id}/split_video/scene_times.csv"
+    if os.path.exists(scene_times_csv):
+        # 이미 존재하는 CSV 파일에서 분할된 시간 불러오기
+        sceneTime = []
+        with open(scene_times_csv, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            next(reader)  # 헤더 건너뛰기
+            
+            for row in reader:
+                start_time = float(row[0])
+                end_time = float(row[1])
+                sceneTime.append((start_time, end_time))
+
+        print("CSV 파일에서 불러온 분할된 시간:", sceneTime)
+
+    else:
+        print(f"{video_id}의 scene_times.csv가 존재하지 않습니다.")
