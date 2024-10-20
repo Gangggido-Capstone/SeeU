@@ -4,13 +4,13 @@ import subprocess
 
 def download(video_id):
     video_url = f"https://youtu.be/{video_id}"  # 유튜브 영상 URL
-    video_only = f"analysis/video/{video_id}/video.mp4"  # 비디오 파일 경로
-    audio_only = f"analysis/video/{video_id}/audio.m4a"  # 오디오 파일 경로
-    video_filename = f"analysis/video/{video_id}/{video_id}.mp4"  # 최종 저장할 비디오 파일 경로
+    video_only = f"Data/video/{video_id}/video.mp4"  # 비디오 파일 경로
+    audio_only = f"Data/video/{video_id}/audio.m4a"  # 오디오 파일 경로
+    video_filename = f"Data/video/{video_id}/{video_id}.mp4"  # 최종 저장할 비디오 파일 경로
     
     # 파일이 이미 존재하는지 확인
     if not os.path.exists(video_filename):
-        os.makedirs(f"analysis/video/{video_id}", exist_ok=True)
+        os.makedirs(f"Data/video/{video_id}", exist_ok=True)
 
         # yt-dlp 옵션 설정: 비디오와 오디오를 별도로 다운로드
         ydl_opts_video = {

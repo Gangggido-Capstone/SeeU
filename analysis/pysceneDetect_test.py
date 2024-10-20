@@ -16,7 +16,7 @@ video_id = "fRaIcUhaXXQ"
 video_only, audio_only, video_filename = download(video_id)
 
 # 파일이 이미 존재하는지 확인
-split_video_directory = f"analysis/video/{video_id}/split_video"
+split_video_directory = f"Data/video/{video_id}/split_video"
 
 if not os.path.exists(split_video_directory):
     # 영상 불러오기
@@ -40,7 +40,7 @@ if not os.path.exists(split_video_directory):
     print(scene_list)
     
     sceneTime = []
-    scene_times_csv = f"analysis/video/{video_id}/split_video/scene_times.csv"
+    scene_times_csv = f"Data/video/{video_id}/split_video/scene_times.csv"
     os.makedirs(os.path.dirname(scene_times_csv), exist_ok=True)
     with open(scene_times_csv, mode='w', newline='') as file:
         writer = csv.writer(file)
@@ -74,13 +74,13 @@ if not os.path.exists(split_video_directory):
         video, # 영상
         num_images=1, # 각 장면 당 이미지 개수
         image_name_template=f'{video_id}_$SCENE_NUMBER', # 결과 이미지 파일 이름
-        output_dir=f'analysis/video/{video_id}/thumbnails') # 결과 디렉토리 이름
+        output_dir=f'Data/video/{video_id}/thumbnails') # 결과 디렉토리 이름
 
     print(f"{video_id} 영상 분할 완료")
 else:
     print(f"{video_id} split_video가 이미 존재합니다. 다운로드를 건너뜁니다.")
 
-    scene_times_csv = f"analysis/video/{video_id}/split_video/scene_times.csv"
+    scene_times_csv = f"Data/video/{video_id}/split_video/scene_times.csv"
     if os.path.exists(scene_times_csv):
         # 이미 존재하는 CSV 파일에서 분할된 시간 불러오기
         sceneTime = []

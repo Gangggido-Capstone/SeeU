@@ -1,3 +1,5 @@
+from video_download import download
+
 from scenedetect import open_video, SceneManager
 from scenedetect.detectors import ContentDetector
 from scenedetect.scene_manager import save_images
@@ -8,7 +10,7 @@ import csv
 
 def detect(video_id, video_only, video_filename):
     # 파일이 이미 존재하는지 확인
-    split_video_directory = f"analysis/video/{video_id}/split_video"
+    split_video_directory = f"Data/video/{video_id}/split_video"
     sceneTime = []
 
     if not os.path.exists(split_video_directory):
@@ -32,7 +34,7 @@ def detect(video_id, video_only, video_filename):
         scene_list = scene_manager.get_scene_list()
         print(scene_list)
         
-        scene_times_csv = f"analysis/video/{video_id}/split_video/scene_times.csv"
+        scene_times_csv = f"Data/video/{video_id}/split_video/scene_times.csv"
         os.makedirs(os.path.dirname(scene_times_csv), exist_ok=True)
         with open(scene_times_csv, mode='w', newline='') as file:
             writer = csv.writer(file)
@@ -66,14 +68,14 @@ def detect(video_id, video_only, video_filename):
             video, # 영상
             num_images=1, # 각 장면 당 이미지 개수
             image_name_template=f'{video_id}_$SCENE_NUMBER', # 결과 이미지 파일 이름
-            output_dir=f'analysis/video/{video_id}/thumbnails') # 결과 디렉토리 이름
+            output_dir=f'Data/video/{video_id}/thumbnails') # 결과 디렉토리 이름
 
         print(f"{video_id} 영상 분할 완료")
         
     else:
         print(f"{video_id} split_video가 이미 존재합니다. 다운로드를 건너뜁니다.")
 
-        scene_times_csv = f"analysis/video/{video_id}/split_video/scene_times.csv"
+        scene_times_csv = f"Data/video/{video_id}/split_video/scene_times.csv"
 
         if os.path.exists(scene_times_csv):
             # CSV 파일에서 분할된 시간 불러오기
@@ -92,3 +94,16 @@ def detect(video_id, video_only, video_filename):
             print(f"{video_id}의 scene_times.csv가 존재하지 않습니다.")
     
     return sceneTime
+
+if __name__ == "__main__":
+
+    # UrEHWclh7Co 삼성카드
+    # 0gkPFSvVvFw 전란
+    # fRaIcUhaXXQ 핫초코
+    video_id = "fRaIcUhaXXQ"
+
+    # 영상 다운
+    video_only, audio_only, video_filename = download(video_id)
+
+    # 영상 분할
+    sceneTime = detect(video_id, video_only, video_filename)
