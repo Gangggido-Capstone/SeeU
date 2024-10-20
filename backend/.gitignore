@@ -21,7 +21,6 @@ bin/
 *.yml
 *.properties
 
->>>>>>> 9ec4bcd3bd42e7f3521a85276def3f7e1a2e76b0
 .idea
 *.iws
 *.iml
