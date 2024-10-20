@@ -36,33 +36,6 @@ public class GazeDataService {
         String videoId = (String) payload.get("videoId");
         String watchDate = (String) payload.get("watchDate");
 
-        // youtubeService.getVideoById 사용해서 영상 정보 불러오기
-        Video video = youtubeService.getVideoById(videoId);
-
-        if (video != null) {
-            VideoSnippet snippet = video.getSnippet();
-
-            // VideoSnippet을 LinkedHashMap으로 변환
-            LinkedHashMap<String, Object> snippetMap = new LinkedHashMap<>();
-            snippetMap.put("title", snippet.getTitle());
-            snippetMap.put("description", snippet.getDescription());
-            snippetMap.put("categoryId", snippet.getCategoryId());
-            snippetMap.put("channelId", snippet.getChannelId());
-            snippetMap.put("channelTitle", snippet.getChannelTitle());
-            snippetMap.put("defaultAudioLanguage", snippet.getDefaultAudioLanguage());
-            snippetMap.put("publishedAt", snippet.getPublishedAt().toString());
-            snippetMap.put("thumbnails", snippet.getThumbnails());
-            snippetMap.put("localized", snippet.getLocalized());
-
-            // id 저장
-            ReceiveIdDto receiveIdDto = new ReceiveIdDto();
-            ReceiveId receiveId = receiveIdDto.toEntity(videoId, watchDate, snippetMap);
-
-            mongoRepository.save(receiveId);
-        } else {
-            System.out.println("해당 ID의 영상을 찾지 못했습니다.");
-        }
-
         // 비디오 크기 값 videoFrame.get("width"), videoFrame.get("height")
         Map<String, Object> videoFrame = null;
         if (payload.get("videoFrame") instanceof Map) {
@@ -98,6 +71,33 @@ public class GazeDataService {
             }
 
             writer.flush();  // 파일에 데이터 저장
+        }
+
+        // youtubeService.getVideoById 사용해서 영상 정보 불러오기
+        Video video = youtubeService.getVideoById(videoId);
+
+        if (video != null) {
+            VideoSnippet snippet = video.getSnippet();
+
+            // VideoSnippet을 LinkedHashMap으로 변환
+            LinkedHashMap<String, Object> snippetMap = new LinkedHashMap<>();
+            snippetMap.put("title", snippet.getTitle());
+            snippetMap.put("description", snippet.getDescription());
+            snippetMap.put("categoryId", snippet.getCategoryId());
+            snippetMap.put("channelId", snippet.getChannelId());
+            snippetMap.put("channelTitle", snippet.getChannelTitle());
+            snippetMap.put("defaultAudioLanguage", snippet.getDefaultAudioLanguage());
+            snippetMap.put("publishedAt", snippet.getPublishedAt().toString());
+            snippetMap.put("thumbnails", snippet.getThumbnails());
+            snippetMap.put("localized", snippet.getLocalized());
+
+            // id 저장
+            ReceiveIdDto receiveIdDto = new ReceiveIdDto();
+            ReceiveId receiveId = receiveIdDto.toEntity(videoId, watchDate, snippetMap);
+
+            mongoRepository.save(receiveId);
+        } else {
+            System.out.println("해당 ID의 영상을 찾지 못했습니다.");
         }
     }
 
