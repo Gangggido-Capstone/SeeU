@@ -129,15 +129,15 @@ def score_cluster(video_id, video_csv, sceneTime):
     with open(atention_results_csv, mode='w', newline='') as file:
         writer = csv.writer(file)
 
-        writer.writerow(["Split", "Score", "Clusters"])
+        writer.writerow(["Video", "Png", "Score", "Clusters"])
         
         # final_score를 기준으로 내림차순 정렬
         sorted_data = sorted(enumerate(zip(sceneTime, final_score, n_clusters)), key=lambda x: x[1][1], reverse=True)
 
         # 정렬된 데이터에서 원래 인덱스를 이용해 Cluster_Scene 번호를 맞춰서 CSV에 쓰기
         for original_idx, (split_data, score, cluster) in sorted_data:
-            writer.writerow([f"Cluster_Scene-{original_idx+1:03}", score, cluster])
-            print(f"Cluster_Scene-{original_idx+1:03}", score, cluster)
+            writer.writerow([f"{video_id}-Scene-{original_idx+1:03}.mp4", f"Cluster_Scene-{original_idx+1:03}.png", score, cluster])
+            print(f"{video_id}-Scene-{original_idx+1:03}.mp4", f"Cluster_Scene-{original_idx+1:03}.png", score, cluster)
 
 
 if __name__ == "__main__":
