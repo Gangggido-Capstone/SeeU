@@ -7,7 +7,7 @@ import os
 import cv2
 import csv
 
-# "HdOhm3v4Sg8"
+# UrEHWclh7Co 삼성카드
 # 0gkPFSvVvFw 전란
 # fRaIcUhaXXQ 핫초코
 video_id = "fRaIcUhaXXQ"
@@ -58,6 +58,10 @@ if not os.path.exists(split_video_directory):
 
             writer.writerow([start_time, end_time])
             sceneTime.append((start_time, end_time))
+
+        if not sceneTime:
+            writer.writerow(["Null", "Null"])
+            sceneTime.append(("Null", "Null"))
 
     print("CSV 파일에서 저장된 분할된 시간:", sceneTime)
 
