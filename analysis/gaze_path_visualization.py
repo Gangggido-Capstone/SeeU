@@ -16,8 +16,8 @@ video_id = "RoER-ab1QYw"
 # 유튜브 영상 다운로드
 video_only, audio_only, video_filename = download(video_id)
 
-os.makedirs(f"analysis/video/{video_id}/points", exist_ok=True)
-point_video = f"analysis/video/{video_id}/points/{video_id}_{dt}.mp4"
+os.makedirs(f"Data/video/{video_id}/points", exist_ok=True)
+point_video = f"Data/video/{video_id}/points/{video_id}_{dt}.mp4"
 
 if not os.path.exists(point_video):
     cap = cv2.VideoCapture(video_only)
@@ -31,7 +31,7 @@ if not os.path.exists(point_video):
     output_height = 543
 
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    video_with_points = f"analysis/video/{video_id}/points.mp4"
+    video_with_points = f"Data/video/{video_id}/points.mp4"
     out = cv2.VideoWriter(video_with_points, fourcc, fps, (output_width, output_height))
 
     frame_idx = 0
