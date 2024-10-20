@@ -16,8 +16,8 @@ video_id = "0gkPFSvVvFw"
 # 유튜브 영상 다운로드
 video_only, audio_only, video_filename = download(video_id)
 
-os.makedirs(f"analysis/video/{video_id}/points", exist_ok=True)
-point_video = f"analysis/video/{video_id}/points/{video_id}_{dt}.mp4"
+os.makedirs(f"Data/video/{video_id}/points", exist_ok=True)
+point_video = f"Data/video/{video_id}/points/{video_id}_{dt}.mp4"
 
 if not os.path.exists(point_video):
     # 비디오 열기
@@ -35,7 +35,7 @@ if not os.path.exists(point_video):
 
     # 비디오 출력 설정
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    video_with_points = f"analysis/video/{video_id}/points.mp4"
+    video_with_points = f"Data/video/{video_id}/points.mp4"
     out = cv2.VideoWriter(video_with_points, fourcc, fps, (output_width, output_height))
 
 
