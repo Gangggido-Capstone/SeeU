@@ -8,14 +8,24 @@ import matplotlib.patches as patches
 import pandas as pd
 import os
 
+def get_root_path():
+    # 현재 디렉토리에서 README.md 파일이 존재하는 경로를 루트로 설정
+    current_dir = os.path.abspath(os.path.dirname(__file__))
+    while not os.path.exists(os.path.join(current_dir, 'README.md')):
+        current_dir = os.path.abspath(os.path.join(current_dir, '..'))
+    return current_dir
+
 #이제 영상 전체 집중도 점수랑 분할 영상 집중도 구하고 저장 그리고 내림차순 정렬
 def score_cluster(video_id, video_csv, sceneTime):
+    # 프로젝트 루트 경로 설정
+    root_path = get_root_path()
+
     # 날짜 시간 값
     date_time = video_csv.split('_')[1].split('.')[0]
 
     # CSV 파일 불러오기
-    csv_path = "Data\\GazeData\\"
-    gaze_csv = pd.read_csv(csv_path + video_csv)
+    csv_path = os.path.join(root_path, "Data", "GazeData")
+    gaze_csv = pd.read_csv(os.path.join(csv_path, video_csv))
     
     final_score = []
     n_clusters = []
@@ -116,7 +126,8 @@ def score_cluster(video_id, video_csv, sceneTime):
         ax.scatter(gaze_data[:, 0], gaze_data[:, 1], c=labels, cmap='rainbow')
 
         # 클러스터 이미지 저장
-        os.makedirs(f"Data/video/{video_id}/cluster/{date_time}/", exist_ok=True)
+        cluster_dir = os.path.join(root_path, "Data", "video", video_id, "cluster", date_time)
+        os.makedirs(cluster_dir, exist_ok=True)
         plt.title(f"{video_id} Scene {index + 1} cluster")
         plt.text(0.5, -0.1, f"Number of clusters found: {n_clusters[index]}", ha='center', va='top', transform=plt.gca().transAxes)
         plt.savefig(f"Data/video/{video_id}/cluster/{date_time}/Cluster_Scene-{index+1:03}.png")

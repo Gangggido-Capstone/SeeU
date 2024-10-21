@@ -6,6 +6,13 @@ import numpy as np
 from scipy.interpolate import splprep, splev
 from video_download import download
 
+def get_root_path():
+    # 현재 디렉토리에서 README.md 파일이 존재하는 경로를 루트로 설정
+    current_dir = os.path.abspath(os.path.dirname(__file__))
+    while not os.path.exists(os.path.join(current_dir, 'README.md')):
+        current_dir = os.path.abspath(os.path.join(current_dir, '..'))
+    return current_dir
+
 def distance(p1, p2):
     return np.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
 
@@ -15,15 +22,20 @@ def draw_circle(image, center, radius, color, alpha=1.0):
     return cv2.addWeighted(overlay, alpha, image, 1 - alpha, 0)
 
 def gazeVisualization(video_id, video_csv, video_only, audio_only):
+    # 프로젝트 루트 경로 설정
+    root_path = get_root_path()
+    
     # 날짜 시간 값
     date_time = video_csv.split('_')[1].split('.')[0]
 
     # CSV 파일 불러오기
-    csv_path = "Data\\GazeData\\"
-    gaze_csv = pd.read_csv(csv_path + video_csv)
+    csv_path = os.path.join(root_path, "Data", "GazeData")
+    gaze_csv = pd.read_csv(os.path.join(csv_path, video_csv))
 
-    os.makedirs(f"Data/video/{video_id}/points", exist_ok=True)
-    video_point = f"Data/video/{video_id}/points/{video_id}_{date_time}.mp4"
+    points_dir = os.path.join(root_path, "Data", "video", video_id, "points")
+    os.makedirs(points_dir, exist_ok=True)
+
+    video_point = os.path.join(points_dir, f"{video_id}_{date_time}.mp4")
     if not os.path.exists(video_point):
         video_capture = cv2.VideoCapture(video_only)
 
@@ -34,7 +46,7 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only):
         video_height = 543
 
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        video_temp = f"Data/video/{video_id}/points.mp4"
+        video_temp = os.path.join(root_path, "Data", "video", video_id, "points.mp4")
         video_writer = cv2.VideoWriter(video_temp, fourcc, fps, (video_width, video_height))
 
         frame_idx = 0
@@ -68,7 +80,7 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only):
                 if not pd.isna(x) and not pd.isna(y):
                     # 이전 좌표와 비교하여 거리가 50 이내인지 확인
                     if previous_points and distance(previous_points[-1][:2], (x, y)) <= 50:
-                        print("Time: "+ str(row['Time']) + ", " + "X: "+ str(int(x)) + ", " + "Y: "+ str(int(y)))
+                        # print("Time: "+ str(row['Time']) + ", " + "X: "+ str(int(x)) + ", " + "Y: "+ str(int(y)))
                         
                         # 기존 좌표와 가까우면 반지름 증가
                         new_radius = previous_points[-1][2] + 1
