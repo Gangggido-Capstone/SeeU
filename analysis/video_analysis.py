@@ -7,28 +7,19 @@ import json
 
 def main():
     # 영상 다운
-    print("영상 다운 시작")
     video_only, audio_only, video_filename = download(video_id)
-    print("영상 다운 끝")
 
     # 영상 분할
-    print("영상 분할 시작")
     sceneTime = detect(video_id, video_only, video_filename)
-    print("영상 분할 끝")
 
     # 영상 점수 및 클러스터 이미지 저장
-    print("영상 점수 및 클러스터 이미지 저장 시작")
     attention_score_list = score_cluster(video_id, video_csv, sceneTime)
-    print("영상 점수 및 클러스터 이미지 저장 끝")
 
     # 영상 분석 시각화
-    print("영상 분석 시각화 시작")
     video_point = gazeVisualization(video_id, video_csv, video_only, audio_only)
-    print("영상 분석 시각화 끝")
 
 
     # 최종적으로 반환할 값은 JSON 형식으로 출력
-    print("최종적으로 반환할 값은 JSON 형식으로 출력 시작")
     result = {
         "attention_score_list": attention_score_list,
         "video_point": video_point
