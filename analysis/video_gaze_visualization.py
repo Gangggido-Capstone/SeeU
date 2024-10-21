@@ -113,7 +113,7 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only):
                             color = line_color
                             cv2.line(frame_resized, pt1, pt2, color, 2)
                 except ValueError as e:
-                    print(f"Splprep Error: {e}")
+                    # print(f"Splprep Error: {e}")
                     # If splprep fails, fall back to direct line drawing between points
                     for i in range(1, len(previous_points)):
                         pt1 = (previous_points[i - 1][0], previous_points[i - 1][1])
@@ -143,23 +143,28 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only):
         video_capture.release()
         video_writer.release()
 
-        merge_command = [
-            'ffmpeg',
-            '-i', video_temp,
-            '-i', audio_only,
-            '-c:v', 'libx264',
-            '-preset', 'fast',
-            '-c:a', 'aac',
-            '-b:a', '192k',
-            '-r', '30',
-            '-vsync', 'cfr',
-            '-map', '0:v:0',
-            '-map', '1:a:0',
-            '-shortest',
-            video_point
-        ]
-
-        subprocess.run(merge_command)
+        try:
+            ffmpeg_path = "C:/ffmpeg/bin/ffmpeg" 
+            merge_command = [
+                ffmpeg_path,
+                '-i', video_temp,
+                '-i', audio_only,
+                '-c:v', 'libx264',
+                '-preset', 'fast',
+                '-c:a', 'aac',
+                '-b:a', '192k',
+                '-r', '30',
+                '-vsync', 'cfr',
+                '-map', '0:v:0',
+                '-map', '1:a:0',
+                '-shortest',
+                video_point
+            ]
+            print("Execute Merge Commands")
+            subprocess.run(merge_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=60)
+            print(f"{video_temp} 다운 완료")
+        except subprocess.TimeoutExpired:
+            print("FFmpeg 실행이 타임아웃되었습니다.")
 
         if os.path.exists(video_temp):
             os.remove(video_temp)
