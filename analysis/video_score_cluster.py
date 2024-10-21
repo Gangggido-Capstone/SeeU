@@ -144,7 +144,7 @@ def score_cluster(video_id, video_csv, sceneTime):
     # final_score를 기준으로 내림차순 정렬
     sorted_data = sorted(enumerate(zip(sceneTime, final_score, n_clusters)), key=lambda x: x[1][1], reverse=True)
     for i, (_, score, cluster) in sorted_data:
-        atention_score_list.append((f"{video_id}-Scene-{i+1:03}.mp4", f"Cluster_Scene-{i+1:03}.png", score, cluster))
+        atention_score_list.append((f"{video_id}-Scene-{i+1:03}.mp4", f"{video_id}_{i+1:03}.jpg", f"Cluster_Scene-{i+1:03}.png", score, cluster))
 
     return atention_score_list
 
