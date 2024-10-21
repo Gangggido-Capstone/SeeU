@@ -130,7 +130,7 @@ def score_cluster(video_id, video_csv, sceneTime):
         os.makedirs(cluster_dir, exist_ok=True)
         plt.title(f"{video_id} Scene {index + 1} cluster")
         plt.text(0.5, -0.1, f"Number of clusters found: {n_clusters[index]}", ha='center', va='top', transform=plt.gca().transAxes)
-        plt.savefig(f"Data/video/{video_id}/cluster/{date_time}/Cluster_Scene-{index+1:03}.png")
+        plt.savefig(os.path.join(cluster_dir, f"Cluster_Scene-{index+1:03}.png"))
 
         # 실행 시 이미지 보기
         # plt.show()
