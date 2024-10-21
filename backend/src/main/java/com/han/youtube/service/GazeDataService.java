@@ -12,13 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.google.api.services.youtube.model.Video;
 
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,5 +103,51 @@ public class GazeDataService {
     public List<ReceiveIdDto> dbData(){
         return mongoRepository.findBy(PageRequest.of(0,10));
     }
+
+    @Transactional
+    public List<String> runPython(String videoId, String videoCsv) {
+        List<String> output = new ArrayList<>();
+        try {
+
+            ProcessBuilder pb = new ProcessBuilder(
+                    "python",
+                    "C:/Users/juns1/OneDrive/바탕 화면/seeso/youtube-seeso-demo/analysis/video_analysis.py",
+                    videoId, videoCsv
+            );
+
+            System.out.println("프로세스 실행 합니다."); // 테스트 디버깅
+
+            // 프로세스 실행
+            Process process = pb.start();
+
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            // 표준 출력
+            String line;
+            while ((line = stdInput.readLine()) != null) {
+                output.add(line);
+                System.out.println("표준 출력: " + line);
+            }
+
+            // 에러 출력
+            while ((line = stdError.readLine()) != null) {
+                output.add("ERROR: " + line);
+                System.err.println("에러 출력: " + line);
+            }
+
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                throw new RuntimeException("파이썬 종료 오류: " + exitCode);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            output.add("에러: " + e.getMessage());
+        }
+
+        return output;  // 파이썬 출력 결과 반환
+    }
+
 
 }

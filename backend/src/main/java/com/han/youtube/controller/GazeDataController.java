@@ -33,4 +33,11 @@ public class GazeDataController {
         return gazeDataService.dbData();
     }
 
+
+    @GetMapping("/analysis")
+    public ResponseEntity<String> getHeatmapImage() {
+
+        gazeDataService.runPython("0gkPFSvVvFw","0gkPFSvVvFw_2024-10-12-18-56-44.csv");
+        return ResponseEntity.ok("연동 성공");
+    }
 }
