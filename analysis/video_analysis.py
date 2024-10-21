@@ -20,7 +20,7 @@ def main():
 
     # 영상 분석 시각화
     video_point = gazeVisualization(video_id, video_csv, video_only, audio_only)
-
+    
     # 최종적으로 반환할 값은 JSON 형식으로 반환
     result = {
         "attention_score_list": attention_score_list,
