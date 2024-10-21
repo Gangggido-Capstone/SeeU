@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import pandas as pd
 import os
-import csv
 
 #이제 영상 전체 집중도 점수랑 분할 영상 집중도 구하고 저장 그리고 내림차순 정렬
 def score_cluster(video_id, video_csv, sceneTime):
@@ -17,6 +16,7 @@ def score_cluster(video_id, video_csv, sceneTime):
     # CSV 파일 불러오기
     csv_path = "Data\\GazeData\\"
     gaze_csv = pd.read_csv(csv_path + video_csv)
+    
     final_score = []
     n_clusters = []
 
@@ -124,20 +124,29 @@ def score_cluster(video_id, video_csv, sceneTime):
         # 실행 시 이미지 보기
         # plt.show()
 
-    # csv에 점수 저장
-    atention_results_csv = f"Data/video/{video_id}/cluster/{date_time}/attention_results.csv"
-    with open(atention_results_csv, mode='w', newline='') as file:
-        writer = csv.writer(file)
+    # # csv에 점수 저장
+    # atention_results_csv = f"Data/video/{video_id}/cluster/{date_time}/attention_results.csv"
+    # with open(atention_results_csv, mode='w', newline='') as file:
+    #     writer = csv.writer(file)
 
-        writer.writerow(["Video", "Png", "Score", "Clusters"])
+    #     writer.writerow(["Video", "Png", "Score", "Clusters"])
         
-        # final_score를 기준으로 내림차순 정렬
-        sorted_data = sorted(enumerate(zip(sceneTime, final_score, n_clusters)), key=lambda x: x[1][1], reverse=True)
+    #     # final_score를 기준으로 내림차순 정렬
+    #     sorted_data = sorted(enumerate(zip(sceneTime, final_score, n_clusters)), key=lambda x: x[1][1], reverse=True)
 
-        # 정렬된 데이터에서 원래 인덱스를 이용해 Cluster_Scene 번호를 맞춰서 CSV에 쓰기
-        for original_idx, (split_data, score, cluster) in sorted_data:
-            writer.writerow([f"{video_id}-Scene-{original_idx+1:03}.mp4", f"Cluster_Scene-{original_idx+1:03}.png", score, cluster])
-            print(f"{video_id}-Scene-{original_idx+1:03}.mp4", f"Cluster_Scene-{original_idx+1:03}.png", score, cluster)
+    #     # 정렬된 데이터에서 원래 인덱스를 이용해 Cluster_Scene 번호를 맞춰서 CSV에 쓰기
+    #     for i, (_, score, cluster) in sorted_data:
+    #         writer.writerow([f"{video_id}-Scene-{i+1:03}.mp4", f"Cluster_Scene-{i+1:03}.png", score, cluster])
+    #         print(f"{video_id}-Scene-{i+1:03}.mp4", f"Cluster_Scene-{i+1:03}.png", score, cluster)
+    
+    # 리스트에 저장해 반환
+    atention_score_list = []
+    # final_score를 기준으로 내림차순 정렬
+    sorted_data = sorted(enumerate(zip(sceneTime, final_score, n_clusters)), key=lambda x: x[1][1], reverse=True)
+    for i, (_, score, cluster) in sorted_data:
+        atention_score_list.append((f"{video_id}-Scene-{i+1:03}.mp4", f"Cluster_Scene-{i+1:03}.png", score, cluster))
+
+    return atention_score_list
 
 
 if __name__ == "__main__":
@@ -159,4 +168,8 @@ if __name__ == "__main__":
     sceneTime = detect(video_id, video_only, video_filename)
 
     # 영상 점수 및 클러스터 이미지 저장
-    score_cluster(video_id, video_csv, sceneTime)
+    atention_score_list = score_cluster(video_id, video_csv, sceneTime)
+    
+    for a in atention_score_list:
+        print(a)
+    
