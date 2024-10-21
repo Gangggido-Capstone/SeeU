@@ -161,7 +161,7 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only):
                 video_point
             ]
             print("Execute Merge Commands")
-            subprocess.run(merge_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=60)
+            subprocess.run(merge_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=400)
             print(f"{video_temp} 다운 완료")
         except subprocess.TimeoutExpired:
             print("FFmpeg 실행이 타임아웃되었습니다.")
@@ -184,8 +184,10 @@ if __name__ == "__main__":
     # UrEHWclh7Co 삼성카드
     # 0gkPFSvVvFw 전란
     # fRaIcUhaXXQ 핫초코
-    video_id = "0gkPFSvVvFw"
-    video_csv = "0gkPFSvVvFw_2024-10-12-18-56-44.csv"
+    # video_id = "0gkPFSvVvFw"
+    # video_csv = "0gkPFSvVvFw_2024-10-12-18-56-44.csv"
+    video_id = "fRaIcUhaXXQ"
+    video_csv = "fRaIcUhaXXQ_2024-10-22-01-53-00.csv"
 
     # 영상 다운
     video_only, audio_only, video_filename = download(video_id)

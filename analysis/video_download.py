@@ -62,7 +62,7 @@ def download(video_id):
                 ]
                 print("Execute Merge Commands")
                 # 병합 명령어 실행
-                subprocess.run(merge_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=60)
+                subprocess.run(merge_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=400)
                 print(f"{video_filename} 다운 완료")
             except subprocess.TimeoutExpired:
                 print("FFmpeg 실행이 타임아웃되었습니다.")

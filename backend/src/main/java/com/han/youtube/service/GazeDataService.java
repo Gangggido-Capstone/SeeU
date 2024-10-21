@@ -33,7 +33,7 @@ public class GazeDataService {
 
     public GazeDataResult runPythonScript(String videoId, String filePath) {
         try {
-            String pythonPath = "python";  // 시스템 환경에 맞게 "python3"으로 변경 필요할 수 있음
+            String pythonPath = "python";
 
             // 파이썬 파일 경로 설정
             File currentDir = new File("");
@@ -41,7 +41,7 @@ public class GazeDataService {
             String fileDirectory = Paths.get(rootPath, "analysis").normalize().toString();
             String scriptPath = Paths.get(fileDirectory,"video_analysis.py").toString();
 
-            System.out.println("파일 경로: " + scriptPath);  // 경로 출력 (디버깅용)
+            System.out.println("파일 경로: " + scriptPath);
 
             List<String> arguments = new ArrayList<>();
             arguments.add(pythonPath);
