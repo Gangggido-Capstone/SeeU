@@ -2,6 +2,7 @@ package com.han.youtube.service;
 
 import com.google.api.services.youtube.model.VideoSnippet;
 import com.han.youtube.Domain.ReceiveId;
+import com.han.youtube.Dto.GazeDataResult;
 import com.han.youtube.Dto.ReceiveIdDto;
 import com.han.youtube.Repository.MongoRepository;
 
@@ -12,12 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.google.api.services.youtube.model.Video;
 
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -35,6 +33,7 @@ public class GazeDataService {
     public void saveGazeData(Map<String, Object> payload) throws IOException {
         String videoId = (String) payload.get("videoId");
         String watchDate = (String) payload.get("watchDate");
+        String video_csv = videoId + "_" + watchDate + ".csv";
 
         // 비디오 크기 값 videoFrame.get("width"), videoFrame.get("height")
         Map<String, Object> videoFrame = null;
@@ -50,11 +49,18 @@ public class GazeDataService {
         }
 
         // CSV 파일 경로 설정
-        Path path = Paths.get("");
-        System.out.println(path.toAbsolutePath().toString());
-        String filePath = "../Data/GazeData/" + videoId + "_" + watchDate + ".csv";
+        // 현재 애플리케이션의 루트 경로를 가져오기
+        File currentDir = new File("");
+        String rootPath = currentDir.getAbsoluteFile().getParent();  // youtube-seeso-demo 경로
+
+        // 항상 Data/GazeData 경로를 지정
+        String fileDirectory = Paths.get(rootPath, "Data", "GazeData").normalize().toString();
+        String filePath = Paths.get(fileDirectory, videoId + "_" + watchDate + ".csv").toString();
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            System.out.println("rootPath: " + rootPath);  // 경로 출력 (디버깅용)
+            System.out.println("fileDirectory: " + fileDirectory);  // 경로 출력 (디버깅용)
+            System.out.println("CSV 파일 경로: " + filePath);  // 경로 출력 (디버깅용)
             // 헤더
             writer.append("Time,X,Y,Attention\n");
 
@@ -105,5 +111,4 @@ public class GazeDataService {
     public List<ReceiveIdDto> dbData(){
         return mongoRepository.findBy(PageRequest.of(0,10));
     }
-
 }
