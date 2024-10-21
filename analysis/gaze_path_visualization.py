@@ -4,9 +4,9 @@ import cv2
 import pandas as pd
 from video_download import download
 
-# CSV 파일 경로
-csv_file = "Data\\\\GazeData\\\\RoER-ab1QYw_2024-10-09-20-55-37.csv"
-dt = "2024-10-09-20-55-37"
+# CSV 파일 경로 
+csv_file = "Data\GazeData\RoER-ab1QYw_2024-10-09-20-55-37.csv"
+date_time = csv_file.split('_')[1].split('.')[0]
 
 # CSV 데이터 로드
 df = pd.read_csv(csv_file)
@@ -17,7 +17,7 @@ video_id = "RoER-ab1QYw"
 video_only, audio_only, video_filename = download(video_id)
 
 os.makedirs(f"Data/video/{video_id}/points", exist_ok=True)
-point_video = f"Data/video/{video_id}/points/{video_id}_{dt}.mp4"
+point_video = f"Data/video/{video_id}/points/{video_id}_{date_time}.mp4"
 
 if not os.path.exists(point_video):
     cap = cv2.VideoCapture(video_only)
