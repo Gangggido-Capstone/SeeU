@@ -16,11 +16,4 @@ public class GazeAnalysisResult {
         this.gazeVisualization=gazeVisualization;
     }
 
-    @Override
-    public String toString() {
-        return "GazeDataResult{" +
-                "attentionScoreList=" + attentionScoreList +
-                ", gazeVisualization='" + gazeVisualization + '\'' +
-                '}';
-    }
 }

@@ -159,8 +159,8 @@ public class GazeDataService {
         GazeAnalysisResult result = runPythonScript(videoId, videoCSV);
 
         if (result != null) {
-            System.out.println("Attention Score List: " + result.getAttentionScoreList());
-            System.out.println("Video Gaze Visualization: " + result.getGazeVisualization());
+            System.out.println("받아온 Attention Score List: " + result.getAttentionScoreList());
+            System.out.println("받아온 Video Gaze Visualization: " + result.getGazeVisualization());
         } else {
             System.out.println("Python 스크립트 실행 중 오류 발생");
         }
