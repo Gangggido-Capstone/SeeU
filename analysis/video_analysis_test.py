@@ -11,10 +11,10 @@ def main():
     print(video_only, audio_only, video_filename)
     # 영상 분할
     sceneTime = detect(video_id, video_only, video_filename)
-
+    
     # 영상 점수 및 클러스터 이미지 저장
     attention_score_list = score_cluster(video_id, video_csv, sceneTime)
-
+   
     # 영상 분석 시각화
     video_point = gazeVisualization(video_id, video_csv, video_only, audio_only)
     
@@ -28,7 +28,7 @@ def main():
     print(json.dumps(result))
 
 if __name__ == "__main__":
-
+  
     # video_id, video_csv는 스프링에서 넘겨야 함
     # UrEHWclh7Co 삼성카드
     # 0gkPFSvVvFw 전란

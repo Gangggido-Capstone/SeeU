@@ -187,7 +187,7 @@ if __name__ == "__main__":
     # video_id = "0gkPFSvVvFw"
     # video_csv = "0gkPFSvVvFw_2024-10-12-18-56-44.csv"
     video_id = "fRaIcUhaXXQ"
-    video_csv = "fRaIcUhaXXQ_2024-10-22-01-53-00.csv"
+    video_csv = "fRaIcUhaXXQ_2024-10-20-16-50-56.csv"
 
     # 영상 다운
     video_only, audio_only, video_filename = download(video_id)
