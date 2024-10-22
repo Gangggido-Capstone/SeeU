@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 @Document(collection = "Capstone")
 @Getter
@@ -18,10 +19,15 @@ public class ReceiveId {
     private String watchdata;
     private LinkedHashMap<String, Object> snippet;
 
+    private List<Object> scoreList;
+    private String visualization;
+
     @Builder
-    public ReceiveId(String videoId, String watchdata, LinkedHashMap<String, Object> snippet) {
+    public ReceiveId(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<Object> scoreList, String visualization) {
         this.videoId = videoId;
         this.watchdata = watchdata;
         this.snippet = snippet;
+        this.scoreList = scoreList;
+        this.visualization = visualization;
     }
 }
