@@ -159,12 +159,15 @@ def score_cluster(video_id, video_csv, sceneTime):
     
     # 리스트에 저장해 반환
     atention_score_list = []
+    # split_video 디렉토리 경로 설정
+    split_video_directory = os.path.join(root_path, "Data", "video", video_id, "split_video")
+    thumbnails_dir = os.path.join(root_path, "Data", "video", video_id, "thumbnails")
     # final_score를 기준으로 내림차순 정렬
     sorted_data = sorted(enumerate(zip(sceneTime, final_score, n_clusters)), key=lambda x: x[1][1], reverse=True)
     for i, (_, score, cluster) in sorted_data:
         if score == 0:
             continue
-        atention_score_list.append((f"{video_id}-Scene-{i+1:03}.mp4", f"{video_id}_{i+1:03}.jpg", f"Cluster_Scene-{i+1:03}.png", score, cluster))
+        atention_score_list.append((f"{split_video_directory}\\{video_id}-Scene-{i+1:03}.mp4", f"{thumbnails_dir}\\{video_id}_{i+1:03}.jpg", f"{cluster_dir}\\Cluster_Scene-{i+1:03}.png", score, cluster))
 
     return atention_score_list
 
@@ -179,7 +182,7 @@ if __name__ == "__main__":
     # video_id = "fRaIcUhaXXQ"
     # video_csv = "fRaIcUhaXXQ_2024-10-20-16-50-56.csv"
     video_id = "fRaIcUhaXXQ"
-    video_csv = "fRaIcUhaXXQ_2024-10-22-01-53-00.csv"
+    video_csv = "fRaIcUhaXXQ_2024-10-20-16-50-56.csv"
 
     # 영상 다운
     video_only, audio_only, video_filename = download(video_id)
