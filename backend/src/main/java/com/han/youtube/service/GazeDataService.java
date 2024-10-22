@@ -165,6 +165,10 @@ public class GazeDataService {
             System.out.println("Python 스크립트 실행 중 오류 발생");
         }
 
+
+        List<Object> attentionScore = new ArrayList<>(result.getAttentionScoreList());
+        String visualization =result.getGazeVisualization();
+
         // youtubeService.getVideoById 사용해서 영상 정보 불러오기
         Video video = youtubeService.getVideoById(videoId);
 
@@ -185,7 +189,7 @@ public class GazeDataService {
 
             // id 저장
             ReceiveIdDto receiveIdDto = new ReceiveIdDto();
-            ReceiveId receiveId = receiveIdDto.toEntity(videoId, watchDate, snippetMap);
+            ReceiveId receiveId = receiveIdDto.toEntity(videoId, watchDate, snippetMap,attentionScore,visualization);
 
             mongoRepository.save(receiveId);
         } else {
