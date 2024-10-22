@@ -2,7 +2,7 @@ package com.han.youtube.service;
 
 import com.google.api.services.youtube.model.VideoSnippet;
 import com.han.youtube.Domain.ReceiveId;
-import com.han.youtube.Dto.GazeDataResult;
+import com.han.youtube.Dto.GazeAnalysisResult;
 import com.han.youtube.Dto.ReceiveIdDto;
 import com.han.youtube.Repository.MongoRepository;
 
@@ -31,9 +31,9 @@ public class GazeDataService {
     private YoutubeService youtubeService;
     private final MongoRepository mongoRepository;
 
-    public GazeDataResult runPythonScript(String videoId, String filePath) {
+    public GazeAnalysisResult runPythonScript(String videoId, String videoCSV) {
         try {
-            String pythonPath = "python";  // 시스템 환경에 맞게 "python3"으로 변경 필요할 수 있음
+            String python = "python";
 
             // 파이썬 파일 경로 설정
             File currentDir = new File("");
@@ -41,63 +41,53 @@ public class GazeDataService {
             String fileDirectory = Paths.get(rootPath, "analysis").normalize().toString();
             String scriptPath = Paths.get(fileDirectory,"video_analysis.py").toString();
 
-            System.out.println("파일 경로: " + scriptPath);  // 경로 출력 (디버깅용)
+            System.out.println("파일 경로: " + scriptPath);
 
             List<String> arguments = new ArrayList<>();
-            arguments.add(pythonPath);
+            arguments.add(python);
             arguments.add(scriptPath);
             arguments.add(videoId);
-            arguments.add(filePath);
+            arguments.add(videoCSV);
 
             ProcessBuilder pb = new ProcessBuilder(arguments);
             Process process = pb.start();
 
-            // 표준 출력 및 에러 출력 처리
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            // 파이썬 표준 출력 및 에러 출력 처리
+            BufferedReader stdOut = new BufferedReader(new InputStreamReader(process.getInputStream()));
             BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String line;
+            
+            // 출력된 JSON 데이터 저장
             StringBuilder jsonOutput = new StringBuilder();
-            StringBuilder ffmpegOutput = new StringBuilder();  // FFmpeg 로그 저장
-            String s;
-            boolean jsonStarted = false;  // JSON 시작점 찾기
 
-            System.out.println("Python Output:");
-            while ((s = stdInput.readLine()) != null) {
-                System.out.println(s);  // Python의 표준 출력 확인
-
+            // JSON 시작점 찾기
+            boolean jsonStarted = false;
+            while ((line = stdOut.readLine()) != null) {
+                System.out.println(line);
                 // JSON이 시작되는 지점부터 문자열을 추출
-                if (s.trim().startsWith("{")) {
+                if (line.trim().startsWith("{")) {
                     jsonStarted = true;  // JSON 시작
                 }
 
                 // JSON 데이터 저장
                 if (jsonStarted) {
-                    jsonOutput.append(s.trim());  // JSON 부분만 추출
-                } else {
-                    // JSON 외의 모든 출력 (FFmpeg 로그 포함)
-                    ffmpegOutput.append(s).append("\n");  // FFmpeg 로그 저장
+                    jsonOutput.append(line.trim());  // JSON 부분만 추출
                 }
             }
 
-            // 표준 에러 출력 처리 (FFmpeg 에러 포함)
-            System.out.println("Python Errors (if any):");
-            while ((s = stdError.readLine()) != null) {
-                System.out.println(s);  // Python 에러 로그 확인
-                ffmpegOutput.append(s).append("\n");  // FFmpeg 에러 로그 저장
+            // 표준 에러 출력 처리
+            while ((line = stdError.readLine()) != null) {
+                System.out.println(line);
             }
 
             int exitCode = process.waitFor();
             System.out.println("Python script exited with code: " + exitCode);
 
-            // FFmpeg 로그 출력
-            System.out.println("FFmpeg Output:");
-            System.out.println(ffmpegOutput.toString());  // FFmpeg 관련 출력 확인
-
             // JSON 파싱
             String jsonString = jsonOutput.toString();
-            System.out.println("Parsed JSON: " + jsonString);  // 추출된 JSON 확인
             JSONObject result = new JSONObject(jsonString);
 
-            // JSONArray를 List로 변환
+            // JSONArray -> List
             JSONArray jsonArray = result.getJSONArray("attention_score_list");
             List<Object> attentionScoreList = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -106,12 +96,11 @@ public class GazeDataService {
 
             String videoPoint = result.getString("video_point");
 
-            // 변환된 리스트와 video_point를 GazeDataResult 객체로 반환
-            return new GazeDataResult(attentionScoreList, videoPoint);
+            return new GazeAnalysisResult(attentionScoreList, videoPoint);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return null;  // 예외가 발생한 경우 null 반환
+            return null;
         }
     }
 
@@ -119,7 +108,6 @@ public class GazeDataService {
     public void saveGazeData(Map<String, Object> payload) throws IOException {
         String videoId = (String) payload.get("videoId");
         String watchDate = (String) payload.get("watchDate");
-        String video_csv = videoId + "_" + watchDate + ".csv";
 
         // 비디오 크기 값 videoFrame.get("width"), videoFrame.get("height")
         Map<String, Object> videoFrame = null;
@@ -128,6 +116,7 @@ public class GazeDataService {
         }
         System.out.println(videoFrame.get("width"));
         System.out.println(videoFrame.get("height"));
+
         // 시선 데이터
         List<Map<String, Object>> gazeData = null;
         if (payload.get("gazeData") instanceof List) {
@@ -140,13 +129,14 @@ public class GazeDataService {
         String rootPath = currentDir.getAbsoluteFile().getParent();  // youtube-seeso-demo 경로
 
         // 항상 Data/GazeData 경로를 지정
-        String fileDirectory = Paths.get(rootPath, "Data", "GazeData").normalize().toString();
-        String filePath = Paths.get(fileDirectory, videoId + "_" + watchDate + ".csv").toString();
+        String filePath = Paths.get(rootPath, "Data", "GazeData").normalize().toString();
+        String videoCSV = Paths.get(filePath, videoId + "_" + watchDate + ".csv").toString();
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            System.out.println("rootPath: " + rootPath);  // 경로 출력 (디버깅용)
-            System.out.println("fileDirectory: " + fileDirectory);  // 경로 출력 (디버깅용)
-            System.out.println("CSV 파일 경로: " + filePath);  // 경로 출력 (디버깅용)
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(videoCSV))) {
+            System.out.println("rootPath: " + rootPath);
+            System.out.println("filePath: " + filePath);
+            System.out.println("CSV 파일 경로: " + videoCSV);
+
             // 헤더
             writer.append("Time,X,Y,Attention\n");
 
@@ -165,20 +155,15 @@ public class GazeDataService {
             writer.flush();  // 파일에 데이터 저장
         }
 
-        // ============= Python 스크립트 실행 후 결과 받아오기 =============
-
-        GazeDataResult result = runPythonScript(videoId, filePath);
+        // Python 스크립트 실행 후 영상 분석 결과 받아오기
+        GazeAnalysisResult result = runPythonScript(videoId, videoCSV);
 
         if (result != null) {
-            // 결과 출력
             System.out.println("Attention Score List: " + result.getAttentionScoreList());
-            System.out.println("Video Point: " + result.getVideoPoint());
+            System.out.println("Video Gaze Visualization: " + result.getGazeVisualization());
         } else {
-            System.out.println("Python 스크립트 실행 중 오류가 발생했습니다.");
+            System.out.println("Python 스크립트 실행 중 오류 발생");
         }
-
-        // ============================================================
-
 
         // youtubeService.getVideoById 사용해서 영상 정보 불러오기
         Video video = youtubeService.getVideoById(videoId);

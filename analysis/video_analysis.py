@@ -11,7 +11,7 @@ def main():
 
     # 영상 다운
     video_only, audio_only, video_filename = download(video_id)
-
+    print(video_only, audio_only, video_filename)
     # 영상 분할
     sceneTime = detect(video_id, video_only, video_filename)
 

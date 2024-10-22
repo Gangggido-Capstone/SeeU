@@ -16,6 +16,7 @@ def get_root_path():
     return current_dir
 
 def detect(video_id, video_only, video_filename):
+    print("detect start")
     try:
         # 루트 경로 가져오기
         root_path = get_root_path()
@@ -25,6 +26,7 @@ def detect(video_id, video_only, video_filename):
         sceneTime = []
 
         if not os.path.exists(split_video_directory):
+            print("if in")
             # 영상 불러오기
             video = open_video(video_filename)
 
@@ -115,8 +117,8 @@ if __name__ == "__main__":
     # UrEHWclh7Co 삼성카드
     # 0gkPFSvVvFw 전란
     # fRaIcUhaXXQ 핫초코
-    video_id = "fRaIcUhaXXQ"
-
+    video_id = "ekr2nIex040"
+    
     # 영상 다운
     video_only, audio_only, video_filename = download(video_id)
 
