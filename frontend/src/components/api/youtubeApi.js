@@ -25,15 +25,3 @@ export const searchVideos = async (query) => {
         throw error;
     }
 };
-export const embedVideo = async (query) => {
-    try {
-        const response = await axios.get(`${API_BASE_URL}/search-videos`, {
-            params: { query },
-        });
-        console.log(response.data);
-        return response.data;
-    } catch (error) {
-        console.error("Error searching videos", error);
-        throw error;
-    }
-};
