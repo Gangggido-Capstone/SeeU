@@ -60,9 +60,8 @@ def download(video_id):
                     '-shortest',  # 가장 짧은 스트림 기준으로 맞추기
                     video_filename  # 최종 출력 파일 경로
                 ]
-                print("Execute Merge Commands")
-                # 병합 명령어 실행
-                subprocess.run(merge_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=400)
+                print("subprocess.run")
+                subprocess.run(merge_command, timeout = 800)
                 print(f"{video_filename} 다운 완료")
             except subprocess.TimeoutExpired:
                 print("FFmpeg 실행이 타임아웃되었습니다.")
@@ -75,3 +74,17 @@ def download(video_id):
     except Exception as e:
         print(f"Detect 함수에서 오류 발생: {str(e)}")
         raise e
+
+if __name__ == "__main__":
+  
+    # video_id, video_csv는 스프링에서 넘겨야 함
+    # UrEHWclh7Co 삼성카드
+    # 0gkPFSvVvFw 전란
+    # fRaIcUhaXXQ 핫초코
+    # video_id = "0gkPFSvVvFw"
+    # video_csv = "0gkPFSvVvFw_2024-10-12-18-56-44.csv"
+    video_id = "fRaIcUhaXXQ"
+    
+    video_only, audio_only, video_filename = download(video_id)
+
+    

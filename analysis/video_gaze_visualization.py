@@ -160,8 +160,8 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only):
                 '-shortest',
                 video_point
             ]
-            print("Execute Merge Commands")
-            subprocess.run(merge_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=400)
+            print("subprocess.run")
+            subprocess.run(merge_command, timeout = 800)
             print(f"{video_temp} 다운 완료")
         except subprocess.TimeoutExpired:
             print("FFmpeg 실행이 타임아웃되었습니다.")
