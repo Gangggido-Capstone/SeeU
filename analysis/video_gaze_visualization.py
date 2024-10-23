@@ -21,7 +21,7 @@ def draw_circle(image, center, radius, color, alpha=1.0):
     cv2.circle(overlay, center, radius, color, -1)
     return cv2.addWeighted(overlay, alpha, image, 1 - alpha, 0)
 
-def gazeVisualization(video_id, video_csv, video_only, audio_only):
+def gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, video_height):
     # 프로젝트 루트 경로 설정
     root_path = get_root_path()
     
@@ -41,9 +41,6 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only):
 
         # 비디오 속성 가져오기
         fps = video_capture.get(cv2.CAP_PROP_FPS)
-
-        video_width = 965
-        video_height = 543
 
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         video_temp = os.path.join(root_path, "Data", "video", video_id, "points.mp4")

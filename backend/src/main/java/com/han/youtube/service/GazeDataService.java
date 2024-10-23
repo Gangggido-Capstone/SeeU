@@ -31,7 +31,7 @@ public class GazeDataService {
     private YoutubeService youtubeService;
     private final MongoRepository mongoRepository;
 
-    public GazeAnalysisResult runPythonScript(String videoId, String videoCSV) {
+    public GazeAnalysisResult runPythonScript(String videoId, String videoCSV, String videoWidth, String videoHeight) {
         try {
             String python = "python";
 
@@ -48,6 +48,8 @@ public class GazeDataService {
             arguments.add(scriptPath);
             arguments.add(videoId);
             arguments.add(videoCSV);
+            arguments.add(videoWidth);
+            arguments.add(videoHeight);
 
             ProcessBuilder pb = new ProcessBuilder(arguments);
             Process process = pb.start();
@@ -114,8 +116,8 @@ public class GazeDataService {
         if (payload.get("videoFrame") instanceof Map) {
             videoFrame = (Map<String, Object>) payload.get("videoFrame");
         }
-        System.out.println(videoFrame.get("width"));
-        System.out.println(videoFrame.get("height"));
+        System.out.println("width: " + videoFrame.get("width"));
+        System.out.println("height: " + videoFrame.get("height"));
 
         // 시선 데이터
         List<Map<String, Object>> gazeData = null;
@@ -156,7 +158,7 @@ public class GazeDataService {
         }
 
         // Python 스크립트 실행 후 영상 분석 결과 받아오기
-        GazeAnalysisResult result = runPythonScript(videoId, videoCSV);
+        GazeAnalysisResult result = runPythonScript(videoId, videoCSV, (String) videoFrame.get("width"), (String) videoFrame.get("height"));
 
         if (result != null) {
             System.out.println("Attention Score List: " + result.getAttentionScoreList());
@@ -167,7 +169,9 @@ public class GazeDataService {
 
 
         List<Object> attentionScore = new ArrayList<>(result.getAttentionScoreList());
-        String visualization =result.getGazeVisualization();
+        String visualization = result.getGazeVisualization();
+        System.out.println(attentionScore);
+        System.out.println(visualization);
 
         // youtubeService.getVideoById 사용해서 영상 정보 불러오기
         Video video = youtubeService.getVideoById(videoId);

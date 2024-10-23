@@ -21,7 +21,7 @@ def main():
     print("영상 점수 및 클러스터 이미지 저장 끝")
     
     print("영상 분석 시각화 시작")
-    video_point = gazeVisualization(video_id, video_csv, video_only, audio_only)
+    video_point = gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, video_height)
     print("영상 분석 시각화 끝")
 
 
@@ -35,14 +35,15 @@ def main():
     print(json.dumps(result))
 
 if __name__ == "__main__":
-  
-    # video_id, video_csv는 스프링에서 넘겨야 함
+    
     # UrEHWclh7Co 삼성카드
     # 0gkPFSvVvFw 전란
     # fRaIcUhaXXQ 핫초코
     # video_id = "0gkPFSvVvFw"
     # video_csv = "0gkPFSvVvFw_2024-10-12-18-56-44.csv"
+
     video_id = "0gkPFSvVvFw"
     video_csv = "0gkPFSvVvFw_2024-10-12-18-56-44.csv"
+    video_width, video_height = 965, 543
 
     main()
