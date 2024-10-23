@@ -16,7 +16,6 @@ def get_root_path():
     return current_dir
 
 def detect(video_id, video_only, video_filename):
-    print("detect start")
     try:
         # 루트 경로 가져오기
         root_path = get_root_path()
@@ -26,15 +25,13 @@ def detect(video_id, video_only, video_filename):
         sceneTime = []
 
         if not os.path.exists(split_video_directory):
-            print("if in")
             # 영상 불러오기
             video = open_video(video_filename)
 
             # 초당 프레임 수
             fps = cv2.VideoCapture(video_only).get(cv2.CAP_PROP_FPS)  
-            f = fps * 8 # 장면 당 최소 프레임 수
-            # 디텍터 생성, 임계값 35, 장면 당 최소 프레임 수 
-            content_detector = ContentDetector(threshold = 35, min_scene_len = f)
+            # 디텍터 생성, 임계값 27, 장면 당 최소 프레임 수, 분할 영상 최소 8초를 희망
+            content_detector = ContentDetector(threshold = 27, min_scene_len = fps * 8)
 
             # Scene Manager 생성
             scene_manager = SceneManager()
