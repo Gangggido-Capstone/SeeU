@@ -77,7 +77,6 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, 
                 if not pd.isna(x) and not pd.isna(y):
                     # 이전 좌표와 비교하여 거리가 50 이내인지 확인
                     if previous_points and distance(previous_points[-1][:2], (x, y)) <= 50:
-                        # print("Time: "+ str(row['Time']) + ", " + "X: "+ str(int(x)) + ", " + "Y: "+ str(int(y)))
                         
                         # 기존 좌표와 가까우면 반지름 증가
                         new_radius = previous_points[-1][2] + 1
@@ -146,38 +145,49 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, 
                 ffmpeg_path,
                 '-i', video_temp,
                 '-i', audio_only,
-                '-c:v', 'libx264',
-                '-preset', 'fast',
-                '-c:a', 'aac',
-                '-b:a', '192k',
-                '-r', '30',
-                '-vsync', 'cfr',
-                '-map', '0:v:0',
-                '-map', '1:a:0',
-                '-shortest',
+                '-c:v', 'copy',  # 비디오를 재인코딩하지 않고 복사
+                '-c:a', 'aac',  # 오디오를 AAC 형식으로 변환
+                '-b:a', '192k',  # 오디오 비트레이트 설정
+                '-r', '24',  # 비디오 프레임 속도 설정
+                '-preset', 'ultrafast',  # 초고속 인코딩 옵션
+                '-threads', '4',  # CPU 스레드 개수 지정
+                '-vsync', 'cfr',  # 고정 프레임 속도 동기화
+                '-map', '0:v:0',  # 비디오 스트림을 첫 번째 입력에서 가져오기
+                '-map', '1:a:0',  # 오디오 스트림을 두 번째 입력에서 가져오기
+                '-shortest',  # 가장 짧은 스트림 기준으로 맞추기
                 video_point
             ]
-            print("subprocess.run")
-            subprocess.run(merge_command, timeout = 800)
-            print(f"{video_temp} 다운 완료")
+
+            print("subprocess run")
+            ffmpeg_process = subprocess.Popen(merge_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, stderr = ffmpeg_process.communicate(timeout=400)
+            print("subprocess end")
+
+            if ffmpeg_process.returncode != 0:
+                    print(f"FFmpeg error: {stderr}")
+            else:
+                print(f"FFmpeg success: {stdout}")
+                print(f"download: {video_filename}")
+
         except subprocess.TimeoutExpired:
-            print("FFmpeg 실행이 타임아웃되었습니다.")
+            ffmpeg_process.kill()  # 타임아웃이 발생하면 프로세스 강제 종료
+            print("FFmpeg Time Out")
+
+        finally:
+            ffmpeg_process.kill()
 
         if os.path.exists(video_temp):
             os.remove(video_temp)
-            print(f"{video_temp} temp 파일 삭제")
 
-        print(f"{video_point} 비디오 생성 완료")
+        print(f"Video Generation Completed: {video_point}")
 
     else:
-        print(f"{video_point} 이미 존재합니다.")
+        print(f"It already exists: {video_point}")
 
     return video_point
 
 
 if __name__ == "__main__":
-    
-    # video_id, video_csv는 스프링에서 넘겨야 함
     # UrEHWclh7Co 삼성카드
     # 0gkPFSvVvFw 전란
     # fRaIcUhaXXQ 핫초코

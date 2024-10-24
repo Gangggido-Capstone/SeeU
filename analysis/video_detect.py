@@ -30,14 +30,14 @@ def detect(video_id, video_only, video_filename):
 
             # 초당 프레임 수
             fps = cv2.VideoCapture(video_only).get(cv2.CAP_PROP_FPS)  
-            # 디텍터 생성, 임계값 27, 장면 당 최소 프레임 수, 분할 영상 최소 8초를 희망
-            content_detector = ContentDetector(threshold = 27, min_scene_len = fps * 8)
+            # 디텍터 생성, 임계값 27, 장면 당 최소 프레임 수, 분할 영상 최소 5초
+            content_detector = ContentDetector(threshold=27, min_scene_len = fps * 5)
 
             # Scene Manager 생성
             scene_manager = SceneManager()
             scene_manager.add_detector(content_detector)
 
-            # detect 수행 (영상의 처음부터 끝까지 detect)
+            # detect 수행 (영상의 처음부터 끝까지 detect) =============================================
             scene_manager.detect_scenes(video, show_progress=True)
 
             # `get_scene_list` 리스트의 시작과 끝 timecode pairs 을 리턴
@@ -64,10 +64,24 @@ def detect(video_id, video_only, video_filename):
                     sceneTime.append((start_time, end_time))
 
                 if not sceneTime:
-                    writer.writerow(["Null", "Null"])
-                    sceneTime.append(("Null", "Null"))
+                    # 영상의 길이를 가져오기 위해 VideoCapture 사용
+                    video_capture = cv2.VideoCapture(video_only)
+                    total_frames = video_capture.get(cv2.CAP_PROP_FRAME_COUNT)  # 총 프레임 수 가져오기
+                    fps = video_capture.get(cv2.CAP_PROP_FPS)  # 초당 프레임 수 가져오기
+                    
+                    # 영상의 총 길이를 초 단위로 계산
+                    total_duration = total_frames / fps
+                    
+                    # 시작 시간 0, 끝 시간은 영상의 총 길이
+                    start_time = 0.0
+                    end_time = round(total_duration, 4)  # 소수점 이하 4자리까지 반올림
 
-            print("CSV 파일에서 저장된 분할된 시간:", sceneTime)
+                    writer.writerow([start_time, end_time])  # CSV 파일에 시작 시간과 끝 시간 저장
+                    sceneTime.append((start_time, end_time))  # sceneTime 리스트에 시작 시간과 끝 시간 추가
+                    
+                    video_capture.release()  # VideoCapture 객체 해제
+
+            print("Split time from CSV file:", sceneTime)
 
             # 영상 자르기 (파일로 저장)
             split_video_ffmpeg(video_filename, scene_list, output_dir=split_video_directory,show_progress=True)
@@ -81,10 +95,10 @@ def detect(video_id, video_only, video_filename):
                 output_dir=os.path.join(root_path, "Data", "video", video_id, "thumbnails") # 결과 디렉토리 이름
             )
 
-            print(f"{video_id} 영상 분할 완료")
+            print(f"{video_id} Video segmentation completed")
             
         else:
-            print(f"{video_id} split_video가 이미 존재합니다. 다운로드를 건너뜁니다.")
+            print(f"{video_id} split video already exists. Skip download.")
 
             scene_times_csv = os.path.join(root_path, "Data", "video", video_id, "split_video", "scene_times.csv")
 
@@ -99,14 +113,14 @@ def detect(video_id, video_only, video_filename):
                         end_time = float(row[1])
                         sceneTime.append((start_time, end_time))
 
-                print("CSV 파일에서 불러온 분할된 시간:", sceneTime)
+                print("Split time from CSV file:", sceneTime)
 
             else:
-                print(f"{video_id}의 scene_times.csv가 존재하지 않습니다.")
+                print(f"scene_times.csv of {video_id} does not exist")
         
         return sceneTime
     except Exception as e:
-        print(f"Detect 함수에서 오류 발생: {str(e)}")
+        print(f"Error in Detect function: {str(e)}")
         raise e
 
 if __name__ == "__main__":
@@ -114,7 +128,7 @@ if __name__ == "__main__":
     # UrEHWclh7Co 삼성카드
     # 0gkPFSvVvFw 전란
     # fRaIcUhaXXQ 핫초코
-    video_id = "ekr2nIex040"
+    video_id = "jWQx2f-CErU"
     
     # 영상 다운
     video_only, audio_only, video_filename = download(video_id)
