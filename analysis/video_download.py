@@ -19,8 +19,6 @@ def download(video_id):
     audio_only = os.path.join(video_dir, "audio.m4a")
     video_filename = os.path.join(video_dir, f"{video_id}.mp4")
 
-
-    # 파일이 이미 존재하는지 확인
     if not os.path.exists(video_filename):
         os.makedirs(os.path.join(root_path, "Data", "video", video_id), exist_ok=True)
 
@@ -66,19 +64,19 @@ def download(video_id):
             print("subprocess run")
             # ffmpeg 명령어 실행 (비동기)
             ffmpeg_process = subprocess.Popen(merge_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            stdout, stderr = ffmpeg_process.communicate(timeout=400)
+            stdout, stderr = ffmpeg_process.communicate(timeout=500)
             print("subprocess end")
 
             if ffmpeg_process.returncode != 0:
                 print(f"FFmpeg error: {stderr}")
             else:
-                print(f"FFmpeg success: {stdout}")
+                print(f"FFmpeg success")
                 print(f"download: {video_filename}")
 
         except subprocess.TimeoutExpired:
-            ffmpeg_process.kill()  # 타임아웃이 발생하면 프로세스 강제 종료
+            ffmpeg_process.kill()
             print("FFmpeg Time Out")
-            
+
         finally:
             ffmpeg_process.kill()
 

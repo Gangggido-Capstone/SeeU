@@ -160,17 +160,16 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, 
 
             print("subprocess run")
             ffmpeg_process = subprocess.Popen(merge_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            stdout, stderr = ffmpeg_process.communicate(timeout=400)
+            stdout, stderr = ffmpeg_process.communicate(timeout=500)
             print("subprocess end")
 
             if ffmpeg_process.returncode != 0:
                     print(f"FFmpeg error: {stderr}")
             else:
-                print(f"FFmpeg success: {stdout}")
-                print(f"download: {video_filename}")
+                print(f"FFmpeg success")
 
         except subprocess.TimeoutExpired:
-            ffmpeg_process.kill()  # 타임아웃이 발생하면 프로세스 강제 종료
+            ffmpeg_process.kill()
             print("FFmpeg Time Out")
 
         finally:

@@ -52,19 +52,21 @@ public class GazeDataService {
             arguments.add(videoHeight);
 
             ProcessBuilder pb = new ProcessBuilder(arguments);
+            pb.redirectErrorStream(true);
+            System.out.println(arguments);
             Process process = pb.start();
 
             // 파이썬 표준 출력 및 에러 출력 처리
-            BufferedReader stdOut = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             String line;
-            
+
             // 출력된 JSON 데이터 저장
             StringBuilder jsonOutput = new StringBuilder();
 
             // JSON 시작점 찾기
             boolean jsonStarted = false;
-            while ((line = stdOut.readLine()) != null) {
+            while ((line = stdout.readLine()) != null) {
                 System.out.println(line);
                 // JSON이 시작되는 지점부터 문자열을 추출
                 if (line.trim().startsWith("{")) {
@@ -77,9 +79,9 @@ public class GazeDataService {
                 }
             }
 
-            // 표준 에러 출력 처리
-            while ((line = stdError.readLine()) != null) {
-                System.out.println(line);
+            // 에러 로그 출력 (필요 시)
+            while ((line = stderr.readLine()) != null) {
+                System.err.println("ERROR: " + line);
             }
 
             int exitCode = process.waitFor();
@@ -89,11 +91,16 @@ public class GazeDataService {
             String jsonString = jsonOutput.toString();
             JSONObject result = new JSONObject(jsonString);
 
-            // JSONArray -> List
+            // JSONArray -> List<List<Object>>
             JSONArray jsonArray = result.getJSONArray("attention_score_list");
-            List<Object> attentionScoreList = new ArrayList<>();
+            List<List<Object>> attentionScoreList = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
-                attentionScoreList.add(jsonArray.get(i));
+                JSONArray innerArray = jsonArray.getJSONArray(i);
+                List<Object> innerList = new ArrayList<>();
+                for (int j = 0; j < innerArray.length(); j++) {
+                    innerList.add(innerArray.get(j));
+                }
+                attentionScoreList.add(innerList);
             }
 
             String videoPoint = result.getString("video_point");
@@ -104,8 +111,19 @@ public class GazeDataService {
             e.printStackTrace();
             return null;
         }
+
     }
 
+    // JSON 시작 부분을 찾아서 JSON 문자열을 추출하는 함수
+    private String extractJson(String output) {
+        int jsonStart = output.indexOf("{");
+        if (jsonStart != -1) {
+            return output.substring(jsonStart).trim();  // JSON 부분만 추출
+        }
+        return null;  // JSON 데이터가 없으면 null 반환
+    }
+
+    @SuppressWarnings("unchecked")
     @Transactional
     public void saveGazeData(Map<String, Object> payload) throws IOException {
         String videoId = (String) payload.get("videoId");
@@ -158,7 +176,7 @@ public class GazeDataService {
         }
 
         // Python 스크립트 실행 후 영상 분석 결과 받아오기
-        GazeAnalysisResult result = runPythonScript(videoId, videoCSV, (String) videoFrame.get("width"), (String) videoFrame.get("height"));
+        GazeAnalysisResult result = runPythonScript(videoId, videoCSV, String.valueOf(videoFrame.get("width")), String.valueOf(videoFrame.get("height")));
 
         if (result != null) {
             System.out.println("Attention Score List: " + result.getAttentionScoreList());
@@ -167,19 +185,12 @@ public class GazeDataService {
             System.out.println("Python 스크립트 실행 중 오류 발생");
         }
 
-
-        List<Object> attentionScore = new ArrayList<>(result.getAttentionScoreList());
-        String visualization = result.getGazeVisualization();
-        System.out.println(attentionScore);
-        System.out.println(visualization);
-
         // youtubeService.getVideoById 사용해서 영상 정보 불러오기
         Video video = youtubeService.getVideoById(videoId);
-
         if (video != null) {
             VideoSnippet snippet = video.getSnippet();
 
-            // VideoSnippet을 LinkedHashMap으로 변환
+            // VideoSnippet -> LinkedHashMap
             LinkedHashMap<String, Object> snippetMap = new LinkedHashMap<>();
             snippetMap.put("title", snippet.getTitle());
             snippetMap.put("description", snippet.getDescription());
@@ -191,9 +202,14 @@ public class GazeDataService {
             snippetMap.put("thumbnails", snippet.getThumbnails());
             snippetMap.put("localized", snippet.getLocalized());
 
-            // id 저장
             ReceiveIdDto receiveIdDto = new ReceiveIdDto();
-            ReceiveId receiveId = receiveIdDto.toEntity(videoId, watchDate, snippetMap,attentionScore,visualization);
+            ReceiveId receiveId = receiveIdDto.toEntity(
+                    videoId,
+                    watchDate,
+                    snippetMap,
+                    result != null ? result.getAttentionScoreList() : null,
+                    result != null ? result.getGazeVisualization() : null
+            );
 
             mongoRepository.save(receiveId);
         } else {

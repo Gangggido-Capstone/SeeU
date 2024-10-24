@@ -12,10 +12,10 @@ public class ReceiveIdDto {
     private String videoId;
     private String watchdata;
     private LinkedHashMap<String, Object> snippet;
-    private List<Object> scoreList;
+    private List<List<Object>> scoreList;  // List<List<Object>>로 수정
     private String visualization;
 
-    public ReceiveIdDto(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<Object> scoreList, String visualization) {
+    public ReceiveIdDto(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<List<Object>> scoreList, String visualization) {
         this.videoId = videoId;
         this.watchdata = watchdata;
         this.snippet = snippet;
@@ -23,7 +23,7 @@ public class ReceiveIdDto {
         this.visualization = visualization;
     }
 
-    public ReceiveId toEntity(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<Object> scoreList, String visualization) {
+    public ReceiveId toEntity(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<List<Object>> scoreList, String visualization) {
         return ReceiveId.builder()
                 .videoId(videoId)
                 .watchdata(watchdata)
