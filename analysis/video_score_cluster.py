@@ -158,8 +158,6 @@ def score_cluster(video_id, video_csv, sceneTime):
 
 
 if __name__ == "__main__":
-    # video_id, video_csv는 스프링에서 넘겨야 함
-
     # UrEHWclh7Co 삼성카드
     # 0gkPFSvVvFw 전란
     # fRaIcUhaXXQ 핫초코

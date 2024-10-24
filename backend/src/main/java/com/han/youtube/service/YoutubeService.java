@@ -38,7 +38,7 @@ public class YoutubeService {
                 .list(parts)  // 단일 문자열로 필드 전달
                 .setChart("mostPopular")
                 .setRegionCode("KR") // 한국 기준
-                .setMaxResults(20L)  // 최대 10개의 결과만 가져옴
+                .setMaxResults(30L)  // 가져올 영상 데이터 수
                 .setKey(apiKey);
 
         // API 요청을 실행하고 결과 반환
@@ -52,7 +52,7 @@ public class YoutubeService {
         search.setQ(queryTerm);
         search.setKey(apiKey);
         search.setType(Arrays.asList("video"));
-        search.setMaxResults(20L);
+        search.setMaxResults(30L);
         search.setRegionCode("KR");
 
         SearchListResponse searchResponse = search.execute();
