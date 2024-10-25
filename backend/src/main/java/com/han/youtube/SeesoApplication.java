@@ -28,6 +28,7 @@ public class SeesoApplication {
 			registry.addMapping("/api/**")
 					.allowedOrigins("http://localhost:3000")  // React 앱이 실행되는 주소
 					.allowedOrigins("http://localhost:9000")  // React 앱이 실행되는 주소
+					.allowedOriginPatterns("*")
 					.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 					.allowedHeaders("*")
 					.allowCredentials(true);
