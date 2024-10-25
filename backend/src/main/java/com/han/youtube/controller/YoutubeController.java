@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:9000")
+@CrossOrigin(origins = "http://localhost:9000", allowCredentials = "true")
 public class YoutubeController {
 
     private final YoutubeService youtubeService;
@@ -30,7 +30,7 @@ public class YoutubeController {
     }
 
     @GetMapping("/api/search-videos")
-    public List<Video> searchVideos(@RequestParam String query) {
+    public List<Video> searchVideos(@RequestParam(name = "query") String query) {
         try {
             return youtubeService.searchVideos(query);
         } catch (IOException e) {

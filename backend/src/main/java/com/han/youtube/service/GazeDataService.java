@@ -41,6 +41,9 @@ public class GazeDataService {
             String fileDirectory = Paths.get(rootPath, "analysis").normalize().toString();
             String scriptPath = Paths.get(fileDirectory,"video_analysis.py").toString();
 
+            int width = (int) Double.parseDouble(videoHeight);
+            int height = (int) Double.parseDouble(videoHeight);
+
             System.out.println("파일 경로: " + scriptPath);
 
             List<String> arguments = new ArrayList<>();
@@ -48,12 +51,13 @@ public class GazeDataService {
             arguments.add(scriptPath);
             arguments.add(videoId);
             arguments.add(videoCSV);
-            arguments.add(videoWidth);
-            arguments.add(videoHeight);
+            arguments.add(String.valueOf(width));
+            arguments.add(String.valueOf(height));
 
             ProcessBuilder pb = new ProcessBuilder(arguments);
             pb.redirectErrorStream(true);
-            System.out.println(arguments);
+
+            System.out.println("Executing command: " + pb.command());
             Process process = pb.start();
 
             // 파이썬 표준 출력 및 에러 출력 처리
