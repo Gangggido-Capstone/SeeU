@@ -197,7 +197,7 @@ if __name__ == "__main__":
 
     # 영상 다운
     video_only, audio_only, video_filename = download(video_id)
-
+    video_width, video_height = 965, 543
     # 영상 분석 시각화
-    video_point = gazeVisualization(video_id, video_csv, video_only, audio_only)
+    video_point = gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, video_height)
     print(video_point)
