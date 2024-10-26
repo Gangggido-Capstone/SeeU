@@ -50,7 +50,8 @@ def score_cluster(video_id, video_csv, sceneTime):
             n_clusters.append(0)
             continue  # 다음 씬으로 넘어감
 
-        dbscan = DBSCAN(eps=30 , min_samples=5)
+        # dbscan = DBSCAN(eps=30 , min_samples=5)
+        dbscan = DBSCAN(eps=27, min_samples=5)
         labels = dbscan.fit_predict(gaze_data)
 
         #  ========================== 점수 구하는 구간 =========================
@@ -69,7 +70,7 @@ def score_cluster(video_id, video_csv, sceneTime):
         # print(f"Zero Attention Score: {focus_score2:.2f}")
 
         # 클러스터 점수 * 0.7 + Attention 비율 점수 * 0.3
-        res = ((focus_score1 * 0.7) + (focus_score2 * 0.3)) * 100
+        res = ((focus_score1 * 0.8) + (focus_score2 * 0.2)) * 100
         final_score.append(res)
 
         print(f"Attention Score: {res:.2f}")
@@ -164,14 +165,14 @@ if __name__ == "__main__":
 
     # video_id = "fRaIcUhaXXQ"
     # video_csv = "fRaIcUhaXXQ_2024-10-20-16-50-56.csv"
-    video_id = "fRaIcUhaXXQ"
-    video_csv = "fRaIcUhaXXQ_2024-10-20-16-50-56.csv"
+    video_id = "iiIcTPoIoZk"
+    video_csv = "iiIcTPoIoZk_2024-10-26-16-44-40.csv"
 
     # 영상 다운
-    video_only, audio_only, video_filename = download(video_id)
+    video_only, audio_only = download(video_id)
 
     # 영상 분할
-    sceneTime = detect(video_id, video_only, video_filename)
+    sceneTime = detect(video_id, video_only)
 
     # 영상 점수 및 클러스터 이미지 저장
     atention_score_list = score_cluster(video_id, video_csv, sceneTime)

@@ -15,7 +15,7 @@ def get_root_path():
         current_dir = os.path.abspath(os.path.join(current_dir, '..'))
     return current_dir
 
-def detect(video_id, video_only, video_filename):
+def detect(video_id, video_only):
     try:
         # 루트 경로 가져오기
         root_path = get_root_path()
@@ -26,7 +26,7 @@ def detect(video_id, video_only, video_filename):
 
         if not os.path.exists(split_video_directory):
             # 영상 불러오기
-            video = open_video(video_filename)
+            video = open_video(video_only)
 
             # 초당 프레임 수
             fps = cv2.VideoCapture(video_only).get(cv2.CAP_PROP_FPS)  
@@ -84,7 +84,7 @@ def detect(video_id, video_only, video_filename):
             print("Split time from CSV file:", sceneTime)
 
             # 영상 자르기 (파일로 저장)
-            split_video_ffmpeg(video_filename, scene_list, output_dir=split_video_directory,show_progress=True)
+            split_video_ffmpeg(video_only, scene_list, output_dir=split_video_directory,show_progress=True)
 
             # 썸네일 만들기 (jpg 파일로 저장)
             save_images(
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     video_id = "jWQx2f-CErU"
     
     # 영상 다운
-    video_only, audio_only, video_filename = download(video_id)
+    video_only, audio_only = download(video_id)
 
     # 영상 분할
-    sceneTime = detect(video_id, video_only, video_filename)
+    sceneTime = detect(video_id, video_only)
