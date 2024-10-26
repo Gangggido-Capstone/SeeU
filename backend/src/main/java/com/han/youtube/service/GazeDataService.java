@@ -41,7 +41,7 @@ public class GazeDataService {
             String fileDirectory = Paths.get(rootPath, "analysis").normalize().toString();
             String scriptPath = Paths.get(fileDirectory,"video_analysis.py").toString();
 
-            int width = (int) Double.parseDouble(videoHeight);
+            int width = (int) Double.parseDouble(videoWidth);
             int height = (int) Double.parseDouble(videoHeight);
 
             System.out.println("파일 경로: " + scriptPath);
