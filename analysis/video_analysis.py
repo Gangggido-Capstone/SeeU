@@ -8,11 +8,16 @@ import json
 def main():
     if len(sys.argv) < 5:
         print("Warning: Missing required arguments.")
+        print("video_width, video_height = 965, 543")
         video_width, video_height = 965, 543
     else:
         video_width, video_height = int(float(sys.argv[3])), int(float(sys.argv[4]))
 
     video_id, video_csv = sys.argv[1], sys.argv[2]
+    print("video_id: " + str(video_id))
+    print("video_csv: " + str(video_csv))
+    print("video_width: " + str(video_width))
+    print("video_height: " + str(video_height))
 
     # 영상 다운
     video_only, audio_only, video_filename = download(video_id)
