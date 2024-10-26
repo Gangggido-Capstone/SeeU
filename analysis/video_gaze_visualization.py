@@ -21,7 +21,7 @@ def draw_circle(image, center, radius, color, alpha=1.0):
     cv2.circle(overlay, center, radius, color, -1)
     return cv2.addWeighted(overlay, alpha, image, 1 - alpha, 0)
 
-def gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, video_height):
+def gazeVisualization(video_id, video_csv, video_only, video_width, video_height):
     # 프로젝트 루트 경로 설정
     root_path = get_root_path()
     
@@ -156,8 +156,8 @@ if __name__ == "__main__":
     video_csv = "fRaIcUhaXXQ_2024-10-20-16-50-56.csv"
 
     # 영상 다운
-    video_only, audio_only = download(video_id)
+    video_only = download(video_id)
     video_width, video_height = 965, 543
     # 영상 분석 시각화
-    video_point = gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, video_height)
+    video_point = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
     print(video_point)

@@ -14,8 +14,6 @@ def download(video_id):
     video_url = f"https://youtu.be/{video_id}"
 
     video_dir = os.path.join(root_path, "Data", "video", video_id)
-
-    audio_only = os.path.join(video_dir, "audio.m4a")
     video_only = os.path.join(video_dir, f"{video_id}.mp4")
 
     if not os.path.exists(video_only):
@@ -27,23 +25,14 @@ def download(video_id):
             'outtmpl': video_only,
         }
 
-        ydl_opts_audio = {
-            'format': 'bestaudio',
-            'outtmpl': audio_only,
-        }
-
         # 비디오 다운로드
         with yt_dlp.YoutubeDL(ydl_opts_video) as ydl:
-            ydl.download([video_url])
-
-        # 오디오 다운로드
-        with yt_dlp.YoutubeDL(ydl_opts_audio) as ydl:
             ydl.download([video_url])
 
     else:
         print(f"{video_only} The file already exists.")
 
-    return video_only, audio_only
+    return video_only
     
 
 if __name__ == "__main__":
@@ -56,6 +45,6 @@ if __name__ == "__main__":
     # video_csv = "0gkPFSvVvFw_2024-10-12-18-56-44.csv"
     video_id = "fRaIcUhaXXQ"
     
-    video_only, audio_only = download(video_id)
+    video_only = download(video_id)
 
     
