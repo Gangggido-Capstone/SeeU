@@ -26,7 +26,9 @@ def main():
     print("video_id, video_csv, video_width, video_height = " + str(video_id) + str(video_csv) + str(video_width) + str(video_height) )
 
     print("================================= download start =================================")
-    video_only, audio_only = download(video_id)
+
+    video_only = download(video_id)
+
     download_end = time.time()
     print(f"download end: {download_end - start:.5f} sec")
 
@@ -41,7 +43,9 @@ def main():
     print(f"score cluster end: {cluster_end - start:.5f} sec")
 
     print("================================== point start ==================================")
-    video_point = gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, video_height)
+
+    video_point = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
+
     point_end = time.time()
     print(f"point end: {point_end - start:.5f} sec")
 

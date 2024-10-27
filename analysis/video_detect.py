@@ -3,10 +3,29 @@ from video_download import download
 from scenedetect import open_video, SceneManager
 from scenedetect.detectors import ContentDetector
 from scenedetect.scene_manager import save_images
-from scenedetect.video_splitter import split_video_ffmpeg
+from concurrent.futures import ProcessPoolExecutor
+
 import os
 import cv2
 import csv
+
+def split_scene(video_path, start_time, end_time, output_dir, scene_number):
+    output_file = os.path.join(output_dir, f'scene_{scene_number:03d}.mp4')
+    command = f'ffmpeg -i "{video_path}" -ss {start_time} -to {end_time} -c copy "{output_file}" -y'
+    os.system(command)
+
+def split_video_parallel(video_path, scene_list, output_dir):
+    os.makedirs(output_dir, exist_ok=True)
+
+    # 병렬로 분할 작업 실행
+    with ProcessPoolExecutor() as executor:
+        futures = [
+            executor.submit(split_scene, video_path, start.get_seconds(), end.get_seconds(), output_dir, i + 1)
+            for i, (start, end) in enumerate(scene_list)
+        ]
+        # 모든 작업이 완료될 때까지 기다림
+        for future in futures:
+            future.result()
 
 def get_root_path():
     # 현재 디렉토리에서 README.md 파일이 존재하는 경로를 루트로 설정
@@ -83,8 +102,12 @@ def detect(video_id, video_only):
 
             print("Split time from CSV file:", sceneTime)
 
-            # 영상 자르기 (파일로 저장)
-            split_video_ffmpeg(video_only, scene_list, output_dir=split_video_directory,show_progress=True)
+            # # 영상 자르기 (파일로 저장)
+            # split_video_ffmpeg(video_only, scene_list, output_dir=split_video_directory,show_progress=True)
+
+            # 영상 자르기 (병렬 처리 사용)
+            split_video_parallel(video_only, scene_list, split_video_directory)
+
 
             # 썸네일 만들기 (jpg 파일로 저장)
             save_images(
@@ -131,7 +154,8 @@ if __name__ == "__main__":
     video_id = "jWQx2f-CErU"
     
     # 영상 다운
-    video_only, audio_only = download(video_id)
+    video_only = download(video_id)
 
     # 영상 분할
     sceneTime = detect(video_id, video_only)
+

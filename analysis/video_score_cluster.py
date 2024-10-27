@@ -169,7 +169,8 @@ if __name__ == "__main__":
     video_csv = "iiIcTPoIoZk_2024-10-26-16-44-40.csv"
 
     # 영상 다운
-    video_only, audio_only = download(video_id)
+    video_only = download(video_id)
+
 
     # 영상 분할
     sceneTime = detect(video_id, video_only)

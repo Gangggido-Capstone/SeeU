@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "regenerator-runtime/runtime";
 import EasySeeSo from "seeso/easy-seeso";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { showGaze } from "./showGaze.js";
 import "../../css/styles.css";
 import "../../css/VideoGazeTracker.css";
 
 const VideoGazeTracker = () => {
     const { videoId } = useParams();
+    const navigate = useNavigate();
     const [player, setPlayer] = useState(null);
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -249,14 +250,16 @@ const VideoGazeTracker = () => {
             player.pauseVideo();
             if (stopTracking()?.data) stopTracking();
             saveCSVToServer();
+
+            navigate("/Records");
         } else {
             console.error("Player is not ready or pauseVideo is not available");
         }
     };
+    
 
     return (
         <div className='video-player-wrapper'>
-            <div>test</div>
             <iframe
                 id='youtube-player'
                 credentialless='true'
@@ -273,16 +276,14 @@ const VideoGazeTracker = () => {
                     시선 좌표: x: {videoGaze.x}, y: {videoGaze.y}, attention:{" "}
                     {videoGaze.attention}
                 </p>
-                <div className='video-controls'>
-                    <button onClick={handlePlay}>재생</button>
-                    <button onClick={handlePause}>정지</button>
-                    <button onClick={handleAnalysis}>분석</button>
-                    <a href='/' className='back-button' onClick={handleBack}>
-                        홈
-                    </a>
-                </div>
+                <p>재생 시간: {currentTime}초</p>
             </div>
-            <canvas id='output'></canvas>
+            <div className='video-controls'>
+                <button onClick={handlePlay}>재생</button>
+                <button onClick={handlePause}>정지</button>
+                <button onClick={handleAnalysis}>분석</button>
+                <a href='/' className='back-button' onClick={handleBack}> 홈 </a>
+            </div>
         </div>
     );
 };
