@@ -108,6 +108,7 @@ def detect(video_id, video_only):
             # 영상 자르기 (병렬 처리 사용)
             split_video_parallel(video_only, scene_list, split_video_directory)
 
+
             # 썸네일 만들기 (jpg 파일로 저장)
             save_images(
                 scene_list, # 장면 리스트 [(시작, 끝)]
@@ -157,3 +158,4 @@ if __name__ == "__main__":
 
     # 영상 분할
     sceneTime = detect(video_id, video_only)
+

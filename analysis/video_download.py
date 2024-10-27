@@ -33,8 +33,8 @@ def download(video_id):
         print(f"{video_only} The file already exists.")
 
     return video_only
-    
 
+    
 if __name__ == "__main__":
   
     # video_id, video_csv는 스프링에서 넘겨야 함
@@ -44,7 +44,5 @@ if __name__ == "__main__":
     # video_id = "0gkPFSvVvFw"
     # video_csv = "0gkPFSvVvFw_2024-10-12-18-56-44.csv"
     video_id = "fRaIcUhaXXQ"
-    
-    video_only = download(video_id)
 
-    
+    video_only = download(video_id)
