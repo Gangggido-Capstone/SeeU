@@ -21,7 +21,7 @@ def draw_circle(image, center, radius, color, alpha=1.0):
     cv2.circle(overlay, center, radius, color, -1)
     return cv2.addWeighted(overlay, alpha, image, 1 - alpha, 0)
 
-def gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, video_height):
+def gazeVisualization(video_id, video_csv, video_only, video_width, video_height):
     # 프로젝트 루트 경로 설정
     root_path = get_root_path()
     
@@ -43,8 +43,7 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, 
         fps = video_capture.get(cv2.CAP_PROP_FPS)
 
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        video_temp = os.path.join(root_path, "Data", "video", video_id, "points.mp4")
-        video_writer = cv2.VideoWriter(video_temp, fourcc, fps, (video_width, video_height))
+        video_writer = cv2.VideoWriter(video_point, fourcc, fps, (video_width, video_height))
 
         frame_idx = 0
         previous_points = []  # 최근 5개의 좌표와 반지름 크기 저장
@@ -76,7 +75,7 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, 
                 x, y = row['X'], row['Y']
                 if not pd.isna(x) and not pd.isna(y):
                     # 이전 좌표와 비교하여 거리가 50 이내인지 확인
-                    if previous_points and distance(previous_points[-1][:2], (x, y)) <= 50:
+                    if previous_points and distance(previous_points[-1][:2], (x, y)) <= 30:
                         
                         # 기존 좌표와 가까우면 반지름 증가
                         new_radius = previous_points[-1][2] + 1
@@ -139,45 +138,6 @@ def gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, 
         video_capture.release()
         video_writer.release()
 
-        try:
-            ffmpeg_path = "C:/ffmpeg/bin/ffmpeg" 
-            merge_command = [
-                ffmpeg_path,
-                '-i', video_temp,
-                '-i', audio_only,
-                '-c:v', 'copy',  # 비디오를 재인코딩하지 않고 복사
-                '-c:a', 'aac',  # 오디오를 AAC 형식으로 변환
-                '-b:a', '192k',  # 오디오 비트레이트 설정
-                '-r', '24',  # 비디오 프레임 속도 설정
-                '-preset', 'ultrafast',  # 초고속 인코딩 옵션
-                '-threads', '4',  # CPU 스레드 개수 지정
-                '-vsync', 'cfr',  # 고정 프레임 속도 동기화
-                '-map', '0:v:0',  # 비디오 스트림을 첫 번째 입력에서 가져오기
-                '-map', '1:a:0',  # 오디오 스트림을 두 번째 입력에서 가져오기
-                '-shortest',  # 가장 짧은 스트림 기준으로 맞추기
-                video_point
-            ]
-
-            print("subprocess run")
-            ffmpeg_process = subprocess.Popen(merge_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            stdout, stderr = ffmpeg_process.communicate(timeout=500)
-            print("subprocess end")
-
-            if ffmpeg_process.returncode != 0:
-                    print(f"FFmpeg error: {stderr}")
-            else:
-                print(f"FFmpeg success")
-
-        except subprocess.TimeoutExpired:
-            ffmpeg_process.kill()
-            print("FFmpeg Time Out")
-
-        finally:
-            ffmpeg_process.kill()
-
-        if os.path.exists(video_temp):
-            os.remove(video_temp)
-
         print(f"Video Generation Completed: {video_point}")
 
     else:
@@ -196,8 +156,8 @@ if __name__ == "__main__":
     video_csv = "fRaIcUhaXXQ_2024-10-20-16-50-56.csv"
 
     # 영상 다운
-    video_only, audio_only, video_filename = download(video_id)
+    video_only = download(video_id)
     video_width, video_height = 965, 543
     # 영상 분석 시각화
-    video_point = gazeVisualization(video_id, video_csv, video_only, audio_only, video_width, video_height)
+    video_point = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
     print(video_point)
