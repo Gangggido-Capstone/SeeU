@@ -1,138 +1,147 @@
-import os
-import cv2
-import pandas as pd
-import numpy as np
-from collections import deque
 from video_download import download
+from sklearn.cluster import DBSCAN
+from collections import Counter
 from ultralytics import YOLO
+import numpy as np
+import pandas as pd
+import cv2
 
-# YOLO 모델 로드
-model = YOLO("analysis/yolo11n-seg.pt")
+# YOLOv11 모델 로드
+yolo_model = YOLO("analysis/yolo11n.pt")
 
-# CSV 파일 경로
-csv_file = "Data\\GazeData\\iiIcTPoIoZk_2024-10-26-16-44-40.csv"
-dt = "2024-10-26-16-44-40"
+# DBSCAN 파라미터 설정
+dbscan = DBSCAN(eps=27, min_samples=5)
 
-# CSV 데이터 로드
-df = pd.read_csv(csv_file)
+def detect_objects(frame):
+    # YOLOv11 모델로 객체 탐지 수행
+    results = yolo_model(frame)
+    detected_objects = []
 
-video_id = "iiIcTPoIoZk"
-
-# 유튜브 영상 다운로드
-video_only, audio_only, video_filename = download(video_id)
-
-os.makedirs(f"Data/video/{video_id}/points", exist_ok=True)
-point_video = f"Data/video/{video_id}/points/{video_id}_{dt}.mp4"
-
-# 객체 이름과 색상 매핑
-object_colors = {}
-np.random.seed(0)  # 일관된 색상 분배
-
-# 매칭된 객체 이름을 시간 순서대로 저장
-object_sequence = []
-
-# 비디오 열기
-cap = cv2.VideoCapture(video_only)
-
-# 비디오 속성 가져오기
-fps = cap.get(cv2.CAP_PROP_FPS)  # 초당 프레임 수
-width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))  # 비디오 너비
-height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))  # 비디오 높이
-
-# 비디오를 965x543 크기로 변환
-output_width = 965
-output_height = 543
-
-# 비디오 출력 설정
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out = cv2.VideoWriter(point_video, fourcc, fps, (output_width, output_height))
-
-# 현재 프레임 인덱스
-frame_idx = 0
-
-# 점을 10초 동안 유지할 수 있도록 큐 설정
-active_points = deque()
-
-# 비디오를 프레임 단위로 처리
-while cap.isOpened():
-    ret, frame = cap.read()
-    if not ret:
-        break
-
-    # 현재 프레임에 해당하는 시간 계산 (초 단위)
-    current_time = frame_idx / fps
-
-    # 프레임 크기 조정
-    frame_resized = cv2.resize(frame, (output_width, output_height))
-
-    # YOLO 모델을 사용하여 객체 탐지 수행
-    results = model(frame_resized)
-
-    # 시선 좌표 값과 매칭된 객체 이름 저장
-    matched_objects = set()
     for result in results:
         for obj in result.boxes:
             class_id = int(obj.cls)
-            object_name = model.names[class_id]
+            confidence = obj.conf
+            if confidence > 0.8:  # 신뢰도 기준 설정
+                detected_objects.append(yolo_model.names[class_id])
+    
+    return detected_objects
 
-            # 객체의 색상 설정 (같은 객체는 같은 색상)
-            if object_name not in object_colors:
-                object_colors[object_name] = tuple(np.random.randint(100, 255, 3).tolist())
+def process_video(video_id, video_csv, video_only):
 
-            # 바운딩 박스 중심 좌표 계산
-            xyxy = obj.xyxy.cpu().numpy()[0]  # 텐서를 넘파이 배열로 변환하여 좌표 추출
-            x1, y1, x2, y2 = xyxy[0], xyxy[1], xyxy[2], xyxy[3]
-            x = int((x1 + x2) / 2)
-            y = int((y1 + y2) / 2)
+    # 시드 설정
+    np.random.seed(42)
 
-            # CSV의 응시 데이터와 일치하는 객체를 찾음
-            matching_rows = df[(df['Time'] >= current_time) & (df['Time'] < current_time + 0.1)]
-            for _, row in matching_rows.iterrows():
-                gaze_x, gaze_y = row['X'], row['Y']
-                if not pd.isna(gaze_x) and not pd.isna(gaze_y):
-                    # 객체가 시선 좌표와 매칭되었을 경우 이름을 저장
-                    if x1 <= gaze_x <= x2 and y1 <= gaze_y <= y2:
-                        matched_objects.add(object_name)
+    date_time = video_csv.split('_')[1].split('.')[0]
+    gaze_csv = pd.read_csv(video_csv)    
 
-                    # 점을 큐에 추가 (10초 후에 제거)
-                    color = object_colors[object_name] + (0.5,)  # 투명도 적용
-                    active_points.append((gaze_x, gaze_y, current_time, color))
+    # Null 값이 있는 좌표는 그리기 시점에 검사하고 건너뛴다
+    gaze_csv = gaze_csv.dropna(subset=['Time', 'X', 'Y'])
 
-                    # 객체 이름을 시간 순서대로 저장 (중복된 연속 이름은 합침)
-                    if not object_sequence or object_sequence[-1] != object_name:
-                        object_sequence.append(object_name)
+    # 비디오 열기
+    cap = cv2.VideoCapture(video_only)
+    video_path = f'Data/video/{video_id}/point_test/{video_id}_{date_time}.mp4'
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    video_width, video_height = 965, 543
+    
+    out = cv2.VideoWriter(video_path, fourcc, fps, (video_width, video_height))
 
-    # 10초 이상된 점 제거
-    while active_points and current_time - active_points[0][2] > 5:
-        active_points.popleft()
+    # 클러스터링 수행
+    coords = gaze_csv[['X', 'Y']].values
+    clustering = dbscan.fit(coords)
+    gaze_csv['Cluster'] = clustering.labels_
 
-    # 활성 점을 그리기
-    overlay = frame_resized.copy()
-    for x, y, timestamp, color in active_points:
-        color_bgr = (int(color[0]), int(color[1]), int(color[2]))
-        cv2.circle(overlay, (int(x), int(y)), 10, color_bgr, -1)
+    # 색상 설정: 초록색(클러스터)과 빨간색(노이즈) 설정
+    colors = {
+        label: (0, 255, 0, 128) if label != -1 else (0, 0, 255, 128)  # 클러스터: 초록색, 노이즈: 빨간색
+        for label in np.unique(clustering.labels_)
+    }
 
-    # 투명도를 적용하여 원본 프레임과 합성
-    alpha = 0.5  # 투명도 설정
-    frame_resized = cv2.addWeighted(overlay, alpha, frame_resized, 1 - alpha, 0)
+    detected_objects_list = []
+    displayed_points = []
+    displayed_object_names = []
 
-    # 왼쪽 상단에 매칭된 객체 이름 표시
-    y_offset = 20
-    for obj_name in matched_objects:
-        cv2.putText(frame_resized, obj_name, (10, y_offset), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
-        y_offset += 30
+    point_radius = 7  # 점의 반지름 크기 설정
 
-    # 비디오에 프레임 기록
-    out.write(frame_resized)
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-    # 다음 프레임으로 이동
-    frame_idx += 1
+        # 프레임 크기 조정
+        frame = cv2.resize(frame, (video_width, video_height))
 
-# 비디오와 출력 파일 닫기
-cap.release()
-out.release()
+        current_time = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
 
-# 객체 이름 순서 출력
-print(" -> ".join(object_sequence))
+        detected_objects = detect_objects(frame)
+        detected_objects_list.extend(detected_objects)
 
-print(f"{point_video} 비디오 생성 완료")
+        # 현재 프레임에서 감지된 객체와 좌표가 일치하는 객체의 이름을 저장
+        frame_object_names = set()
+
+        # 현재 시간에 해당하는 응시 데이터 필터링
+        frame_gaze_points = gaze_csv[(gaze_csv['Time'] >= current_time - 1 / cap.get(cv2.CAP_PROP_FPS)) & (gaze_csv['Time'] < current_time)]
+
+        for _, gaze in frame_gaze_points.iterrows():
+            x, y = int(gaze['X']), int(gaze['Y'])
+            cluster_id = gaze['Cluster']
+
+            # 클러스터 색상 설정
+            color = colors.get(cluster_id, (192, 192, 192, 128))
+
+            # 점에 투명도를 적용하기 위해 알파 채널 사용
+            overlay = frame.copy()
+            cv2.circle(overlay, (x, y), point_radius, color[:3], -1)
+            alpha = color[3] / 255.0
+            cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
+
+            # 감지된 객체 영역과 일치하는 경우
+            for obj_name in detected_objects:
+                if obj_name not in frame_object_names:
+                    frame_object_names.add(obj_name)
+
+            # 점 기록
+            displayed_points.append((x, y, current_time, color))
+
+        # 왼쪽 상단에 감지된 객체 이름 표시
+        for i, obj_name in enumerate(frame_object_names):
+            cv2.putText(frame, obj_name, (10, 30 + i * 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
+        # 객체 이름을 중복되지 않도록 순서대로 추가
+        if frame_object_names:
+            for obj_name in frame_object_names:
+                if obj_name not in displayed_object_names or obj_name != displayed_object_names[-1]:
+                    displayed_object_names.append(obj_name)
+
+        # 오래된 점 제거 (3초)
+        displayed_points = [(x, y, t, c) for x, y, t, c in displayed_points if current_time - t <= 3]
+        for x, y, _, color in displayed_points:
+            overlay = frame.copy()
+            cv2.circle(overlay, (x, y), point_radius, color[:3], -1)
+            alpha = color[3] / 255.0
+            cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
+
+        out.write(frame)
+
+    # 객체 빈도수 및 순서 출력
+    print("\n좌표 영역에 있던 객체 빈도수:")
+    object_freq = Counter(displayed_object_names)
+    for obj, count in object_freq.most_common():
+        print(f"{obj}: {count}회 ({count / len(displayed_object_names) * 100:.2f}%)")
+
+    print("\n객체 감지 순서:")
+    unique_sequence = []
+    for obj in displayed_object_names:
+        if not unique_sequence or unique_sequence[-1] != obj:
+            unique_sequence.append(obj)
+    print(" -> ".join(unique_sequence))
+
+    cap.release()
+    out.release()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    video_id = "iiIcTPoIoZk"
+    video_csv = "Data/GazeData/iiIcTPoIoZk_2024-10-26-16-44-40.csv"
+    video_only = download(video_id)
+    process_video(video_id, video_csv, video_only)
