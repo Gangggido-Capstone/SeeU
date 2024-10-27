@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "../../css/RecordPage.css"; // CSS 파일 import
 
 axios.defaults.baseURL = "http://localhost:8080";
 
@@ -41,12 +42,16 @@ const RecordPage = () => {
             <h1>시청 기록</h1>
             <ul>
                 {records.map((record) => (
-                    <li key={record.videoId}>
-                        {" "}
-                        {}
-                        <p>ID: {record.snippet.title}</p>
-                        <p>시청시간: {record.watchdata}</p> {}
-                        <img src={record.snippet.thumbnails.standard.url} />
+                    <li key={record.videoId} className="list-item">
+                        <img
+                            src={record.snippet.thumbnails.standard.url}
+                            alt="thumbnail"
+                            className="thumbnail"
+                        />
+                        <div className="record-info">
+                            <p className="record-title">{record.snippet.title}</p>
+                            <p className="record-time">시청시간: {record.watchdata}</p>
+                        </div>
                     </li>
                 ))}
             </ul>

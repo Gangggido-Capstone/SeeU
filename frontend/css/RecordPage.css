@@ -1,0 +1,32 @@
+.thumbnail {
+    width: 180px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 10px; 
+}
+
+.list-item {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start;
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.record-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.record-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.record-time {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 5px;
+}
