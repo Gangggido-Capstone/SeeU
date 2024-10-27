@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Document(collection = "Capstone")
 @Getter
@@ -20,13 +21,17 @@ public class ReceiveId {
     private LinkedHashMap<String, Object> snippet;
     private List<List<Object>> scoreList;  // List<List<Object>>로 수정
     private String visualization;
+    private Map<String, Float> objectFrequency;
+    private List<String> objectOrder;
 
     @Builder
-    public ReceiveId(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<List<Object>> scoreList, String visualization) {
+    public ReceiveId(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<List<Object>> scoreList, String visualization, Map<String, Float> objectFrequency, List<String> objectOrder) {
         this.videoId = videoId;
         this.watchdata = watchdata;
         this.snippet = snippet;
         this.scoreList = scoreList;
         this.visualization = visualization;
+        this.objectFrequency = objectFrequency;
+        this.objectOrder = objectOrder;
     }
 }

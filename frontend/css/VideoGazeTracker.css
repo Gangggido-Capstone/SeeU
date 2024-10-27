@@ -22,12 +22,37 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
-    gap: 10px; 
+    gap: 10px;
 }
 
 .video-controls button {
     padding: 10px 20px;
     font-size: 16px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.video-controls button:hover {
+    background-color: #0056b3;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+
+.back-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
     background-color: #f44336; 
     color: white; 
     border: none; 
