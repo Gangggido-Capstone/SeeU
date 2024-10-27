@@ -256,6 +256,7 @@ const VideoGazeTracker = () => {
             console.error("Player is not ready or pauseVideo is not available");
         }
     };
+    
 
     return (
         <div className='video-player-wrapper'>
@@ -281,9 +282,7 @@ const VideoGazeTracker = () => {
                 <button onClick={handlePlay}>재생</button>
                 <button onClick={handlePause}>정지</button>
                 <button onClick={handleAnalysis}>분석</button>
-                <a href='/' className='back-button' onClick={handleBack}>
-                        홈
-                    </a>
+                <a href='/' className='back-button' onClick={handleBack}> 홈 </a>
             </div>
         </div>
     );
