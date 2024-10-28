@@ -1,0 +1,175 @@
+.thumbnail {
+    width: 180px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 20px;
+}
+
+.list-item {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.record-info {
+    display: flex;
+    flex-direction: column;
+    margin-right: auto;
+}
+
+.record-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.record-time {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 5px;
+}
+
+.analysis-button {
+    padding: 8px 12px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-right: 70px;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 400px;
+    text-align: center;
+}
+
+.close-button {
+    margin-top: 15px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.record-page-container {
+    padding: 20px;
+    position: relative;
+}
+
+.records-container {
+    display: flex;
+    align-items: flex-start;
+}
+
+ul {
+    flex: 1;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.home-logo-link {
+    position: absolute;
+    top: 60px; /* 원하는 위쪽 위치로 조정 */
+    right: 80px; /* 원하는 왼쪽 위치로 조정 */
+}
+
+.home-logo {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+/* 13인치 모니터 (1280px ~ 1366px) */
+@media (min-width: 1280px) and (max-width: 1366px) {
+    .thumbnail {
+        width: 160px;
+        height: 90px;
+        margin-right: 15px;
+    }
+
+    .analysis-button {
+        font-size: 1.3rem;
+        padding: 6px 10px;
+        margin-right: 50px;
+    }
+
+    .modal-content {
+        width: 350px;
+    }
+
+    .home-logo-link {
+        top: 50px;
+        right: 70px;
+    }
+}
+
+/* 15인치 모니터 (1440px ~ 1600px) */
+@media (min-width: 1440px) and (max-width: 1600px) {
+    .thumbnail {
+        width: 180px;
+        height: 100px;
+        margin-right: 20px;
+    }
+
+    .analysis-button {
+        font-size: 1.5rem;
+        padding: 8px 12px;
+        margin-right: 70px;
+    }
+
+    .modal-content {
+        width: 400px;
+    }
+
+    .home-logo-link {
+        top: 60px;
+        right: 80px;
+    }
+}
+
+/* 17인치 모니터 (1680px 이상) */
+@media (min-width: 1680px) {
+    .thumbnail {
+        width: 200px;
+        height: 110px;
+        margin-right: 25px;
+    }
+
+    .analysis-button {
+        font-size: 1.7rem;
+        padding: 10px 14px;
+        margin-right: 90px;
+    }
+
+    .modal-content {
+        width: 450px;
+    }
+
+    .home-logo-link {
+        top: 70px;
+        right: 90px;
+    }
+}
