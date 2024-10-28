@@ -102,3 +102,76 @@ ul {
     height: 40px;
     cursor: pointer;
 }
+
+
+/* 13인치 모니터 (1280px ~ 1366px) */
+@media (min-width: 1280px) and (max-width: 1366px) {
+    .thumbnail {
+        width: 160px;
+        height: 90px;
+        margin-right: 15px;
+    }
+
+    .analysis-button {
+        font-size: 1.3rem;
+        padding: 6px 10px;
+        margin-right: 50px;
+    }
+
+    .modal-content {
+        width: 350px;
+    }
+
+    .home-logo-link {
+        top: 50px;
+        right: 70px;
+    }
+}
+
+/* 15인치 모니터 (1440px ~ 1600px) */
+@media (min-width: 1440px) and (max-width: 1600px) {
+    .thumbnail {
+        width: 180px;
+        height: 100px;
+        margin-right: 20px;
+    }
+
+    .analysis-button {
+        font-size: 1.5rem;
+        padding: 8px 12px;
+        margin-right: 70px;
+    }
+
+    .modal-content {
+        width: 400px;
+    }
+
+    .home-logo-link {
+        top: 60px;
+        right: 80px;
+    }
+}
+
+/* 17인치 모니터 (1680px 이상) */
+@media (min-width: 1680px) {
+    .thumbnail {
+        width: 200px;
+        height: 110px;
+        margin-right: 25px;
+    }
+
+    .analysis-button {
+        font-size: 1.7rem;
+        padding: 10px 14px;
+        margin-right: 90px;
+    }
+
+    .modal-content {
+        width: 450px;
+    }
+
+    .home-logo-link {
+        top: 70px;
+        right: 90px;
+    }
+}
