@@ -40,6 +40,7 @@
     border: none;
     border-radius: 5px;
     margin-right: 70px;
+
 }
 
 .modal-overlay {
@@ -80,7 +81,7 @@
 
 .records-container {
     display: flex;
-    align-items: flex-start;
+    align-items: flex-start; 
 }
 
 ul {
@@ -97,10 +98,11 @@ ul {
 }
 
 .home-logo {
-    width: 40px;
+    width: 40px; 
     height: 40px;
     cursor: pointer;
 }
+
 
 /* 13인치 모니터 (1280px ~ 1366px) */
 @media (min-width: 1280px) and (max-width: 1366px) {
