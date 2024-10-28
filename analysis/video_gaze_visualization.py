@@ -9,8 +9,17 @@ import time
 import cv2
 import os
 
-# YOLO 모델
-yolo_model = YOLO("analysis/yolo11n.pt")
+def get_root_path():
+    current_dir = os.path.abspath(os.path.dirname(__file__))
+    while not os.path.exists(os.path.join(current_dir, 'README.md')):
+        current_dir = os.path.abspath(os.path.join(current_dir, '..'))
+    return current_dir
+
+root_path = get_root_path()
+
+yolo_dir = os.path.join(root_path, "analysis", "yolo11n.pt")
+yolo_model = YOLO(yolo_dir)
+yolo_model.overrides['verbose'] = False
 
 def detectObjects(frame):
     results = yolo_model(frame)
@@ -21,25 +30,31 @@ def detectObjects(frame):
         for obj in res.boxes:
             class_id = int(obj.cls)  # 객체의 클래스 ID
             confidence = obj.conf    # 신뢰도
-            if confidence > 0.8:     # 신뢰도가 0.8 이상인 경우만 추가
+            if confidence > 0.8:     # 신뢰도가 0.75 이상인 경우만 추가
                 detected_object.append(yolo_model.names[class_id])  # 객체 이름 추가
     
     return detected_object
 
 def gazeVisualization(video_id, video_csv, video_only, video_width, video_height):
     date_time = video_csv.split('_')[1].split('.')[0]  # 파일명에서 날짜 추출
-    gaze_csv = pd.read_csv(video_csv)  # CSV 파일 로드
-    gaze_csv = gaze_csv.dropna(subset=['Time', 'X', 'Y'])  # Null 값을 가지는 좌표 제거
+
+    csv_path = os.path.join(root_path, "Data", "GazeData")
+    gaze_csv = pd.read_csv(os.path.join(csv_path, video_csv))
+    gaze_csv = gaze_csv.dropna(subset=['Time', 'X', 'Y'])
+
+    points_dir = os.path.join(root_path, "Data", "video", video_id, "points")
+    os.makedirs(points_dir, exist_ok=True)
+
+    video_point = os.path.join(points_dir, f"{video_id}_{date_time}.mp4")
 
     # 비디오 열기
     cap = cv2.VideoCapture(video_only)
-    video_path = f'Data/video/{video_id}/point_test/{video_id}_{date_time}.mp4'
-    os.makedirs(os.path.dirname(video_path), exist_ok=True)  # 필요한 폴더가 없으면 생성
+    os.makedirs(os.path.dirname(video_point), exist_ok=True)  # 필요한 폴더가 없으면 생성
 
     # 비디오 속성 설정
     fps = cap.get(cv2.CAP_PROP_FPS)  # 초당 프레임 수 가져오기
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # 비디오 코덱 설정
-    out = cv2.VideoWriter(video_path, fourcc, fps, (video_width, video_height))  # 비디오 파일 쓰기 설정
+    out = cv2.VideoWriter(video_point, fourcc, fps, (video_width, video_height))  # 비디오 파일 쓰기 설정
 
     # DBSCAN 알고리즘을 사용해 클러스터링 수행
     dbscan = DBSCAN(eps=27, min_samples=5)
@@ -88,15 +103,17 @@ def gazeVisualization(video_id, video_csv, video_only, video_width, video_height
                     new_points.append((x, y, t, color))
 
             for _, gaze in frame_points.iterrows():
-                x, y = int(gaze['X']), int(gaze['Y'])
-                cluster_id = gaze['Cluster']
-                color = colors.get(cluster_id, (192, 192, 192, 128))
-                cv2.circle(overlay, (x, y), point_radius, color[:3], -1)
-                new_points.append((x, y, current_time, color))
+                x, y = gaze['X'], gaze['Y']
+                if not pd.isna(x) and not pd.isna(y):
+                    x, y = int(x), int(y)
+                    cluster_id = gaze['Cluster']
+                    color = colors.get(cluster_id, (192, 192, 192, 128))
+                    cv2.circle(overlay, (x, y), point_radius, color[:3], -1)
+                    new_points.append((x, y, current_time, color))
 
-                for obj in detected_objects:
-                    if obj not in frame_objects:
-                        frame_objects.add(obj)
+                    for obj in detected_objects:
+                        if obj not in frame_objects:
+                            frame_objects.add(obj)
 
             # 오버레이와 원본 프레임을 합침
             alpha = 0.4
@@ -119,34 +136,26 @@ def gazeVisualization(video_id, video_csv, video_only, video_width, video_height
     object_freq = Counter(objects)
     total_objects = len(objects)
     object_freq = {obj: (count / total_objects) * 100 for obj, count in object_freq.items()}
-
-    # 객체 탐지 순서 저장
-    object_order = []
-    for obj in objects:
-        if not object_order or object_order[-1] != obj:
-            object_order.append(obj)
+    object_freq = dict(sorted(object_freq.items(), key=lambda item: item[1], reverse=True))
 
     cap.release()
     out.release()
     cv2.destroyAllWindows()
 
-    return video_path, object_freq, object_order
+    return video_point, object_freq
 
 if __name__ == "__main__":
     start = time.time()
 
-    video_id = "iiIcTPoIoZk"
-    video_csv = "Data/GazeData/iiIcTPoIoZk_2024-10-26-16-44-40.csv"
+    video_id = "qtw9CMdtwZg"
+    video_csv = "qtw9CMdtwZg_2024-10-28-19-25-19.csv"
     video_width, video_height = 965, 543
 
     video_only = download(video_id)
 
-    video_point, object_freq, object_order = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
+    video_point, object_freq = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
     print(video_point)
-    print()
     print(object_freq)
-    print()
-    print(object_order)
-    print()
+
     point_end = time.time()
     print(f"point end: {point_end - start:.5f} sec")
