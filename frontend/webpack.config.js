@@ -1,8 +1,8 @@
 const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const dotenv = require("dotenv");
 
-const dotenv = require("dotenv"); // REACT_APP_EYEDID_KEY 사용
 dotenv.config();
 
 module.exports = {
@@ -12,14 +12,14 @@ module.exports = {
         app: "./src/index.js",
     },
     output: {
-        path: path.join(__dirname, "dist"), // 빌드하면 만들어질 경로
-        filename: "bundle.js", // 파일 이름,
+        path: path.join(__dirname, "dist"), // 빌드 경로
+        filename: "bundle.js", // 번들 파일 이름
         publicPath: "/",
     },
     devServer: {
-        hot: true, // HRM(새로 고침 안해도 변경된 모듈 자동으로 적용)
+        hot: true, // HMR
         port: 9000,
-        open: true, // 브라우저 자동 실행 설정
+        open: true, // 브라우저 자동 실행
 
         headers: {
             "Cross-Origin-Embedder-Policy": "require-corp",
@@ -38,7 +38,7 @@ module.exports = {
         },
 
         static: {
-            watch: true, // 파일 변경을 감지하도록 설정
+            watch: true,
         },
     },
     plugins: [
@@ -47,7 +47,6 @@ module.exports = {
             inject: true,
         }),
         new webpack.DefinePlugin({
-            // 환경 변수 브라우저 환경에 전달
             "process.env.REACT_APP_EYEDID_KEY": JSON.stringify(
                 process.env.REACT_APP_EYEDID_KEY
             ),
@@ -68,6 +67,10 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ["style-loader", "css-loader"],
+            },
+            {
+                test: /\.svg$/,
+                use: "file-loader",
             },
         ],
     },

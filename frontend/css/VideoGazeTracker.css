@@ -6,8 +6,8 @@
 }
 
 .youtube-iframe {
-    width: 66vw; /* 화면의 3분의 2 */
-    height: calc(66vw * 9 / 16); /* 16:9 비율 유지 */
+    width: 66vw;
+    height: calc(66vw * 9 / 16);
     border: none;
     z-index: 2;
 }
@@ -53,4 +53,8 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+}
+
+#output {
+    z-index: 4;
 }

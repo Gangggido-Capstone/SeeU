@@ -115,13 +115,13 @@ public class GazeDataService {
                 objectFrequency.put(key, (float) frequencyJson.getDouble(key));
             }
 
-            JSONArray orderArray = result.getJSONArray("object_order");
-            List<String> objectOrder = new ArrayList<>();
-            for (int i = 0; i < orderArray.length(); i++) {
-                objectOrder.add(orderArray.getString(i));
-            }
+//            JSONArray orderArray = result.getJSONArray("object_order");
+//            List<String> objectOrder = new ArrayList<>();
+//            for (int i = 0; i < orderArray.length(); i++) {
+//                objectOrder.add(orderArray.getString(i));
+//            }
 
-            return new GazeAnalysisResult(attentionScoreList, videoPoint, objectFrequency, objectOrder);
+            return new GazeAnalysisResult(attentionScoreList, videoPoint, objectFrequency);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -198,7 +198,7 @@ public class GazeDataService {
             System.out.println("Attention Score List: " + result.getAttentionScoreList());
             System.out.println("Video Gaze Visualization: " + result.getGazeVisualization());
             System.out.println("Video Object Frequency: " + result.getObjectFrequency());
-            System.out.println("Video Gaze ObjectOrder: " + result.getObjectOrder());
+//            System.out.println("Video Gaze ObjectOrder: " + result.getObjectOrder());
         } else {
             System.out.println("Python 스크립트 실행 중 오류 발생");
         }
@@ -227,8 +227,8 @@ public class GazeDataService {
                     snippetMap,
                     result != null ? result.getAttentionScoreList() : null,
                     result != null ? result.getGazeVisualization() : null,
-                    result != null ? result.getObjectFrequency() : null,
-                    result != null ? result.getObjectOrder() : null
+                    result != null ? result.getObjectFrequency() : null
+//                    result != null ? result.getObjectOrder() : null
             );
 
             mongoRepository.save(receiveId);

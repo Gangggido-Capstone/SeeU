@@ -22,16 +22,14 @@ public class ReceiveId {
     private List<List<Object>> scoreList;  // List<List<Object>>로 수정
     private String visualization;
     private Map<String, Float> objectFrequency;
-    private List<String> objectOrder;
 
     @Builder
-    public ReceiveId(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<List<Object>> scoreList, String visualization, Map<String, Float> objectFrequency, List<String> objectOrder) {
+    public ReceiveId(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<List<Object>> scoreList, String visualization, Map<String, Float> objectFrequency) {
         this.videoId = videoId;
         this.watchdata = watchdata;
         this.snippet = snippet;
         this.scoreList = scoreList;
         this.visualization = visualization;
         this.objectFrequency = objectFrequency;
-        this.objectOrder = objectOrder;
     }
 }

@@ -18,6 +18,7 @@ def main():
         video_width, video_height = int(float(sys.argv[3])), int(float(sys.argv[4]))
 
     video_id, video_csv = sys.argv[1], sys.argv[2]
+    
     print("video_id: " + str(video_id))
     print("video_csv: " + str(video_csv))
     print("video_width: " + str(video_width))
@@ -41,7 +42,7 @@ def main():
     print(f"================ score cluster end: {cluster_end - start:.5f} sec ================")
 
     print("================================== point start ==================================")
-    video_point, object_freq, object_order = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
+    video_point, object_freq = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
 
     point_end = time.time()
     print(f"================ point end: {point_end - start:.5f} sec ==================")
@@ -49,8 +50,7 @@ def main():
     result = {
         "attention_score_list": attention_score_list,
         "video_point": video_point,
-        "object_frequency": object_freq,
-        "object_order": object_order
+        "object_frequency": object_freq
     }
 
     print(json.dumps(result))

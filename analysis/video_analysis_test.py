@@ -9,31 +9,40 @@ def main():
     print(f"python script start")
     start = time.time()
 
+    print("video_id: " + str(video_id))
+    print("video_csv: " + str(video_csv))
+    print("video_width: " + str(video_width))
+    print("video_height: " + str(video_height))
+
+    print("video_id, video_csv, video_width, video_height = " + str(video_id) + str(video_csv) + str(video_width) + str(video_height) )
+
     print("================================= download start =================================")
     video_only = download(video_id)
     download_end = time.time()
-    print(f"download end: {download_end - start:.5f} sec")
+    print(f"================ download end: {download_end - start:.5f} sec ================")
 
     print("================================== detect start ==================================")
     sceneTime = detect(video_id, video_only)
     detect_end = time.time()
-    print(f"detect end: {detect_end - start:.5f} sec")
+    print(f"================ detect end: {detect_end - start:.5f} sec ================")
 
     print("============================== score cluster start ==============================")
     attention_score_list = score_cluster(video_id, video_csv, sceneTime)
     cluster_end = time.time()
-    print(f"score cluster end: {cluster_end - start:.5f} sec")
+    print(f"================ score cluster end: {cluster_end - start:.5f} sec ================")
 
     print("================================== point start ==================================")
-    video_point = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
-    point_end = time.time()
-    print(f"point end: {point_end - start:.5f} sec")
+    video_point, object_freq = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
 
-    # JSON
+    point_end = time.time()
+    print(f"================ point end: {point_end - start:.5f} sec ==================")
+
     result = {
         "attention_score_list": attention_score_list,
-        "video_point": video_point
+        "video_point": video_point,
+        "object_frequency": object_freq
     }
+
     print(json.dumps(result))
 
     end = time.time()
