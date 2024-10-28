@@ -51,11 +51,19 @@ const RecordPage = () => {
                 <ul>
                     {records.map((record) => (
                         <li key={record.videoId} className="list-item">
-                            <img
-                                src={record.snippet.thumbnails.standard.url}
-                                alt="thumbnail"
-                                className="thumbnail"
-                            />
+                            {record.snippet?.thumbnails?.standard?.url ? (
+                                <img
+                                    src={record.snippet.thumbnails.standard.url}
+                                    alt="thumbnail"
+                                    className="thumbnail"
+                                />
+                            ) : (
+                                <img
+                                    src={record.snippet.thumbnails.high.url}
+                                    alt="thumbnail"
+                                    className="thumbnail"
+                                />
+                            )}
                             <div className="record-info">
                                 <p className="record-title">{record.snippet.title}</p>
                                 <p className="record-time">시청시간: {record.watchdata}</p>
