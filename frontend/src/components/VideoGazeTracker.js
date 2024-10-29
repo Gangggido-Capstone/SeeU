@@ -273,10 +273,9 @@ const VideoGazeTracker = () => {
 
             <div className='info-container'>
                 <p>
-                    시선 좌표: x: {videoGaze.x}, y: {videoGaze.y}, attention:{" "}
-                    {videoGaze.attention}
+                재생 시간: {currentTime}초, 시선 좌표: x: {videoGaze.x}, y: {videoGaze.y}
                 </p>
-                <p>재생 시간: {currentTime}초</p>
+                <p></p>
             </div>
             <div className='video-controls'>
                 <button onClick={handlePlay}>재생</button>
