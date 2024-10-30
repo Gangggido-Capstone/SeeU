@@ -42,15 +42,14 @@ def main():
     print(f"================ score cluster end: {cluster_end - start:.5f} sec ================")
 
     print("================================== point start ==================================")
-    video_point, object_freq = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
+    video_point = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
 
     point_end = time.time()
     print(f"================ point end: {point_end - start:.5f} sec ==================")
 
     result = {
         "attention_score_list": attention_score_list,
-        "video_point": video_point,
-        "object_frequency": object_freq
+        "video_point": video_point
     }
 
     print(json.dumps(result))
