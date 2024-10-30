@@ -277,11 +277,16 @@ const VideoGazeTracker = () => {
                 </p>
                 <p></p>
             </div>
+
             <div className='video-controls'>
                 <button onClick={handlePlay}>재생</button>
                 <button onClick={handlePause}>정지</button>
                 <button onClick={handleAnalysis}>분석</button>
                 <a href='/' className='back-button' onClick={handleBack}> 홈 </a>
+            </div>
+
+            <div>
+                <canvas id='output'></canvas>
             </div>
         </div>
     );
