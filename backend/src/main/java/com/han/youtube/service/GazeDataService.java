@@ -32,6 +32,19 @@ public class GazeDataService {
     private YoutubeService youtubeService;
     private final MongoRepository mongoRepository;
 
+
+    public List<Integer> listScore(List<List<Object>> scoreList) {
+        List<Integer> listscore = new ArrayList<>();
+
+        for (List<Object> score : scoreList) {
+            if (score.size() > 3 && score.get(3) instanceof Number) {
+                listscore.add(((Number) score.get(3)).intValue());
+            }
+        }
+        return listscore;
+    }
+
+
     public GazeAnalysisResult runPythonScript(String videoId, String videoCSV, String videoWidth, String videoHeight) {
         try {
             String python = "python";
@@ -101,11 +114,15 @@ public class GazeDataService {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONArray innerArray = jsonArray.getJSONArray(i);
                 List<Object> innerList = new ArrayList<>();
+
                 for (int j = 0; j < innerArray.length(); j++) {
                     innerList.add(innerArray.get(j));
                 }
                 attentionScoreList.add(innerList);
             }
+
+            List<Integer> scoreList = listScore(attentionScoreList);
+
 
             String videoPoint = result.getString("video_point");
 
@@ -121,7 +138,7 @@ public class GazeDataService {
 //                objectOrder.add(orderArray.getString(i));
 //            }
 
-            return new GazeAnalysisResult(attentionScoreList, videoPoint, objectFrequency);
+            return new GazeAnalysisResult(attentionScoreList, videoPoint, objectFrequency, scoreList);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -227,9 +244,12 @@ public class GazeDataService {
                     snippetMap,
                     result != null ? result.getAttentionScoreList() : null,
                     result != null ? result.getGazeVisualization() : null,
-                    result != null ? result.getObjectFrequency() : null
+                    result != null ? result.getObjectFrequency() : null,
+                    result != null ? result.getAttentionList() : null
+
 //                    result != null ? result.getObjectOrder() : null
             );
+
 
             mongoRepository.save(receiveId);
         } else {

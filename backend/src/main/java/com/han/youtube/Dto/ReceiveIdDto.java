@@ -16,18 +16,20 @@ public class ReceiveIdDto {
     private List<List<Object>> scoreList;
     private String visualization;
     private Map<String, Float> objectFrequency;
+    private List<Integer> attentionList;
 //    private List<String> objectOrder;
 
-    public ReceiveIdDto(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<List<Object>> scoreList, String visualization, Map<String, Float> objectFrequency) {
+    public ReceiveIdDto(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<List<Object>> scoreList, String visualization, Map<String, Float> objectFrequency, List<Integer> attentionList) {
         this.videoId = videoId;
         this.watchdata = watchdata;
         this.snippet = snippet;
         this.scoreList = scoreList;
         this.visualization = visualization;
         this.objectFrequency = objectFrequency;
+        this.attentionList = attentionList;
     }
 
-    public ReceiveId toEntity(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<List<Object>> scoreList, String visualization, Map<String, Float> objectFrequency) {
+    public ReceiveId toEntity(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<List<Object>> scoreList, String visualization, Map<String, Float> objectFrequency, List<Integer> attentionList) {
         return ReceiveId.builder()
                 .videoId(videoId)
                 .watchdata(watchdata)
@@ -35,6 +37,7 @@ public class ReceiveIdDto {
                 .scoreList(scoreList)
                 .visualization(visualization)
                 .objectFrequency(objectFrequency)
+                .attentionList(attentionList)
                 .build();
     }
 }
