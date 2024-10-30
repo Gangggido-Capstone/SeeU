@@ -19,17 +19,15 @@ public class ReceiveId {
     private String videoId;
     private String watchdata;
     private LinkedHashMap<String, Object> snippet;
-    private List<List<Object>> scoreList;  // List<List<Object>>로 수정
+    private List<List<Object>> scoreList;
     private String visualization;
-    private Map<String, Float> objectFrequency;
 
     @Builder
-    public ReceiveId(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<List<Object>> scoreList, String visualization, Map<String, Float> objectFrequency) {
+    public ReceiveId(String videoId, String watchdata, LinkedHashMap<String, Object> snippet, List<List<Object>> scoreList, String visualization) {
         this.videoId = videoId;
         this.watchdata = watchdata;
         this.snippet = snippet;
         this.scoreList = scoreList;
         this.visualization = visualization;
-        this.objectFrequency = objectFrequency;
     }
 }

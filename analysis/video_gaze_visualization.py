@@ -1,8 +1,5 @@
 from video_download import download
-from concurrent.futures import ThreadPoolExecutor
 from sklearn.cluster import DBSCAN
-from collections import Counter
-from ultralytics import YOLO
 import numpy as np
 import pandas as pd
 import time
@@ -15,27 +12,8 @@ def get_root_path():
         current_dir = os.path.abspath(os.path.join(current_dir, '..'))
     return current_dir
 
-root_path = get_root_path()
-
-yolo_dir = os.path.join(root_path, "analysis", "yolo11n.pt")
-yolo_model = YOLO(yolo_dir)
-yolo_model.overrides['verbose'] = False
-
-def detectObjects(frame):
-    results = yolo_model(frame)
-    detected_object = []
-
-    # 결과에서 각 객체 정보 추출
-    for res in results:
-        for obj in res.boxes:
-            class_id = int(obj.cls)  # 객체의 클래스 ID
-            confidence = obj.conf    # 신뢰도
-            if confidence > 0.8:     # 신뢰도가 0.75 이상인 경우만 추가
-                detected_object.append(yolo_model.names[class_id])  # 객체 이름 추가
-    
-    return detected_object
-
 def gazeVisualization(video_id, video_csv, video_only, video_width, video_height):
+    root_path = get_root_path()
     date_time = video_csv.split('_')[1].split('.')[0]  # 파일명에서 날짜 추출
 
     csv_path = os.path.join(root_path, "Data", "GazeData")
@@ -49,7 +27,6 @@ def gazeVisualization(video_id, video_csv, video_only, video_width, video_height
 
     # 비디오 열기
     cap = cv2.VideoCapture(video_only)
-    os.makedirs(os.path.dirname(video_point), exist_ok=True)  # 필요한 폴더가 없으면 생성
 
     # 비디오 속성 설정
     fps = cap.get(cv2.CAP_PROP_FPS)  # 초당 프레임 수 가져오기
@@ -73,76 +50,46 @@ def gazeVisualization(video_id, video_csv, video_only, video_width, video_height
     }
 
     points = []  # 화면에 그릴 점 정보 저장
-    objects = []  # 감지된 객체 이름 저장
-
     point_radius = 7  # 점의 반지름 설정
 
-    # 병렬 처리를 위해 ThreadPoolExecutor 사용
-    with ThreadPoolExecutor(max_workers=4) as executor:
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-            frame = cv2.resize(frame, (video_width, video_height))  # 프레임 크기 조정
-            current_time = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0  # 현재 시간 계산
+        frame = cv2.resize(frame, (video_width, video_height))  # 프레임 크기 조정
+        current_time = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0  # 현재 시간 계산
+        frame_points = gaze_csv[(gaze_csv['Time'] >= current_time - 1 / fps) & (gaze_csv['Time'] < current_time)]
 
-            # 객체 탐지를 병렬로 수행
-            future_detect = executor.submit(detectObjects, frame)
-            detected_objects = future_detect.result()
+        overlay = frame.copy()  # 점 그리기를 위한 오버레이 생성
 
-            frame_objects = set()  # 현재 프레임의 객체 이름 저장
-            frame_points = gaze_csv[(gaze_csv['Time'] >= current_time - 1 / fps) & (gaze_csv['Time'] < current_time)]
+        new_points = []
+        for x, y, t, color in points:
+            if current_time - t <= 1.5:  # 1.5초 이상 지난 점은 제거
+                cv2.circle(overlay, (x, y), point_radius, color[:3], -1)
+                new_points.append((x, y, t, color))
 
-            overlay = frame.copy()  # 점 그리기를 위한 오버레이 생성
+        for _, gaze in frame_points.iterrows():
+            x, y = gaze['X'], gaze['Y']
+            if not pd.isna(x) and not pd.isna(y):
+                x, y = int(x), int(y)
+                cluster_id = gaze['Cluster']
+                color = colors[cluster_id]
+                cv2.circle(overlay, (x, y), point_radius, color[:3], -1)
+                new_points.append((x, y, current_time, color))
 
-            new_points = []
-            for x, y, t, color in points:
-                if current_time - t <= 1.5:  # 1.5초 이상 지난 점은 제거
-                    cv2.circle(overlay, (x, y), point_radius, color[:3], -1)
-                    new_points.append((x, y, t, color))
+        # 오버레이와 원본 프레임을 합침
+        alpha = 0.4
+        cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
 
-            for _, gaze in frame_points.iterrows():
-                x, y = gaze['X'], gaze['Y']
-                if not pd.isna(x) and not pd.isna(y):
-                    x, y = int(x), int(y)
-                    cluster_id = gaze['Cluster']
-                    color = colors.get(cluster_id, (192, 192, 192, 128))
-                    cv2.circle(overlay, (x, y), point_radius, color[:3], -1)
-                    new_points.append((x, y, current_time, color))
-
-                    for obj in detected_objects:
-                        if obj not in frame_objects:
-                            frame_objects.add(obj)
-
-            # 오버레이와 원본 프레임을 합침
-            alpha = 0.4
-            cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
-
-            # 객체 이름을 프레임에 표시
-            for i, obj in enumerate(frame_objects):
-                cv2.putText(frame, obj, (10, 30 + i * 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-
-            # 중복되지 않도록 객체 이름을 추가
-            if frame_objects:
-                for obj in frame_objects:
-                    if obj not in objects or obj != objects[-1]:
-                        objects.append(obj)
-
-            points = new_points
-            out.write(frame)  # 처리된 프레임을 비디오에 저장
-
-    # 객체 빈도수 저장
-    object_freq = Counter(objects)
-    total_objects = len(objects)
-    object_freq = {obj: (count / total_objects) * 100 for obj, count in object_freq.items()}
-    object_freq = dict(sorted(object_freq.items(), key=lambda item: item[1], reverse=True))
+        points = new_points
+        out.write(frame)  # 처리된 프레임을 비디오에 저장
 
     cap.release()
     out.release()
     cv2.destroyAllWindows()
 
-    return video_point, object_freq
+    return video_point
 
 if __name__ == "__main__":
     start = time.time()
@@ -153,9 +100,8 @@ if __name__ == "__main__":
 
     video_only = download(video_id)
 
-    video_point, object_freq = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
+    video_point = gazeVisualization(video_id, video_csv, video_only, video_width, video_height)
     print(video_point)
-    print(object_freq)
 
     point_end = time.time()
     print(f"point end: {point_end - start:.5f} sec")
