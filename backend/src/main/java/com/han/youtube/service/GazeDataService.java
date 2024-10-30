@@ -239,6 +239,6 @@ public class GazeDataService {
 
     @Transactional
     public List<ReceiveIdDto> dbData(){
-        return mongoRepository.findBy(PageRequest.of(0,10));
+        return mongoRepository.findAllBy();
     }
 }
