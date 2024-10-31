@@ -23,6 +23,7 @@ def download(video_id):
         ydl_opts_video = {
             'format': 'bestvideo',
             'outtmpl': video_only,
+            'quiet': True
         }
 
         # 비디오 다운로드
