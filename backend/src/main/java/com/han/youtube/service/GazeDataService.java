@@ -4,6 +4,7 @@ import com.google.api.services.youtube.model.VideoSnippet;
 import com.han.youtube.Domain.ReceiveId;
 import com.han.youtube.Dto.GazeAnalysisResult;
 import com.han.youtube.Dto.ReceiveIdDto;
+import com.han.youtube.Dto.VideoIdRequest;
 import com.han.youtube.Repository.MongoRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,18 @@ public class GazeDataService {
     private YoutubeService youtubeService;
     private final MongoRepository mongoRepository;
 
+
+    public List<Integer> listScore(List<List<Object>> scoreList) {
+        List<Integer> listscore = new ArrayList<>();
+
+        for (List<Object> score : scoreList) {
+            if (score.size() > 2 && score.get(2) instanceof Number) {
+                listscore.add(((Number) score.get(2)).intValue());
+            }
+        }
+        return listscore;
+    }
+
     public GazeAnalysisResult runPythonScript(String videoId, String videoCSV, String videoWidth, String videoHeight) {
         try {
             String python = "python";
@@ -40,7 +53,7 @@ public class GazeDataService {
             File currentDir = new File("");
             String rootPath = currentDir.getAbsoluteFile().getParent();  // youtube-seeso-demo 경로
             String fileDirectory = Paths.get(rootPath, "analysis").normalize().toString();
-            String scriptPath = Paths.get(fileDirectory,"video_analysis.py").toString();
+            String scriptPath = Paths.get(fileDirectory, "video_analysis.py").toString();
 
             int width = (int) Double.parseDouble(videoWidth);
             int height = (int) Double.parseDouble(videoHeight);
@@ -101,27 +114,17 @@ public class GazeDataService {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONArray innerArray = jsonArray.getJSONArray(i);
                 List<Object> innerList = new ArrayList<>();
+
                 for (int j = 0; j < innerArray.length(); j++) {
                     innerList.add(innerArray.get(j));
                 }
                 attentionScoreList.add(innerList);
             }
 
+            List<Integer> scoreList = listScore(attentionScoreList);
             String videoPoint = result.getString("video_point");
 
-//            JSONObject frequencyJson = result.getJSONObject("object_frequency");
-//            Map<String, Float> objectFrequency = new HashMap<>();
-//            for (String key : frequencyJson.keySet()) {
-//                objectFrequency.put(key, (float) frequencyJson.getDouble(key));
-//            }
-
-//            JSONArray orderArray = result.getJSONArray("object_order");
-//            List<String> objectOrder = new ArrayList<>();
-//            for (int i = 0; i < orderArray.length(); i++) {
-//                objectOrder.add(orderArray.getString(i));
-//            }
-
-            return new GazeAnalysisResult(attentionScoreList, videoPoint);
+            return new GazeAnalysisResult(attentionScoreList, videoPoint, scoreList);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -197,8 +200,6 @@ public class GazeDataService {
         if (result != null) {
             System.out.println("Attention Score List: " + result.getAttentionScoreList());
             System.out.println("Video Gaze Visualization: " + result.getGazeVisualization());
-//            System.out.println("Video Object Frequency: " + result.getObjectFrequency());
-//            System.out.println("Video Gaze ObjectOrder: " + result.getObjectOrder());
         } else {
             System.out.println("Python 스크립트 실행 중 오류 발생");
         }
@@ -208,7 +209,6 @@ public class GazeDataService {
         if (video != null) {
             VideoSnippet snippet = video.getSnippet();
 
-            // VideoSnippet -> LinkedHashMap
             LinkedHashMap<String, Object> snippetMap = new LinkedHashMap<>();
             snippetMap.put("title", snippet.getTitle());
             snippetMap.put("description", snippet.getDescription());
@@ -226,10 +226,10 @@ public class GazeDataService {
                     watchDate,
                     snippetMap,
                     result != null ? result.getAttentionScoreList() : null,
-                    result != null ? result.getGazeVisualization() : null
-//                    result != null ? result.getObjectFrequency() : null
-//                    result != null ? result.getObjectOrder() : null
+                    result != null ? result.getGazeVisualization() : null,
+                    result != null ? result.getAttentionList() : null
             );
+
 
             mongoRepository.save(receiveId);
         } else {
@@ -238,7 +238,65 @@ public class GazeDataService {
     }
 
     @Transactional
-    public List<ReceiveIdDto> dbData(){
+    public List<ReceiveIdDto> dbData() {
         return mongoRepository.findAllBy();
     }
+
+    @Transactional
+    public Map averScore(VideoIdRequest videoIdRequest) {
+
+        String videoId = videoIdRequest.getVideoId();
+
+        List<ReceiveId> videoScores = mongoRepository.findByVideoId(videoId);
+        System.out.println("비디오 스코어 =" + videoScores);
+
+        int attentionSize = videoScores.get(0).getAttentionList().size();
+        List<Double> averageAttentionList = new ArrayList<>();
+        System.out.println("사이즈 = " + attentionSize);
+
+        for (int i = 0; i < attentionSize; i++) {
+            int sum = 0;
+            int count = 0;
+            for (ReceiveId receiveId : videoScores) {
+                if (i < receiveId.getAttentionList().size()) {
+                    sum += receiveId.getAttentionList().get(i);
+                    count++;
+                }
+            }
+            double aver = count > 0 ? sum / (double) count : 0.0;
+            double roundAver = Math.round(aver * 100.0) / 100.0;
+            averageAttentionList.add(roundAver);
+        }
+
+        System.out.println("평균집중리스트 = " + averageAttentionList);
+        Map<String, Double> adressScoreMap = new HashMap<>();
+        List<List<Object>> scoreList = videoScores.get(0).getScoreList();
+        System.out.println("스코어 리스트" + scoreList);
+        System.out.println("어텐션리스트 사이즈" + averageAttentionList.size());
+
+        for (int i = 0; i < averageAttentionList.size(); i++) {
+            String key = (String) scoreList.get(i).get(0);
+            Double value = averageAttentionList.get(i);
+            System.out.println("키 = " + key);
+            System.out.println("벨류 = " + value);
+            adressScoreMap.put(key, value);
+            System.out.println("어드레스맵 :" + adressScoreMap);
+        }
+
+        List<Map.Entry<String, Double>> sortMap = new ArrayList<>(adressScoreMap.entrySet());
+        System.out.println("초기 소트맵 : " + sortMap);
+
+        // 내림차순 정렬
+        sortMap.sort((sortMap1, sortMap2) -> sortMap2.getValue().compareTo(sortMap1.getValue()));
+        System.out.println("정렬 후 소트맵:" + sortMap);
+
+
+        Map<String, String> sortedMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Double> entry : sortMap) {
+            sortedMap.put(entry.getKey(), entry.getValue().toString());
+        }
+
+        return sortedMap;
+    }
+
 }
