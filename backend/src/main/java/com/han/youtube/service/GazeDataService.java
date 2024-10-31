@@ -127,11 +127,11 @@ public class GazeDataService {
 
             String videoPoint = result.getString("video_point");
 
-            JSONObject frequencyJson = result.getJSONObject("object_frequency");
-            Map<String, Float> objectFrequency = new HashMap<>();
-            for (String key : frequencyJson.keySet()) {
-                objectFrequency.put(key, (float) frequencyJson.getDouble(key));
-            }
+//            JSONObject frequencyJson = result.getJSONObject("object_frequency");
+//            Map<String, Float> objectFrequency = new HashMap<>();
+//            for (String key : frequencyJson.keySet()) {
+//                objectFrequency.put(key, (float) frequencyJson.getDouble(key));
+//            }
 
 //            JSONArray orderArray = result.getJSONArray("object_order");
 //            List<String> objectOrder = new ArrayList<>();
@@ -139,7 +139,7 @@ public class GazeDataService {
 //                objectOrder.add(orderArray.getString(i));
 //            }
 
-            return new GazeAnalysisResult(attentionScoreList, videoPoint, objectFrequency, scoreList);
+            return new GazeAnalysisResult(attentionScoreList, videoPoint, scoreList);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -215,7 +215,7 @@ public class GazeDataService {
         if (result != null) {
             System.out.println("Attention Score List: " + result.getAttentionScoreList());
             System.out.println("Video Gaze Visualization: " + result.getGazeVisualization());
-            System.out.println("Video Object Frequency: " + result.getObjectFrequency());
+//            System.out.println("Video Object Frequency: " + result.getObjectFrequency());
 //            System.out.println("Video Gaze ObjectOrder: " + result.getObjectOrder());
         } else {
             System.out.println("Python 스크립트 실행 중 오류 발생");
@@ -245,10 +245,7 @@ public class GazeDataService {
                     snippetMap,
                     result != null ? result.getAttentionScoreList() : null,
                     result != null ? result.getGazeVisualization() : null,
-                    result != null ? result.getObjectFrequency() : null,
                     result != null ? result.getAttentionList() : null
-
-//                    result != null ? result.getObjectOrder() : null
             );
 
 
@@ -260,7 +257,7 @@ public class GazeDataService {
 
     @Transactional
     public List<ReceiveIdDto> dbData() {
-        return mongoRepository.findBy(PageRequest.of(0, 10));
+        return mongoRepository.findAllBy();
     }
 
     @Transactional

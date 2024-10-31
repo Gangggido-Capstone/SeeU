@@ -14,5 +14,8 @@ public interface MongoRepository extends org.springframework.data.mongodb.reposi
     @Query(sort = "{_id: -1}")
     List<ReceiveIdDto> findBy(Pageable pageable);
 
+    @Query(value = "{}", sort = "{_id: -1}")
+    List<ReceiveIdDto> findAllBy();
+
     List<ReceiveId> findByVideoId(String videoId);
 }
