@@ -4,6 +4,7 @@ import com.google.api.services.youtube.model.VideoSnippet;
 import com.han.youtube.Domain.ReceiveId;
 import com.han.youtube.Dto.GazeAnalysisResult;
 import com.han.youtube.Dto.ReceiveIdDto;
+import com.han.youtube.Dto.VideoIdRequest;
 import com.han.youtube.Repository.MongoRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,7 @@ public class GazeDataService {
             File currentDir = new File("");
             String rootPath = currentDir.getAbsoluteFile().getParent();  // youtube-seeso-demo 경로
             String fileDirectory = Paths.get(rootPath, "analysis").normalize().toString();
-            String scriptPath = Paths.get(fileDirectory,"video_analysis.py").toString();
+            String scriptPath = Paths.get(fileDirectory, "video_analysis.py").toString();
 
             int width = (int) Double.parseDouble(videoWidth);
             int height = (int) Double.parseDouble(videoHeight);
@@ -258,7 +259,63 @@ public class GazeDataService {
     }
 
     @Transactional
-    public List<ReceiveIdDto> dbData(){
-        return mongoRepository.findBy(PageRequest.of(0,10));
+    public List<ReceiveIdDto> dbData() {
+        return mongoRepository.findBy(PageRequest.of(0, 10));
     }
+
+    @Transactional
+    public Map averScore(VideoIdRequest videoIdRequest) {
+
+        String videoId = videoIdRequest.getVideoId();
+
+        List<ReceiveId> videoScores = mongoRepository.findByVideoId(videoId);
+        System.out.println("비디오 스코어 =" + videoScores);
+
+        int attentionSize = videoScores.get(0).getAttentionList().size();
+        List<Double> averageAttentionList = new ArrayList<>();
+        System.out.println("사이즈 = " + attentionSize);
+
+        for (int i = 0; i < attentionSize; i++) {
+            int sum = 0;
+            int count = 0;
+            for (ReceiveId receiveId : videoScores) {
+                if (i < receiveId.getAttentionList().size()) {
+                    sum += receiveId.getAttentionList().get(i);
+                    count++;
+                }
+            }
+            averageAttentionList.add(count > 0 ? sum / (double) count : 0.0);  // 평균 계산
+        }
+
+        System.out.println("평균집중리스트 = " + averageAttentionList);
+        Map<String, Double> adressScoreMap = new HashMap<>();
+        List<List<Object>> scoreList = videoScores.get(0).getScoreList();
+        System.out.println("스코어 리스트" + scoreList);
+        System.out.println("어텐션리스트 사이즈" + averageAttentionList.size());
+
+        for (int i = 0; i < averageAttentionList.size(); i++) {
+            String key = (String) scoreList.get(i).get(0);
+            Double value = averageAttentionList.get(i);
+            System.out.println("키 = " + key);
+            System.out.println("벨류 = " + value);
+            adressScoreMap.put(key, value);
+            System.out.println("어드레스맵 :" + adressScoreMap);
+        }
+
+        List<Map.Entry<String, Double>> sortMap = new ArrayList<>(adressScoreMap.entrySet());
+        System.out.println("초기 소트맵 : " + sortMap);
+
+        // 내림차순 정렬
+        sortMap.sort((sortMap1, sortMap2) -> sortMap2.getValue().compareTo(sortMap1.getValue()));
+        System.out.println("정렬 후 소트맵:" + sortMap);
+
+
+        Map<String, String> sortedMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Double> entry : sortMap) {
+            sortedMap.put(entry.getKey(), entry.getValue().toString()); // value를 String으로 변환하여 추가
+        }
+
+        return sortedMap;
+    }
+
 }

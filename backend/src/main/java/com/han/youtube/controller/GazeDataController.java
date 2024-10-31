@@ -1,8 +1,10 @@
 package com.han.youtube.controller;
 
 import com.han.youtube.Dto.ReceiveIdDto;
+import com.han.youtube.Dto.VideoIdRequest;
 import com.han.youtube.service.GazeDataService;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,12 @@ public class GazeDataController {
     @GetMapping("/list")
     public List<ReceiveIdDto> dbList() {
         return gazeDataService.dbData();
+    }
+
+    @PostMapping("/average")
+    public ResponseEntity<Map> getAverageScore(@RequestBody VideoIdRequest videoIdRequest) {
+        Map sortedScore = gazeDataService.averScore(videoIdRequest);
+        return ResponseEntity.ok(sortedScore);
     }
 
 }
