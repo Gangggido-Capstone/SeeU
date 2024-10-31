@@ -38,13 +38,12 @@ public class GazeDataService {
         List<Integer> listscore = new ArrayList<>();
 
         for (List<Object> score : scoreList) {
-            if (score.size() > 3 && score.get(3) instanceof Number) {
-                listscore.add(((Number) score.get(3)).intValue());
+            if (score.size() > 2 && score.get(2) instanceof Number) {
+                listscore.add(((Number) score.get(2)).intValue());
             }
         }
         return listscore;
     }
-
 
     public GazeAnalysisResult runPythonScript(String videoId, String videoCSV, String videoWidth, String videoHeight) {
         try {
@@ -123,21 +122,7 @@ public class GazeDataService {
             }
 
             List<Integer> scoreList = listScore(attentionScoreList);
-
-
             String videoPoint = result.getString("video_point");
-
-//            JSONObject frequencyJson = result.getJSONObject("object_frequency");
-//            Map<String, Float> objectFrequency = new HashMap<>();
-//            for (String key : frequencyJson.keySet()) {
-//                objectFrequency.put(key, (float) frequencyJson.getDouble(key));
-//            }
-
-//            JSONArray orderArray = result.getJSONArray("object_order");
-//            List<String> objectOrder = new ArrayList<>();
-//            for (int i = 0; i < orderArray.length(); i++) {
-//                objectOrder.add(orderArray.getString(i));
-//            }
 
             return new GazeAnalysisResult(attentionScoreList, videoPoint, scoreList);
 
@@ -215,8 +200,6 @@ public class GazeDataService {
         if (result != null) {
             System.out.println("Attention Score List: " + result.getAttentionScoreList());
             System.out.println("Video Gaze Visualization: " + result.getGazeVisualization());
-//            System.out.println("Video Object Frequency: " + result.getObjectFrequency());
-//            System.out.println("Video Gaze ObjectOrder: " + result.getObjectOrder());
         } else {
             System.out.println("Python 스크립트 실행 중 오류 발생");
         }
@@ -226,7 +209,6 @@ public class GazeDataService {
         if (video != null) {
             VideoSnippet snippet = video.getSnippet();
 
-            // VideoSnippet -> LinkedHashMap
             LinkedHashMap<String, Object> snippetMap = new LinkedHashMap<>();
             snippetMap.put("title", snippet.getTitle());
             snippetMap.put("description", snippet.getDescription());
@@ -281,7 +263,9 @@ public class GazeDataService {
                     count++;
                 }
             }
-            averageAttentionList.add(count > 0 ? sum / (double) count : 0.0);  // 평균 계산
+            double aver = count > 0 ? sum / (double) count : 0.0;
+            double roundAver = Math.round(aver * 100.0) / 100.0;
+            averageAttentionList.add(roundAver);
         }
 
         System.out.println("평균집중리스트 = " + averageAttentionList);
@@ -309,7 +293,7 @@ public class GazeDataService {
 
         Map<String, String> sortedMap = new LinkedHashMap<>();
         for (Map.Entry<String, Double> entry : sortMap) {
-            sortedMap.put(entry.getKey(), entry.getValue().toString()); // value를 String으로 변환하여 추가
+            sortedMap.put(entry.getKey(), entry.getValue().toString());
         }
 
         return sortedMap;
