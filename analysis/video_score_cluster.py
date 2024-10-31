@@ -52,12 +52,12 @@ def score_cluster(video_id, video_csv, sceneTime):
         zero_data = attention_values.count(0)
         focus_score2 = zero_data / len(attention_values)
 
-        # 클러스터 점수 * 0.7 + Attention 비율 점수 * 0.2
+        # 클러스터 점수 * 0.8 + Attention 비율 점수 * 0.2
         res = round(((focus_score1 * 0.8) + (focus_score2 * 0.2)) * 100, 2)
         final_score.append(res)
 
         # print("start: " + str(start) + ", " + "end: " + str(end))
-        print(f"({index}) Time: {start:.2f} ~ {end:.2f}, Attention Score: {res}")
+        print(f"({index + 1}) Time: {start:.2f} ~ {end:.2f}, Attention Score: {res}")
 
     # 리스트에 저장해 반환
     atention_score_list = []
@@ -81,8 +81,8 @@ if __name__ == "__main__":
 
     # video_id = "fRaIcUhaXXQ"
     # video_csv = "fRaIcUhaXXQ_2024-10-20-16-50-56.csv"
-    video_id = "iiIcTPoIoZk"
-    video_csv = "iiIcTPoIoZk_2024-10-26-16-44-40.csv"
+    video_id = "qtw9CMdtwZg"
+    video_csv = "qtw9CMdtwZg_2024-10-28-19-12-38.csv"
 
     # 영상 다운
     video_only = download(video_id)
