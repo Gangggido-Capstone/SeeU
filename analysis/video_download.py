@@ -19,7 +19,7 @@ def download(video_id):
     if not os.path.exists(video_only):
         os.makedirs(os.path.join(root_path, "Data", "video", video_id), exist_ok=True)
 
-        # yt-dlp 옵션 설정: 비디오와 오디오를 별도로 다운로드
+        # yt-dlp 옵션 설정: 비디오만 다운로드
         ydl_opts_video = {
             'format': 'bestvideo',
             'outtmpl': video_only,
