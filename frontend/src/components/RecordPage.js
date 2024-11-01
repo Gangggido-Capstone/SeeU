@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import CircularProgress from "./CircularProgress"; // CircularProgress 컴포넌트 가져오기
 import "../../css/RecordPage.css";
 
 axios.defaults.baseURL = "http://localhost:8080";
@@ -101,7 +102,7 @@ const RecordPage = () => {
                                             동영상을 지원하지 않는 브라우저입니다.
                                         </video>
                                         {/* 집중력 점수 */}
-                                        <p>집중력 점수: {parseFloat(item[2]).toFixed(2)}%</p>
+                                        <CircularProgress score={item[2]} />
                                     </li>
                                 ))}
                             </ul>
