@@ -93,7 +93,7 @@ const RecordPage = () => {
                         <h2>분석 결과</h2>
 
                         {selectedRecord.visualization ? (
-                            <video width="640" height="480" controls>
+                            <video width="640" height="400" controls poster={item[1] ? `/data/video/${item[1]}` : null}>
                                 <source src={`/data/video/${selectedRecord.visualization}`} type="video/mp4" />
                                 동영상을 지원하지 않는 브라우저입니다.
                             </video>
