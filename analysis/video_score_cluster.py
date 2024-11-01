@@ -70,7 +70,10 @@ def score_cluster(video_id, video_csv, sceneTime):
     for i, (_, score) in sorted_data:
         if score == 0:
             continue
-        atention_score_list.append((f"{split_video_directory}\\scene_{i+1:03}.mp4", f"{thumbnails_dir}\\{video_id}_{i+1:03}.jpg", score))
+        elif len(sorted_data) == 1:
+            atention_score_list.append((f"{video_id}\\{video_id}.mp4", "null", score))
+        else:
+            atention_score_list.append((f"{split_video_directory}\\scene_{i+1:03}.mp4", f"{thumbnails_dir}\\{video_id}_{i+1:03}.jpg", score))
 
     return atention_score_list
 
