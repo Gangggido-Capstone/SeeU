@@ -92,6 +92,16 @@ const RecordPage = () => {
                     <div className="modal-content">
                         <h2>분석 결과</h2>
 
+                        {selectedRecord.visualization ? (
+                            <video width="320" height="240" controls>
+                                <source src={`/data/video/${selectedRecord.visualization}`} type="video/mp4" />
+                                동영상을 지원하지 않는 브라우저입니다.
+                            </video>
+                        ) : (
+                            <p>분석 결과 영상이 없습니다.</p>
+                        )}
+
+
                         {/* scoreList가 비어 있는 경우 처리 */}
                         {selectedRecord && selectedRecord.scoreList?.length > 0 ? (
                             <ul className="score-list">

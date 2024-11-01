@@ -97,8 +97,8 @@ def gazeVisualization(video_id, video_csv, video_only, video_width, video_height
 if __name__ == "__main__":
     start = time.time()
 
-    video_id = "qtw9CMdtwZg"
-    video_csv = "qtw9CMdtwZg_2024-10-29-15-00-58.csv"
+    video_id = "EOe8WfUov2s"
+    video_csv = "EOe8WfUov2s_2024-11-01-17-23-52.csv"
     video_width, video_height = 965, 543
 
     video_only = download(video_id)
