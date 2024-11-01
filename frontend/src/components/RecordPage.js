@@ -32,7 +32,7 @@ const RecordPage = () => {
 
     const openAverageScoreModal = async (videoId) => {
         try {
-            const response = await axios.post("/average", { videoId });
+            const response = await axios.post("/api/average", { videoId });
             setAverageScores(response.data);
             setShowAverageModal(true);
         } catch (error) {
@@ -110,10 +110,15 @@ const RecordPage = () => {
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <h2>분할된 영상별 평균 점수</h2>
-                        <ul>
-                            {Object.entries(averageScores).map(([videoName, score]) => (
-                                <li key={videoName}>
-                                    {videoName}: {score}
+                        <ul className="score-list">
+                            {Object.entries(averageScores).slice(0, 5).map(([videoName, score], index) => (
+                                <li key={index} className="score-item">
+                                    <video width="320" height="240" controls poster={`/data/video/${videoName}`}>
+                                        <source src={`/data/video/${videoName}`} type="video/mp4" />
+                                        동영상을 지원하지 않는 브라우저입니다.
+                                    </video>
+                                    {/* 집중력 점수 */}
+                                    <CircularProgress score={score} />
                                 </li>
                             ))}
                         </ul>
@@ -123,6 +128,7 @@ const RecordPage = () => {
                     </div>
                 </div>
             )}
+
 
             {/* 모달 */}
             {showModal && (
