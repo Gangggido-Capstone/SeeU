@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import CircularProgress from "./CircularProgress"; // CircularProgress 컴포넌트 가져오기
 import "../../css/RecordPage.css";
 
 axios.defaults.baseURL = "http://localhost:8080";
@@ -92,22 +93,22 @@ const RecordPage = () => {
                         <h2>분석 결과</h2>
 
                         {/* scoreList가 비어 있는 경우 처리 */}
-{selectedRecord && selectedRecord.scoreList?.length > 0 ? (
-    <ul className="score-list">
-        {selectedRecord.scoreList.slice(0, 3).map((item, index) => (
-            <li key={index} className="score-item">
-                <video width="320" height="240" controls>
-                    <source src={ "..\\..\\data\\video\\"+ item[0]} type="video/mp4" />
-                    동영상을 지원하지 않는 브라우저입니다.
-                </video>
-                {/* 집중력 점수 */}
-                <p>집중력 점수: {parseFloat(item[2]).toFixed(2)}%</p>
-            </li>
-        ))}
-    </ul>
-) : (
-    <p>시청자의 시선 데이터가 부족하여 분석 결과가 없습니다.</p>
-)}
+                        {selectedRecord && selectedRecord.scoreList?.length > 0 ? (
+                            <ul className="score-list">
+                                {selectedRecord.scoreList.slice(0, 3).map((item, index) => (
+                                    <li key={index} className="score-item">
+                                        <video width="320" height="240" controls>
+                                            <source src={`../../data/video/${item[0]}`} type="video/mp4" />
+                                            동영상을 지원하지 않는 브라우저입니다.
+                                        </video>
+                                        {/* 집중력 점수 */}
+                                        <CircularProgress score={item[2]} />
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>시청자의 시선 데이터가 부족하여 분석 결과가 없습니다.</p>
+                        )}
                         <button className="close-button" onClick={closeModal}>
                             닫기
                         </button>

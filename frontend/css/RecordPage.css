@@ -40,7 +40,6 @@
     border: none;
     border-radius: 5px;
     margin-right: 70px;
-
 }
 
 .modal-overlay {
@@ -49,18 +48,23 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.9); /* 어두운 배경 */
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .modal-content {
     background: white;
     padding: 20px;
-    border-radius: 5px;
-    width: 400px;
-    text-align: center;
+    border-radius: 8px;
+    width: 100%; /* 화면의 90% 너비 */
+    max-width: 1500px; /* 최대 너비를 1200px로 설정 */
+    height: 85vh; /* 화면의 85% 높이 */
+    overflow-y: auto; /* 세로 스크롤 가능 */
+    box-sizing: border-box;
+    color: black;
 }
 
 .close-button {
@@ -93,8 +97,8 @@ ul {
 
 .home-logo-link {
     position: absolute;
-    top: 60px; /* 원하는 위쪽 위치로 조정 */
-    right: 80px; /* 원하는 왼쪽 위치로 조정 */
+    top: 60px; 
+    right: 80px; 
 }
 
 .home-logo {
@@ -103,28 +107,46 @@ ul {
     cursor: pointer;
 }
 
-
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+.score-list {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    z-index: 1000;
+    margin-top: 20px;
+    width: 100%; 
 }
 
-.modal-content {
-    background: white;
-    padding: 20px;
-    font-size: 10px;
-    border-radius: 5px;
-    max-width: 500px;
+.score-item {
+    list-style: none;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
     width: 100%;
-    color:black
+    max-width: 1500px; 
+    box-sizing: border-box;
+}
+
+.score-item video {
+    width: 320px;
+    height: 240px;
+    margin-left:10px;
+}
+
+.circular-progress {
+    margin-left: 15px;
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
 }
 
 /* 13인치 모니터 (1280px ~ 1366px) */
