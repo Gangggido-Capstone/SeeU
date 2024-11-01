@@ -168,7 +168,7 @@ public class GazeDataService {
         String rootPath = currentDir.getAbsoluteFile().getParent();  // youtube-seeso-demo 경로
 
         // 항상 Data/GazeData 경로를 지정
-        String filePath = Paths.get(rootPath, "Data", "GazeData").normalize().toString();
+        String filePath = Paths.get(rootPath, "frontend", "public", "data", "GazeData").normalize().toString();
         String videoCSV = Paths.get(filePath, videoId + "_" + watchDate + ".csv").toString();
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(videoCSV))) {
