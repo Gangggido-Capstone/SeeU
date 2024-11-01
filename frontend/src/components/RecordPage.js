@@ -16,7 +16,7 @@ const RecordPage = () => {
             try {
                 const response = await axios.get("/api/list");
                 setRecords(response.data);
-                console.log(response.data)
+                console.log(response.data);
             } catch (error) {
                 setError(`시청 기록을 가져오는 데 실패했습니다: ${error.message}`);
             } finally {
@@ -90,7 +90,27 @@ const RecordPage = () => {
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <h2>분석 결과</h2>
-                       
+
+{/* scoreList가 비어 있는 경우 처리 */}
+{selectedRecord && selectedRecord.scoreList?.length > 0 ? (
+    <ul className="score-list">
+        {selectedRecord.scoreList.slice(0, 3).map((item, index) => (
+            <li key={index} className="score-item">
+                {/* 동영상 경로 */}
+                <video width="320" height="240" controls>
+    <source src={`${process.env.PUBLIC_URL}${item[0]}`} type="video/mp4" />
+    동영상을 지원하지 않는 브라우저입니다.
+</video>
+            
+                {/* 집중력 점수 */}
+                <p>집중력 점수: {parseFloat(item[2]).toFixed(2)}%</p>
+            </li>
+        ))}
+    </ul>
+) : (
+    <p>시청자의 시선 데이터가 부족하여 분석 결과가 없습니다.</p>
+)}
+
                         <button className="close-button" onClick={closeModal}>
                             닫기
                         </button>
