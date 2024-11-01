@@ -6,16 +6,17 @@ import os
 
 def get_root_path():
     # 현재 디렉토리에서 README.md 파일이 존재하는 경로를 루트로 설정
-    current_dir = os.path.abspath(os.path.dirname(__file__))
-    while not os.path.exists(os.path.join(current_dir, 'README.md')):
-        current_dir = os.path.abspath(os.path.join(current_dir, '..'))
+    root_dir = os.path.abspath(os.path.dirname(__file__))
+    while not os.path.exists(os.path.join(root_dir, 'README.md')):
+        root_dir = os.path.abspath(os.path.join(root_dir, '..'))
+    current_dir = os.path.join(root_dir, "frontend", "public")
     return current_dir
 
 def score_cluster(video_id, video_csv, sceneTime):
     root_path = get_root_path()
 
     # CSV 파일 불러오기
-    csv_path = os.path.join(root_path, "Data", "GazeData")
+    csv_path = os.path.join(root_path, "data", "GazeData")
     gaze_csv = pd.read_csv(os.path.join(csv_path, video_csv))
     
     final_score = []
@@ -62,14 +63,14 @@ def score_cluster(video_id, video_csv, sceneTime):
     # 리스트에 저장해 반환
     atention_score_list = []
     # split_video 디렉토리 경로 설정
-    split_video_directory = os.path.join(root_path, "Data", "video", video_id, "split_video")
-    thumbnails_dir = os.path.join(root_path, "Data", "video", video_id, "thumbnails")
+    split_video_directory = os.path.join(video_id, "split_video")
+    thumbnails_dir = os.path.join(video_id, "thumbnails")
     # final_score를 기준으로 내림차순 정렬
     sorted_data = sorted(enumerate(zip(sceneTime, final_score)), key=lambda x: x[1][1], reverse=True)
     for i, (_, score) in sorted_data:
         if score == 0:
             continue
-        atention_score_list.append((f"{split_video_directory}\\{video_id}-Scene-{i+1:03}.mp4", f"{thumbnails_dir}\\{video_id}_{i+1:03}.jpg", score))
+        atention_score_list.append((f"{split_video_directory}\\scene_{i+1:03}.mp4", f"{thumbnails_dir}\\{video_id}_{i+1:03}.jpg", score))
 
     return atention_score_list
 

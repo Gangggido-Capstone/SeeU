@@ -96,12 +96,10 @@ const RecordPage = () => {
     <ul className="score-list">
         {selectedRecord.scoreList.slice(0, 3).map((item, index) => (
             <li key={index} className="score-item">
-                {/* 동영상 경로 */}
                 <video width="320" height="240" controls>
-                    <source src={item[0]} type="video/mp4" />
+                    <source src={ "..\\..\\data\\video\\"+ item[0]} type="video/mp4" />
                     동영상을 지원하지 않는 브라우저입니다.
                 </video>
-                
                 {/* 집중력 점수 */}
                 <p>집중력 점수: {parseFloat(item[2]).toFixed(2)}%</p>
             </li>
