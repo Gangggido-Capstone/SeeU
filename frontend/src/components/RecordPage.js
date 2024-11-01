@@ -11,6 +11,8 @@ const RecordPage = () => {
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState({ scoreList: [] });
+    const [averageScores, setAverageScores] = useState({});
+    const [showAverageModal, setShowAverageModal] = useState(false);
 
     useEffect(() => {
         const fetchRecords = async () => {
@@ -27,6 +29,16 @@ const RecordPage = () => {
 
         fetchRecords();
     }, []);
+
+    const openAverageScoreModal = async (videoId) => {
+        try {
+            const response = await axios.post("/average", { videoId });
+            setAverageScores(response.data);
+            setShowAverageModal(true);
+        } catch (error) {
+            console.error("평균 점수를 가져오는 데 실패했습니다:", error);
+        }
+    };
 
     const openModal = (record) => {
         setSelectedRecord(record);
@@ -70,6 +82,14 @@ const RecordPage = () => {
                                 <p className="record-title">{record.snippet.title}</p>
                                 <p className="record-time">시청시간: {record.watchdata}</p>
                             </div>
+                            
+                            <button
+                                className="analysis-button"
+                                onClick={() => openAverageScoreModal(record.videoId)}
+                            >
+                                도우미
+                            </button>
+
                             <button
                                 className="analysis-button"
                                 onClick={() => openModal(record)}
@@ -85,6 +105,24 @@ const RecordPage = () => {
                     <img src="/home.svg" alt="Home" className="home-logo" />
                 </a>
             </div>
+            
+            {showAverageModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2>분할된 영상별 평균 점수</h2>
+                        <ul>
+                            {Object.entries(averageScores).map(([videoName, score]) => (
+                                <li key={videoName}>
+                                    {videoName}: {score}
+                                </li>
+                            ))}
+                        </ul>
+                        <button className="close-button" onClick={() => setShowAverageModal(false)}>
+                            닫기
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* 모달 */}
             {showModal && (
