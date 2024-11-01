@@ -10,7 +10,7 @@ const RecordPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [selectedRecord, setSelectedRecord] = useState(null);
+    const [selectedRecord, setSelectedRecord] = useState({ scoreList: [] });
 
     useEffect(() => {
         const fetchRecords = async () => {
@@ -98,7 +98,7 @@ const RecordPage = () => {
                                 {selectedRecord.scoreList.slice(0, 3).map((item, index) => (
                                     <li key={index} className="score-item">
                                         <video width="320" height="240" controls>
-                                            <source src={`../../data/video/${item[0]}`} type="video/mp4" />
+                                            <source src={`/data/video/${item[0]}`} type="video/mp4" />
                                             동영상을 지원하지 않는 브라우저입니다.
                                         </video>
                                         {/* 집중력 점수 */}

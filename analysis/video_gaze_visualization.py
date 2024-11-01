@@ -24,7 +24,7 @@ def gazeVisualization(video_id, video_csv, video_only, video_width, video_height
 
     points_dir = os.path.join(root_path, "data", "video", video_id, "points")
     os.makedirs(points_dir, exist_ok=True)
-
+    
     video_point = os.path.join(points_dir, f"{video_id}_{date_time}.mp4")
 
     # 비디오 열기
@@ -32,7 +32,7 @@ def gazeVisualization(video_id, video_csv, video_only, video_width, video_height
 
     # 비디오 속성 설정
     fps = cap.get(cv2.CAP_PROP_FPS)  # 초당 프레임 수 가져오기
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # 비디오 코덱 설정
+    fourcc = cv2.VideoWriter_fourcc(*'avc1')  # 비디오 코덱 설정
     out = cv2.VideoWriter(video_point, fourcc, fps, (video_width, video_height))  # 비디오 파일 쓰기 설정
 
     # DBSCAN 알고리즘을 사용해 클러스터링 수행
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     start = time.time()
 
     video_id = "qtw9CMdtwZg"
-    video_csv = "qtw9CMdtwZg_2024-10-28-19-25-19.csv"
+    video_csv = "qtw9CMdtwZg_2024-10-29-15-00-58.csv"
     video_width, video_height = 965, 543
 
     video_only = download(video_id)
