@@ -211,14 +211,7 @@ public class GazeDataService {
 
             LinkedHashMap<String, Object> snippetMap = new LinkedHashMap<>();
             snippetMap.put("title", snippet.getTitle());
-            snippetMap.put("description", snippet.getDescription());
-            snippetMap.put("categoryId", snippet.getCategoryId());
-            snippetMap.put("channelId", snippet.getChannelId());
-            snippetMap.put("channelTitle", snippet.getChannelTitle());
-            snippetMap.put("defaultAudioLanguage", snippet.getDefaultAudioLanguage());
-            snippetMap.put("publishedAt", snippet.getPublishedAt().toString());
             snippetMap.put("thumbnails", snippet.getThumbnails());
-            snippetMap.put("localized", snippet.getLocalized());
 
             ReceiveIdDto receiveIdDto = new ReceiveIdDto();
             ReceiveId receiveId = receiveIdDto.toEntity(
