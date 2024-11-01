@@ -57,9 +57,9 @@
 
 .modal-content {
     background: white;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
-    width: 90% !important;  /* 화면의 90% 너비 */
+    width: 60% !important;  /* 화면의 90% 너비 */
     max-width: 1500px !important;
     height: 85vh !important; /* 화면의 85% 높이 */
     overflow-y: auto; /* 세로 스크롤 가능 */
@@ -117,7 +117,7 @@ ul {
 
 .score-item {
     list-style: none;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between; 
@@ -127,8 +127,8 @@ ul {
 }
 
 .score-item video {
-    width: 320px;
-    height: 240px;
+    width: 640px;
+    height: 400px;
     margin-left:10px;
 }
 
