@@ -43,8 +43,8 @@ def detect(video_id, video_only):
 
             # 초당 프레임 수
             fps = cv2.VideoCapture(video_only).get(cv2.CAP_PROP_FPS)  
-            # 디텍터 생성, 임계값 27, 장면 당 최소 프레임 수, 분할 영상 최소 5초
-            content_detector = ContentDetector(threshold=27, min_scene_len = fps * 5)
+            # 디텍터 생성, 임계값 25, 장면 당 최소 프레임 수, 분할 영상 최소 4초
+            content_detector = ContentDetector(threshold=25, min_scene_len = fps * 4)
 
             # Scene Manager 생성
             scene_manager = SceneManager()
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     # UrEHWclh7Co 삼성카드
     # 0gkPFSvVvFw 전란
     # fRaIcUhaXXQ 핫초코
-    video_id = "qtw9CMdtwZg"
+    video_id = "iJsWRpSetq0"
     
     # 영상 다운
     video_only = download(video_id)
