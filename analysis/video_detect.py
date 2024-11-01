@@ -22,9 +22,10 @@ def split_video(video_path, scene_list, output_dir):
 
 def get_root_path():
     # 현재 디렉토리에서 README.md 파일이 존재하는 경로를 루트로 설정
-    current_dir = os.path.abspath(os.path.dirname(__file__))
-    while not os.path.exists(os.path.join(current_dir, 'README.md')):
-        current_dir = os.path.abspath(os.path.join(current_dir, '..'))
+    root_dir = os.path.abspath(os.path.dirname(__file__))
+    while not os.path.exists(os.path.join(root_dir, 'README.md')):
+        root_dir = os.path.abspath(os.path.join(root_dir, '..'))
+    current_dir = os.path.join(root_dir, "frontend", "public")
     return current_dir
 
 def detect(video_id, video_only):
@@ -33,7 +34,7 @@ def detect(video_id, video_only):
         root_path = get_root_path()
 
         # split_video 디렉토리 경로 설정
-        split_video_directory = os.path.join(root_path, "Data", "video", video_id, "split_video")
+        split_video_directory = os.path.join(root_path, "data", "video", video_id, "split_video")
         sceneTime = []
 
         if not os.path.exists(split_video_directory):
@@ -56,7 +57,7 @@ def detect(video_id, video_only):
             scene_list = scene_manager.get_scene_list()
             print(scene_list)
             
-            scene_times_csv = os.path.join(root_path, "Data", "video", video_id, "split_video", "scene_times.csv")
+            scene_times_csv = os.path.join(root_path, "data", "video", video_id, "split_video", "scene_times.csv")
             os.makedirs(os.path.dirname(scene_times_csv), exist_ok=True)
             with open(scene_times_csv, mode='w', newline='') as file:
                 writer = csv.writer(file)
@@ -107,7 +108,7 @@ def detect(video_id, video_only):
                 video, # 영상
                 num_images=1, # 각 장면 당 이미지 개수
                 image_name_template=f'{video_id}_$SCENE_NUMBER', # 결과 이미지 파일 이름
-                output_dir=os.path.join(root_path, "Data", "video", video_id, "thumbnails") # 결과 디렉토리 이름
+                output_dir=os.path.join(root_path, "data", "video", video_id, "thumbnails") # 결과 디렉토리 이름
             )
 
             print(f"{video_id} Video segmentation completed")
@@ -115,7 +116,7 @@ def detect(video_id, video_only):
         else:
             print(f"{video_id} split video already exists. Skip download.")
 
-            scene_times_csv = os.path.join(root_path, "Data", "video", video_id, "split_video", "scene_times.csv")
+            scene_times_csv = os.path.join(root_path, "data", "video", video_id, "split_video", "scene_times.csv")
 
             if os.path.exists(scene_times_csv):
                 # CSV 파일에서 분할된 시간 불러오기

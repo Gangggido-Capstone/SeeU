@@ -7,20 +7,22 @@ import cv2
 import os
 
 def get_root_path():
-    current_dir = os.path.abspath(os.path.dirname(__file__))
-    while not os.path.exists(os.path.join(current_dir, 'README.md')):
-        current_dir = os.path.abspath(os.path.join(current_dir, '..'))
+    # 현재 디렉토리에서 README.md 파일이 존재하는 경로를 루트로 설정
+    root_dir = os.path.abspath(os.path.dirname(__file__))
+    while not os.path.exists(os.path.join(root_dir, 'README.md')):
+        root_dir = os.path.abspath(os.path.join(root_dir, '..'))
+    current_dir = os.path.join(root_dir, "frontend", "public")
     return current_dir
 
 def gazeVisualization(video_id, video_csv, video_only, video_width, video_height):
     root_path = get_root_path()
     date_time = video_csv.split('_')[1].split('.')[0]  # 파일명에서 날짜 추출
 
-    csv_path = os.path.join(root_path, "Data", "GazeData")
+    csv_path = os.path.join(root_path, "data", "GazeData")
     gaze_csv = pd.read_csv(os.path.join(csv_path, video_csv))
     gaze_csv = gaze_csv.dropna(subset=['Time', 'X', 'Y'])
 
-    points_dir = os.path.join(root_path, "Data", "video", video_id, "points")
+    points_dir = os.path.join(root_path, "data", "video", video_id, "points")
     os.makedirs(points_dir, exist_ok=True)
 
     video_point = os.path.join(points_dir, f"{video_id}_{date_time}.mp4")
@@ -89,7 +91,8 @@ def gazeVisualization(video_id, video_csv, video_only, video_width, video_height
     out.release()
     cv2.destroyAllWindows()
 
-    return video_point
+    point_video = f"{video_id}\\points\\{video_id}_{date_time}.mp4"
+    return point_video
 
 if __name__ == "__main__":
     start = time.time()
