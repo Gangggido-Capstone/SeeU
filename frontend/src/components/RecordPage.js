@@ -11,6 +11,8 @@ const RecordPage = () => {
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState({ scoreList: [] });
+    const [averageScores, setAverageScores] = useState({});
+    const [showAverageModal, setShowAverageModal] = useState(false);
 
     useEffect(() => {
         const fetchRecords = async () => {
@@ -27,6 +29,16 @@ const RecordPage = () => {
 
         fetchRecords();
     }, []);
+
+    const openAverageScoreModal = async (videoId) => {
+        try {
+            const response = await axios.post("/api/average", { videoId });
+            setAverageScores(response.data);
+            setShowAverageModal(true);
+        } catch (error) {
+            console.error("평균 점수를 가져오는 데 실패했습니다:", error);
+        }
+    };
 
     const openModal = (record) => {
         setSelectedRecord(record);
@@ -70,6 +82,14 @@ const RecordPage = () => {
                                 <p className="record-title">{record.snippet.title}</p>
                                 <p className="record-time">시청시간: {record.watchdata}</p>
                             </div>
+                            
+                            <button
+                                className="analysis-button"
+                                onClick={() => openAverageScoreModal(record.videoId)}
+                            >
+                                도우미
+                            </button>
+
                             <button
                                 className="analysis-button"
                                 onClick={() => openModal(record)}
@@ -85,6 +105,30 @@ const RecordPage = () => {
                     <img src="/home.svg" alt="Home" className="home-logo" />
                 </a>
             </div>
+            
+            {showAverageModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2>분할된 영상별 평균 점수</h2>
+                        <ul className="score-list">
+                            {Object.entries(averageScores).slice(0, 5).map(([videoName, score], index) => (
+                                <li key={index} className="score-item">
+                                    <video width="320" height="240" controls poster={`/data/video/${videoName}`}>
+                                        <source src={`/data/video/${videoName}`} type="video/mp4" />
+                                        동영상을 지원하지 않는 브라우저입니다.
+                                    </video>
+                                    {/* 집중력 점수 */}
+                                    <CircularProgress score={score} />
+                                </li>
+                            ))}
+                        </ul>
+                        <button className="close-button" onClick={() => setShowAverageModal(false)}>
+                            닫기
+                        </button>
+                    </div>
+                </div>
+            )}
+
 
             {/* 모달 */}
             {showModal && (
@@ -93,7 +137,7 @@ const RecordPage = () => {
                         <h2>분석 결과</h2>
 
                         {selectedRecord.visualization ? (
-                            <video width="640" height="480" controls>
+                            <video width="640" height="400" controls>
                                 <source src={`/data/video/${selectedRecord.visualization}`} type="video/mp4" />
                                 동영상을 지원하지 않는 브라우저입니다.
                             </video>
@@ -107,7 +151,7 @@ const RecordPage = () => {
                             <ul className="score-list">
                                 {selectedRecord.scoreList.slice(0, 3).map((item, index) => (
                                     <li key={index} className="score-item">
-                                        <video width="320" height="240" controls>
+                                        <video width="320" height="240" controls poster={item[1] ? `/data/video/${item[1]}` : null}>
                                             <source src={`/data/video/${item[0]}`} type="video/mp4" />
                                             동영상을 지원하지 않는 브라우저입니다.
                                         </video>
