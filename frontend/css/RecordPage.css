@@ -59,9 +59,9 @@
     background: white;
     padding: 20px;
     border-radius: 8px;
-    width: 100%; /* 화면의 90% 너비 */
-    max-width: 1500px; /* 최대 너비를 1200px로 설정 */
-    height: 85vh; /* 화면의 85% 높이 */
+    width: 90% !important;  /* 화면의 90% 너비 */
+    max-width: 1500px !important;
+    height: 85vh !important; /* 화면의 85% 높이 */
     overflow-y: auto; /* 세로 스크롤 가능 */
     box-sizing: border-box;
     color: black;
