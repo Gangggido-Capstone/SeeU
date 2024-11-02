@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import axios from "axios";
 import CircularProgress from "./CircularProgress"; // CircularProgress 컴포넌트 가져오기
 import "../../css/RecordPage.css";
@@ -14,16 +14,15 @@ const RecordPage = () => {
     const [averageScores, setAverageScores] = useState({});
     const [showAverageModal, setShowAverageModal] = useState(false);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const fetchRecords = async () => {
             try {
                 const response = await axios.get("/api/list");
                 setRecords(response.data);
+                setLoading(false)
                 console.log(response.data);
             } catch (error) {
                 setError(`시청 기록을 가져오는 데 실패했습니다: ${error.message}`);
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -111,16 +110,19 @@ const RecordPage = () => {
                     <div className="modal-content">
                         <h2>분할된 영상별 평균 점수</h2>
                         <ul className="score-list">
-                            {Object.entries(averageScores).slice(0, 5).map(([videoName, score], index) => (
-                                <li key={index} className="score-item">
-                                    <video width="320" height="240" controls poster={`/data/video/${videoName}`}>
-                                        <source src={`/data/video/${videoName}`} type="video/mp4" />
-                                        동영상을 지원하지 않는 브라우저입니다.
-                                    </video>
-                                    {/* 집중력 점수 */}
-                                    <CircularProgress score={score} />
-                                </li>
-                            ))}
+                            {averageScores.slice(0, 5).map((entry, index) => {
+                                const [videoName, newValue, score] = entry;
+                                return (
+                                    <li key={index} className="score-item">
+                                        <video width="320" height="240" controls poster={`/data/video/${newValue}`}>
+                                            <source src={`/data/video/${videoName}`} type="video/mp4" />
+                                            동영상을 지원하지 않는 브라우저입니다.
+                                        </video>
+                        
+                                        <CircularProgress score={score} />
+                                    </li>
+                                );
+                            })}
                         </ul>
                         <button className="close-button" onClick={() => setShowAverageModal(false)}>
                             닫기
