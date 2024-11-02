@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.google.api.services.youtube.model.Video;
@@ -138,6 +139,7 @@ public class GazeDataService {
         return null;  // JSON 데이터가 없으면 null 반환
     }
 
+    @Async  // 비동기 처리
     @SuppressWarnings("unchecked")
     @Transactional
     public void saveGazeData(Map<String, Object> payload) throws IOException {
