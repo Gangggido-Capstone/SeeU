@@ -65,7 +65,6 @@ const VideoGazeTracker = () => {
 
         initializeSeeso();
     }, []);
-
     
     useEffect(() => {
         const onYouTubeIframeAPIReady = () => {
@@ -117,7 +116,6 @@ const VideoGazeTracker = () => {
         console.log("Player is ready");
     };
 
-
     const onPlayerStateChange = (event) => {
         if (event.data === window.YT.PlayerState.PLAYING) {
             setIsPlaying(true);
@@ -139,19 +137,12 @@ const VideoGazeTracker = () => {
             }
         }
     };
-    useEffect(() => {
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-                intervalRef.current = null;
-            }
-        };
-    }, []);
 
     useEffect(() => {
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
+                intervalRef.current = null;
             }
         };
     }, []);
@@ -272,15 +263,12 @@ const VideoGazeTracker = () => {
             if (response.ok) {
                 console.log("파일이 서버에 성공적으로 저장되었습니다.");
                 console.log(result);
-                sessionStorage.setItem("saveResult", result);  // 결과를 저장
             } else {
                 console.error("서버에 파일 저장 실패");
                 console.error(result);
-                sessionStorage.setItem("saveResult", "실패: " + result);  // 실패 메시지 저장
             }
         } catch (error) {
             console.error("서버 요청 중 오류 발생:", error);
-            sessionStorage.setItem("saveResult", "오류: " + error);  // 오류 메시지 저장
         }
     };
 
@@ -299,7 +287,6 @@ const VideoGazeTracker = () => {
         }
     };
     
-
     return (
         <div className='video-player-wrapper'>
             <iframe
