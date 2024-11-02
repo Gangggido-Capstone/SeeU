@@ -246,13 +246,12 @@ const VideoGazeTracker = () => {
     };
 
     const handleAnalysis = () => {
-        if (player && player.pauseVideo) {
+        if (player && player.pauseVideo && startTracking()?.data) {
             player.pauseVideo();
-            if (stopTracking()?.data) { 
-                stopTracking();
-                navigate("/Records");
-                saveCSVToServer();
-            } 
+            if (stopTracking()?.data) stopTracking();
+            navigate("/Records");
+            saveCSVToServer();
+
             
         } else {
             console.error("Player is not ready or pauseVideo is not available");
