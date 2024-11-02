@@ -20,6 +20,8 @@ const VideoGazeTracker = () => {
     const [videoFrame, setVideoFrame] = useState({top: 0, left: 0, height: 0, width: 0});
     const [videoGazeData, setVideoGazeData] = useState([]);
     const intervalRef = useRef(null);
+    const [result, setResult] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const licenseKey = process.env.REACT_APP_EYEDID_KEY;
 
     if (!licenseKey) {
@@ -32,8 +34,7 @@ const VideoGazeTracker = () => {
             setGazeData(gazeInfo);
         };
 
-        const onDebug = (FPS, latency_min, latency_max, latency_avg) => {
-        };
+        const onDebug = (FPS, latency_min, latency_max, latency_avg) => {};
 
         async function initializeSeeso() {
             const seeSo = new EasySeeSo();
@@ -240,6 +241,7 @@ const VideoGazeTracker = () => {
     };
 
     const saveCSVToServer = async () => {
+        setIsLoading(true);
         const formattedDate = getFormattedKSTDate();
 
         try {
@@ -258,17 +260,19 @@ const VideoGazeTracker = () => {
                 body: JSON.stringify(dataToSend),
             });
 
-            const result = await response.text();
-
             if (response.ok) {
                 console.log("파일이 서버에 성공적으로 저장되었습니다.");
-                console.log(result);
+
             } else {
                 console.error("서버에 파일 저장 실패");
-                console.error(result);
             }
+            const resultText = await response.text();
+            setResult(resultText);
         } catch (error) {
-            console.error("서버 요청 중 오류 발생:", error);
+            console.error("Error:", error);
+            setResult("An error occurred");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -310,7 +314,9 @@ const VideoGazeTracker = () => {
             <div className='video-controls'>
                 <button onClick={handlePlay}>재생</button>
                 <button onClick={handlePause}>정지</button>
-                <button onClick={handleAnalysis}>분석</button>
+                <button onClick={handleAnalysis} disabled={isLoading}>
+                    {isLoading ? "..." : "분석"}
+                </button>
                 <a href='/' className='back-button' onClick={handleBack}> 홈 </a>
             </div>
 
