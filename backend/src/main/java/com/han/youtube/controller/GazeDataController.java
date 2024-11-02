@@ -36,8 +36,8 @@ public class GazeDataController {
     }
 
     @PostMapping("/average")
-    public ResponseEntity<Map> getAverageScore(@RequestBody VideoIdRequest videoIdRequest) {
-        Map sortedScore = gazeDataService.averScore(videoIdRequest);
+    public ResponseEntity<List<List<Object>>> getAverageScore(@RequestBody VideoIdRequest videoIdRequest) {
+        List<List<Object>> sortedScore = gazeDataService.averScore(videoIdRequest);
         return ResponseEntity.ok(sortedScore);
     }
 

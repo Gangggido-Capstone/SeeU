@@ -19,11 +19,7 @@ import com.google.api.services.youtube.model.Video;
 import java.io.*;
 import java.nio.file.Paths;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -236,7 +232,7 @@ public class GazeDataService {
     }
 
     @Transactional
-    public Map averScore(VideoIdRequest videoIdRequest) {
+    public List<List<Object>> averScore(VideoIdRequest videoIdRequest) {
 
         String videoId = videoIdRequest.getVideoId();
 
@@ -262,34 +258,29 @@ public class GazeDataService {
         }
 
         System.out.println("평균집중리스트 = " + averageAttentionList);
-        Map<String, Double> adressScoreMap = new HashMap<>();
+        List<List<Object>> resultList = new ArrayList<>();
         List<List<Object>> scoreList = videoScores.get(0).getScoreList();
         System.out.println("스코어 리스트" + scoreList);
         System.out.println("어텐션리스트 사이즈" + averageAttentionList.size());
 
         for (int i = 0; i < averageAttentionList.size(); i++) {
-            String key = (String) scoreList.get(i).get(0);
-            Double value = averageAttentionList.get(i);
+            String key = (String) scoreList.get(i).get(0); // 기존 키 값
+            String newValue = (String) scoreList.get(i).get(1); // 새로운 값
+            Double value = averageAttentionList.get(i); // 평균값
             System.out.println("키 = " + key);
+            System.out.println("새로운 값 = " + newValue);
             System.out.println("벨류 = " + value);
-            adressScoreMap.put(key, value);
-            System.out.println("어드레스맵 :" + adressScoreMap);
-        }
 
-        List<Map.Entry<String, Double>> sortMap = new ArrayList<>(adressScoreMap.entrySet());
-        System.out.println("초기 소트맵 : " + sortMap);
+            List<Object> entry = Arrays.asList(key, newValue, value);
+            resultList.add(entry);
+        }
 
         // 내림차순 정렬
-        sortMap.sort((sortMap1, sortMap2) -> sortMap2.getValue().compareTo(sortMap1.getValue()));
-        System.out.println("정렬 후 소트맵:" + sortMap);
+        resultList.sort((list1, list2) -> ((Double) list2.get(2)).compareTo((Double) list1.get(2)));
+        System.out.println("정렬 후 결과 리스트:" + resultList);
 
-
-        Map<String, String> sortedMap = new LinkedHashMap<>();
-        for (Map.Entry<String, Double> entry : sortMap) {
-            sortedMap.put(entry.getKey(), entry.getValue().toString());
-        }
-
-        return sortedMap;
+        return resultList;
     }
+
 
 }
