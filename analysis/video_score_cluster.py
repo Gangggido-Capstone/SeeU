@@ -38,8 +38,8 @@ def score_cluster(video_id, video_csv, sceneTime):
             final_score.append(0)
             continue  # 다음 씬으로 넘어감
 
-        # dbscan = DBSCAN(eps=30 , min_samples=5)
-        dbscan = DBSCAN(eps=27, min_samples=5)
+        # dbscan = DBSCAN(eps=30 , min_samples=6)
+        dbscan = DBSCAN(eps=27, min_samples=6)
         labels = dbscan.fit_predict(gaze_data)
 
         # DBSCAN 클러스터 점수
@@ -53,8 +53,8 @@ def score_cluster(video_id, video_csv, sceneTime):
         zero_data = attention_values.count(0)
         focus_score2 = zero_data / len(attention_values)
 
-        # 클러스터 점수 * 0.8 + Attention 비율 점수 * 0.2
-        res = round(((focus_score1 * 0.8) + (focus_score2 * 0.2)) * 100, 2)
+        # 클러스터 점수 * 0.7 + Attention 비율 점수 * 0.3
+        res = round(((focus_score1 * 0.7) + (focus_score2 * 0.3)) * 100, 2)
         final_score.append(res)
 
         # print("start: " + str(start) + ", " + "end: " + str(end))
@@ -68,7 +68,9 @@ def score_cluster(video_id, video_csv, sceneTime):
     # final_score를 기준으로 내림차순 정렬
     sorted_data = sorted(enumerate(zip(sceneTime, final_score)), key=lambda x: x[1][1], reverse=True)
     for i, (_, score) in sorted_data:
-        if len(sorted_data) == 1:
+        if score == 0:
+            continue
+        elif len(sorted_data) == 1:
             atention_score_list.append((f"{video_id}\\{video_id}.mp4", "null", score))
         else:
             atention_score_list.append((f"{split_video_directory}\\scene_{i+1:03}.mp4", f"{thumbnails_dir}\\{video_id}_{i+1:03}.jpg", score))
