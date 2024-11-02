@@ -114,19 +114,37 @@ const VideoGazeTracker = () => {
     const onPlayerReady = (event) => {
         console.log("Player is ready");
     };
+    const intervalRef = useRef(null);
 
     const onPlayerStateChange = (event) => {
         if (event.data === window.YT.PlayerState.PLAYING) {
             setIsPlaying(true);
-            const interval = setInterval(() => {
+
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+
+            intervalRef.current = setInterval(() => {
                 const time = event.target.getCurrentTime();
                 setCurrentTime(time);
             }, 100);
-            return () => clearInterval(interval);
         } else {
             setIsPlaying(false);
+
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
         }
     };
+
+    useEffect(() => {
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, []);
 
     useEffect(() => {
         let videoX = gazeData.x - videoFrame.left;
