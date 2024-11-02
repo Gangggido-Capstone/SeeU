@@ -220,38 +220,40 @@ const VideoGazeTracker = () => {
                 gazeData: videoGazeData,
             };
 
-            const response = await fetch(
-                "http://localhost:8080/api/save-gaze-data",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(dataToSend),
-                }
-            );
+            const response = await fetch("http://localhost:8080/api/save-gaze-data", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(dataToSend),
+            });
 
             const result = await response.text();
 
             if (response.ok) {
                 console.log("파일이 서버에 성공적으로 저장되었습니다.");
                 console.log(result);
+                sessionStorage.setItem("saveResult", result);  // 결과를 저장
             } else {
                 console.error("서버에 파일 저장 실패");
                 console.error(result);
+                sessionStorage.setItem("saveResult", "실패: " + result);  // 실패 메시지 저장
             }
         } catch (error) {
             console.error("서버 요청 중 오류 발생:", error);
+            sessionStorage.setItem("saveResult", "오류: " + error);  // 오류 메시지 저장
         }
     };
 
     const handleAnalysis = () => {
         if (player && player.pauseVideo) {
             player.pauseVideo();
-            if (stopTracking()?.data) stopTracking();
-            saveCSVToServer();
-
-            navigate("/Records");
+            if (stopTracking()?.data) { 
+                stopTracking();
+                navigate("/Records");
+                saveCSVToServer();
+            } 
+            
         } else {
             console.error("Player is not ready or pauseVideo is not available");
         }
