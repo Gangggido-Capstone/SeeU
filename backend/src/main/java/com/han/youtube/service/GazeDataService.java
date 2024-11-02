@@ -50,7 +50,7 @@ public class GazeDataService {
             File currentDir = new File("");
             String rootPath = currentDir.getAbsoluteFile().getParent();  // youtube-seeso-demo 경로
             String fileDirectory = Paths.get(rootPath, "analysis").normalize().toString();
-            String scriptPath = Paths.get(fileDirectory, "video_analysis.py").toString();
+            String scriptPath = Paths.get(fileDirectory, "test.py").toString();
 
             int width = (int) Double.parseDouble(videoWidth);
             int height = (int) Double.parseDouble(videoHeight);
