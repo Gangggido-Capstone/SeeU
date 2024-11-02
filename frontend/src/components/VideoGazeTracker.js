@@ -273,7 +273,7 @@ const VideoGazeTracker = () => {
 
             <div className='info-container'>
                 <p>
-                재생 시간: {currentTime}초, 시선 좌표: x: {videoGaze.x}, y: {videoGaze.y}
+                재생 시간: {Math.floor(currentTime)}초, 시선 좌표: x: {Math.round(videoGaze.x)}, y: {Math.round(videoGaze.y)}
                 </p>
                 <p></p>
             </div>
