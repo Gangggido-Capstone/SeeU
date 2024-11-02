@@ -153,13 +153,13 @@ const VideoGazeTracker = () => {
                     ...prevRecords,
                     {
                         time: currentTime,
-                        x: videoX,
-                        y: videoY,
+                        x: Math.round(videoX),
+                        y: Math.round(videoY),
                         attention: attention,
                     },
                 ]);
                 console.log(
-                    `Time: ${currentTime}, X: ${videoX}, Y: ${videoY}, attention: ${attention}`
+                    `Time: ${Math.floor(currentTime)}, X: ${videoX}, Y: ${videoY}, attention: ${attention}`
                 );
             }
         }
