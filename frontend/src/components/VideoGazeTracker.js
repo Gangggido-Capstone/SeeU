@@ -182,7 +182,7 @@ const VideoGazeTracker = () => {
                 );
             }
         }
-    }, [gazeData, videoFrame, currentTime, isPlaying]);
+    }, [gazeData, currentTime]);
 
     const handlePlay = () => {
         if (player && player.playVideo) {
