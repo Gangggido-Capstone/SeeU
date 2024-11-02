@@ -9,24 +9,17 @@ import "../../css/VideoGazeTracker.css";
 const VideoGazeTracker = () => {
     const { videoId } = useParams();
     const navigate = useNavigate();
+
     const [player, setPlayer] = useState(null);
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [startTracking, setStartTracking] = useState(() => {});
     const [stopTracking, setStopTracking] = useState(() => {});
     const [gazeData, setGazeData] = useState({ x: NaN, y: NaN, attention: 3 });
-    const [videoGaze, setVideoGaze] = useState({
-        x: NaN,
-        y: NaN,
-        attention: 3,
-    });
-    const [videoFrame, setVideoFrame] = useState({
-        top: 0,
-        left: 0,
-        height: 0,
-        width: 0,
-    });
+    const [videoGaze, setVideoGaze] = useState({x: NaN, y: NaN, attention: 3});
+    const [videoFrame, setVideoFrame] = useState({top: 0, left: 0, height: 0, width: 0});
     const [videoGazeData, setVideoGazeData] = useState([]);
+    const intervalRef = useRef(null);
     const licenseKey = process.env.REACT_APP_EYEDID_KEY;
 
     if (!licenseKey) {
@@ -40,9 +33,6 @@ const VideoGazeTracker = () => {
         };
 
         const onDebug = (FPS, latency_min, latency_max, latency_avg) => {
-            console.log(
-                `FPS: ${FPS}, Latency: ${latency_min}-${latency_max}ms (Avg: ${latency_avg}ms)`
-            );
         };
 
         async function initializeSeeso() {
@@ -53,10 +43,21 @@ const VideoGazeTracker = () => {
                     seeSo.setMonitorSize(27);
                     seeSo.setFaceDistance(60);
                     seeSo.setCameraPosition(window.outerWidth / 2, true);
-                    setStartTracking(
-                        () => () => seeSo.startTracking(onGaze, onDebug)
-                    );
-                    setStopTracking(() => () => seeSo.stopTracking());
+                    setStartTracking(() => () => {
+                        if (typeof seeSo.startTracking === 'function') {
+                            seeSo.startTracking(onGaze, onDebug);
+                        } else {
+                            console.error("startTracking 함수가 초기화되지 않았습니다.");
+                        }
+                    });
+
+                    setStopTracking(() => () => {
+                        if (typeof seeSo.stopTracking === 'function') {
+                            seeSo.stopTracking();
+                        } else {
+                            console.error("stopTracking 함수가 초기화되지 않았습니다.");
+                        }
+                    });
                 },
                 () => console.log("=== seeso api error ===")
             );
@@ -65,6 +66,7 @@ const VideoGazeTracker = () => {
         initializeSeeso();
     }, []);
 
+    
     useEffect(() => {
         const onYouTubeIframeAPIReady = () => {
             const ytPlayer = new window.YT.Player("youtube-player", {
@@ -114,7 +116,7 @@ const VideoGazeTracker = () => {
     const onPlayerReady = (event) => {
         console.log("Player is ready");
     };
-    const intervalRef = useRef(null);
+
 
     const onPlayerStateChange = (event) => {
         if (event.data === window.YT.PlayerState.PLAYING) {
@@ -137,6 +139,14 @@ const VideoGazeTracker = () => {
             }
         }
     };
+    useEffect(() => {
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        };
+    }, []);
 
     useEffect(() => {
         return () => {
@@ -177,7 +187,7 @@ const VideoGazeTracker = () => {
                     },
                 ]);
                 console.log(
-                    `Time: ${Math.floor(currentTime)}, X: ${videoX}, Y: ${videoY}, attention: ${attention}`
+                    `Time: ${currentTime}, X: ${videoX}, Y: ${videoY}, attention: ${attention}`
                 );
             }
         }
@@ -185,17 +195,25 @@ const VideoGazeTracker = () => {
 
     const handlePlay = () => {
         if (player && player.playVideo) {
-            player.playVideo();
-            if (startTracking()?.data) startTracking();
+            if (startTracking) {
+                player.playVideo();
+                startTracking();
+            } else {
+                console.error("startTracking 함수가 아직 초기화되지 않았습니다.");
+            }
         } else {
-            console.error("Player is not ready or playVideo is not available");
+        console.error("Player is not ready or playVideo is not available");
         }
     };
 
     const handlePause = () => {
         if (player && player.pauseVideo) {
-            player.pauseVideo();
-            if (stopTracking()?.data) stopTracking();
+            if (stopTracking) {
+                player.pauseVideo();
+                stopTracking();
+            } else {
+                console.error("stopTracking 함수가 아직 초기화되지 않았습니다.");
+            }
         } else {
             console.error("Player is not ready or pauseVideo is not available");
         }
@@ -203,7 +221,10 @@ const VideoGazeTracker = () => {
 
     const handleBack = () => {
         if (player && player.pauseVideo) {
-            if (stopTracking()?.data) stopTracking();
+            if (stopTracking) {
+                player.pauseVideo();
+                stopTracking();
+            }         
         } else {
             console.error("Player is not ready or pauseVideo is not available");
         }
