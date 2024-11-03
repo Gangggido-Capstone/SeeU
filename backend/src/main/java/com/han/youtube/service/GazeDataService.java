@@ -12,9 +12,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.google.api.services.youtube.model.Video;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -28,7 +31,17 @@ public class GazeDataService {
     @Autowired
     private YoutubeService youtubeService;
     private final MongoRepository mongoRepository;
+    private static final Logger logger = LoggerFactory.getLogger(GazeDataService.class);
 
+    @Async // 비동기 처리
+    public void saveGazeDataAsync(Map<String, Object> payload) {
+        try {
+            saveGazeData(payload);
+            logger.info("Async saveGazeData execution completed successfully for videoId: {}", payload.get("videoId"));
+        } catch (Exception e) {
+            logger.error("Error occurred during async saveGazeData execution for videoId: {}", payload.get("videoId"), e);
+        }
+    }
 
     public List<Integer> listScore(List<List<Object>> scoreList) {
         List<Integer> listscore = new ArrayList<>();
@@ -138,6 +151,7 @@ public class GazeDataService {
         return null;  // JSON 데이터가 없으면 null 반환
     }
 
+    @Async  // 비동기 처리
     @SuppressWarnings("unchecked")
     @Transactional
     public void saveGazeData(Map<String, Object> payload) throws IOException {

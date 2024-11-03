@@ -17,9 +17,15 @@ module.exports = {
         publicPath: "/",
     },
     devServer: {
-        hot: true, // HMR
+        hot: false, // HMR 비활성화
         port: 9000,
         open: true, // 브라우저 자동 실행
+        watchFiles: {
+            paths: "**/*",
+            options: {
+                ignored: "**/*",
+            },
+        },
 
         headers: {
             "Cross-Origin-Embedder-Policy": "require-corp",
@@ -35,10 +41,11 @@ module.exports = {
 
         devMiddleware: {
             publicPath: "/",
+            writeToDisk: true, // 디스크에만 기록하고 자동 빌드하지 않음
         },
 
         static: {
-            watch: true,
+            watch: false, // 정적 파일 감시 비활성화
         },
     },
     plugins: [

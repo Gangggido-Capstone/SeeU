@@ -3,7 +3,6 @@ from video_download import download
 from scenedetect import open_video, SceneManager
 from scenedetect.detectors import ContentDetector
 from scenedetect.scene_manager import save_images
-
 import os
 import cv2
 import csv
@@ -96,10 +95,7 @@ def detect(video_id, video_only):
 
             print("Split time from CSV file:", sceneTime)
 
-            # # 영상 자르기 (파일로 저장)
-            # split_video_ffmpeg(video_only, scene_list, output_dir=split_video_directory,show_progress=True)
-
-            # 영상 자르기 (병렬 처리 사용)
+            # 영상 자르기
             split_video(video_only, scene_list, split_video_directory)
 
             # 썸네일 만들기 (jpg 파일로 저장)

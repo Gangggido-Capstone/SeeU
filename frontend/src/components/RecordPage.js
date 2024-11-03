@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import axios from "axios";
-import CircularProgress from "./CircularProgress"; // CircularProgress 컴포넌트 가져오기
+import CircularProgress from "./CircularProgress";
 import "../../css/RecordPage.css";
 
 axios.defaults.baseURL = "http://localhost:8080";
@@ -13,6 +13,7 @@ const RecordPage = () => {
     const [selectedRecord, setSelectedRecord] = useState({ scoreList: [] });
     const [averageScores, setAverageScores] = useState({});
     const [showAverageModal, setShowAverageModal] = useState(false);
+    const [saveResult, setSaveResult] = useState("");
 
     useLayoutEffect(() => {
         const fetchRecords = async () => {
@@ -27,6 +28,14 @@ const RecordPage = () => {
         };
 
         fetchRecords();
+    }, []);
+
+    useEffect(() => {
+        const result = sessionStorage.getItem("saveResult");
+        if (result) {
+            setSaveResult(result);
+            console.log(saveResult)
+        }
     }, []);
 
     const openAverageScoreModal = async (videoId) => {
@@ -131,8 +140,6 @@ const RecordPage = () => {
                 </div>
             )}
 
-
-            {/* 모달 */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal-content">
