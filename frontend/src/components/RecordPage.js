@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CircularProgress from "./CircularProgress";
 import "../../css/RecordPage.css";
@@ -15,7 +15,7 @@ const RecordPage = () => {
     const [showAverageModal, setShowAverageModal] = useState(false);
     const [saveResult, setSaveResult] = useState("");
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         const fetchRecords = async () => {
             try {
                 const response = await axios.get("/api/list");
@@ -95,14 +95,14 @@ const RecordPage = () => {
                                 className="analysis-button"
                                 onClick={() => openAverageScoreModal(record.videoId)}
                             >
-                                도우미
+                                All
                             </button>
 
                             <button
                                 className="analysis-button"
                                 onClick={() => openModal(record)}
                             >
-                                분석 결과
+                                Me
                             </button>
                         </li>
                     ))}
