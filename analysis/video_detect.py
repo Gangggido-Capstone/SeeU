@@ -3,8 +3,6 @@ from video_download import download
 from scenedetect import open_video, SceneManager
 from scenedetect.detectors import ContentDetector
 from scenedetect.scene_manager import save_images
-import subprocess
-import logging
 import os
 import cv2
 import csv
@@ -12,7 +10,7 @@ import csv
 def split_scene(video_path, start_time, end_time, output_dir, scene_number):
     output_file = os.path.join(output_dir, f'scene_{scene_number:03d}.mp4')
     command = f'ffmpeg -i "{video_path}" -ss {start_time} -to {end_time} -c copy "{output_file}" -y'
-    subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    os.system(command)
 
 def split_video(video_path, scene_list, output_dir):
     os.makedirs(output_dir, exist_ok=True)
@@ -51,12 +49,8 @@ def detect(video_id, video_only):
             scene_manager = SceneManager()
             scene_manager.add_detector(content_detector)
 
-            # 로그 레벨을 최소로 설정하여 출력 방지
-            logger = logging.getLogger('pyscenedetect')
-            logger.setLevel(logging.CRITICAL)
-
             # detect 수행 (영상의 처음부터 끝까지 detect) =============================================
-            scene_manager.detect_scenes(video, show_progress=False)
+            scene_manager.detect_scenes(video, show_progress=True)
 
             # `get_scene_list` 리스트의 시작과 끝 timecode pairs 을 리턴
             scene_list = scene_manager.get_scene_list()

@@ -2,11 +2,7 @@ from video_download import download
 from video_detect import detect
 from sklearn.cluster import DBSCAN
 import pandas as pd
-import warnings
 import os
-
-# pandas 경고 비활성화
-warnings.filterwarnings("ignore", category=UserWarning, module="pandas")
 
 def get_root_path():
     # 현재 디렉토리에서 README.md 파일이 존재하는 경로를 루트로 설정
