@@ -95,14 +95,14 @@ const RecordPage = () => {
                                 className="analysis-button"
                                 onClick={() => openAverageScoreModal(record.videoId)}
                             >
-                                All
+                                전체 통계
                             </button>
 
                             <button
                                 className="analysis-button"
                                 onClick={() => openModal(record)}
                             >
-                                Me
+                                개인 통계
                             </button>
                         </li>
                     ))}
