@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@EnableAsync  // 비동기 처리 활성화
+@EnableAsync
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -24,7 +24,8 @@ public class GazeDataController {
     @PostMapping("/save-gaze-data")
     public ResponseEntity<String> saveGazeData(@RequestBody Map<String, Object> payload) {
         try {
-            gazeDataService.saveGazeData(payload);
+            gazeDataService.saveGazeDataAsync(payload);
+
             return new ResponseEntity<>("CSV 파일 및 db저장이 성공적으로 저장되었습니다.", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
