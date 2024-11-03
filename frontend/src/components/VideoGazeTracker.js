@@ -29,6 +29,7 @@ const VideoGazeTracker = () => {
     }
 
     useEffect(() => {
+        console.log("initseeso")
         const onGaze = (gazeInfo) => {
             showGaze(gazeInfo);
             setGazeData(gazeInfo);
@@ -68,6 +69,7 @@ const VideoGazeTracker = () => {
     }, []);
     
     useEffect(() => {
+        console.log("onYouTubeIframeAPIReady")
         const onYouTubeIframeAPIReady = () => {
             const ytPlayer = new window.YT.Player("youtube-player", {
                 videoId: videoId,
@@ -101,6 +103,7 @@ const VideoGazeTracker = () => {
     }, [videoId]);
 
     useEffect(() => {
+        console.log("videoElement player")
         const videoElement = document.getElementById("youtube-player");
         if (videoElement) {
             const video = videoElement.getBoundingClientRect();
@@ -140,6 +143,7 @@ const VideoGazeTracker = () => {
     };
 
     useEffect(() => {
+        console.log("intervalRef")
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
@@ -149,6 +153,7 @@ const VideoGazeTracker = () => {
     }, []);
 
     useEffect(() => {
+        console.log("setVideoGaze ===")
         let videoX = gazeData.x - videoFrame.left;
         let videoY = gazeData.y - videoFrame.top;
         let attention = gazeData.eyemovementState;
