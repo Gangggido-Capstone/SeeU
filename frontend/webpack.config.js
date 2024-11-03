@@ -35,9 +35,9 @@ module.exports = {
 
         devMiddleware: {
             publicPath: "/",
-            writeToDisk: true, // 디스크에만 기록하고 자동 빌드하지 않음
+            writeToDisk: true,
             watchOptions: {
-                ignored: "**/*", // 모든 파일 감시 무시
+                ignored: "**/*",
             },
         },
 
