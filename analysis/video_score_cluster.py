@@ -25,7 +25,7 @@ def score_cluster(video_id, video_csv, sceneTime):
     
     final_score = []
 
-    # 분할 영상 별 집중도 점수 및 클러스터 시각화 이미지 저장
+    # 분할 영상 별 집중도 점수
     for index, scene in enumerate(sceneTime):
         start, end = scene
         filtered_data = gaze_csv[(gaze_csv['Time'] >= start) & (gaze_csv['Time'] <= end)]

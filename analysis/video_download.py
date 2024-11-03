@@ -24,7 +24,9 @@ def download(video_id):
             'format': 'bestvideo',
             'outtmpl': video_only,
             'quiet': True,
-            'logger': None
+            'no_warnings': True,
+            'logger': None,
+            'progress_hooks': [lambda d: None]
         }
 
         # 비디오 다운로드

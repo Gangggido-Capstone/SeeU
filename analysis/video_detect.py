@@ -56,7 +56,7 @@ def detect(video_id, video_only):
             logger.setLevel(logging.CRITICAL)
 
             # detect 수행 (영상의 처음부터 끝까지 detect) =============================================
-            scene_manager.detect_scenes(video, show_progress=True)
+            scene_manager.detect_scenes(video, show_progress=False)
 
             # `get_scene_list` 리스트의 시작과 끝 timecode pairs 을 리턴
             scene_list = scene_manager.get_scene_list()
