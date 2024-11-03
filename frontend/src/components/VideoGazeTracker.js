@@ -20,8 +20,6 @@ const VideoGazeTracker = () => {
     const [videoFrame, setVideoFrame] = useState({top: 0, left: 0, height: 0, width: 0});
     const [videoGazeData, setVideoGazeData] = useState([]);
     const intervalRef = useRef(null);
-    const [result, setResult] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
     const licenseKey = process.env.REACT_APP_EYEDID_KEY;
 
     if (!licenseKey) {
@@ -29,7 +27,6 @@ const VideoGazeTracker = () => {
     }
 
     useEffect(() => {
-        console.log("initseeso")
         const onGaze = (gazeInfo) => {
             showGaze(gazeInfo);
             setGazeData(gazeInfo);
@@ -69,7 +66,6 @@ const VideoGazeTracker = () => {
     }, []);
     
     useEffect(() => {
-        console.log("onYouTubeIframeAPIReady")
         const onYouTubeIframeAPIReady = () => {
             const ytPlayer = new window.YT.Player("youtube-player", {
                 videoId: videoId,
@@ -103,7 +99,6 @@ const VideoGazeTracker = () => {
     }, [videoId]);
 
     useEffect(() => {
-        console.log("videoElement player")
         const videoElement = document.getElementById("youtube-player");
         if (videoElement) {
             const video = videoElement.getBoundingClientRect();
@@ -143,7 +138,6 @@ const VideoGazeTracker = () => {
     };
 
     useEffect(() => {
-        console.log("intervalRef")
         return () => {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
@@ -153,7 +147,6 @@ const VideoGazeTracker = () => {
     }, []);
 
     useEffect(() => {
-        console.log("setVideoGaze ===")
         let videoX = gazeData.x - videoFrame.left;
         let videoY = gazeData.y - videoFrame.top;
         let attention = gazeData.eyemovementState;
@@ -248,7 +241,6 @@ const VideoGazeTracker = () => {
     };
 
     const saveCSVToServer = async () => {
-        setIsLoading(true);
         const formattedDate = getFormattedKSTDate();
 
         try {
@@ -285,7 +277,7 @@ const VideoGazeTracker = () => {
                 player.pauseVideo();
                 stopTracking();
                 saveCSVToServer();
-                // navigate("/Records");
+                navigate("/Records");
             } else {
                 console.error("stopTracking 함수가 아직 초기화되지 않았습니다.");
             }  
