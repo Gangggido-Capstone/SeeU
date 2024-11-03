@@ -3,7 +3,8 @@ from video_download import download
 from scenedetect import open_video, SceneManager
 from scenedetect.detectors import ContentDetector
 from scenedetect.scene_manager import save_images
-
+import subprocess
+import logging
 import os
 import cv2
 import csv
@@ -11,7 +12,7 @@ import csv
 def split_scene(video_path, start_time, end_time, output_dir, scene_number):
     output_file = os.path.join(output_dir, f'scene_{scene_number:03d}.mp4')
     command = f'ffmpeg -i "{video_path}" -ss {start_time} -to {end_time} -c copy "{output_file}" -y'
-    os.system(command)
+    subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def split_video(video_path, scene_list, output_dir):
     os.makedirs(output_dir, exist_ok=True)
@@ -49,6 +50,10 @@ def detect(video_id, video_only):
             # Scene Manager 생성
             scene_manager = SceneManager()
             scene_manager.add_detector(content_detector)
+
+            # 로그 레벨을 최소로 설정하여 출력 방지
+            logger = logging.getLogger('pyscenedetect')
+            logger.setLevel(logging.CRITICAL)
 
             # detect 수행 (영상의 처음부터 끝까지 detect) =============================================
             scene_manager.detect_scenes(video, show_progress=True)
@@ -96,10 +101,7 @@ def detect(video_id, video_only):
 
             print("Split time from CSV file:", sceneTime)
 
-            # # 영상 자르기 (파일로 저장)
-            # split_video_ffmpeg(video_only, scene_list, output_dir=split_video_directory,show_progress=True)
-
-            # 영상 자르기 (병렬 처리 사용)
+            # 영상 자르기
             split_video(video_only, scene_list, split_video_directory)
 
             # 썸네일 만들기 (jpg 파일로 저장)
