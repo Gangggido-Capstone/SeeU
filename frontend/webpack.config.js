@@ -17,7 +17,7 @@ module.exports = {
         publicPath: "/",
     },
     devServer: {
-        hot: true, // HMR
+        hot: false, // HMR
         port: 9000,
         open: true, // 브라우저 자동 실행
 
@@ -35,10 +35,14 @@ module.exports = {
 
         devMiddleware: {
             publicPath: "/",
+            writeToDisk: true, // 디스크에만 기록하고 자동 빌드하지 않음
+            watchOptions: {
+                ignored: "**/*", // 모든 파일 감시 무시
+            },
         },
 
         static: {
-            watch: true,
+            watch: false,
         },
     },
     plugins: [
