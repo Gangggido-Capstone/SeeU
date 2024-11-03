@@ -295,7 +295,7 @@ const VideoGazeTracker = () => {
                 id='youtube-player'
                 credentialless='true'
                 title='YouTube video player'
-                src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=http://localhost:9000`}
+                src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=http://localhost:8080`}
                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
                 allowFullScreen
                 loading='lazy'
@@ -312,9 +312,7 @@ const VideoGazeTracker = () => {
             <div className='video-controls'>
                 <button onClick={handlePlay}>재생</button>
                 <button onClick={handlePause}>정지</button>
-                <button onClick={handleAnalysis} disabled={isLoading}>
-                    {isLoading ? "..." : "분석"}
-                </button>
+                <button onClick={handleAnalysis}>분석</button>
                 <a href='/' className='back-button' onClick={handleBack}> 홈 </a>
             </div>
 
