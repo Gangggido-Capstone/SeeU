@@ -295,7 +295,7 @@ const VideoGazeTracker = () => {
                 id='youtube-player'
                 credentialless='true'
                 title='YouTube video player'
-                src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=http://localhost:8080`}
+                src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=http://localhost:9000`}
                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
                 allowFullScreen
                 loading='lazy'
