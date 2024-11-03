@@ -1,5 +1,8 @@
 import os
 import yt_dlp
+import logging
+
+logging.getLogger('yt_dlp').setLevel(logging.CRITICAL)
 
 def get_root_path():
     # 현재 디렉토리에서 README.md 파일이 존재하는 경로를 루트로 설정
@@ -26,7 +29,7 @@ def download(video_id):
             'quiet': True,
             'no_warnings': True,
             'logger': None,
-            'progress_hooks': [lambda d: None]
+            'progress_hooks': [] 
         }
 
         # 비디오 다운로드
