@@ -9,19 +9,25 @@ import "../../css/VideoGazeTracker.css";
 const VideoGazeTracker = () => {
     const { videoId } = useParams();
     const navigate = useNavigate();
-
     const [player, setPlayer] = useState(null);
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
+    const interval = useRef(null);
     const [startTracking, setStartTracking] = useState(() => {});
     const [stopTracking, setStopTracking] = useState(() => {});
     const [gazeData, setGazeData] = useState({ x: NaN, y: NaN, attention: 3 });
-    const [videoGaze, setVideoGaze] = useState({x: NaN, y: NaN, attention: 3});
-    const [videoFrame, setVideoFrame] = useState({top: 0, left: 0, height: 0, width: 0});
+    const [videoGaze, setVideoGaze] = useState({
+        x: NaN,
+        y: NaN,
+        attention: 3,
+    });
+    const [videoFrame, setVideoFrame] = useState({
+        top: 0,
+        left: 0,
+        height: 0,
+        width: 0,
+    });
     const [videoGazeData, setVideoGazeData] = useState([]);
-    const intervalRef = useRef(null);
-    const [result, setResult] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
     const licenseKey = process.env.REACT_APP_EYEDID_KEY;
 
     if (!licenseKey) {
@@ -34,7 +40,11 @@ const VideoGazeTracker = () => {
             setGazeData(gazeInfo);
         };
 
-        const onDebug = (FPS, latency_min, latency_max, latency_avg) => {};
+        const onDebug = (FPS, latency_min, latency_max, latency_avg) => {
+            console.log(
+                `FPS: ${FPS}, Latency: ${latency_min}-${latency_max}ms (Avg: ${latency_avg}ms)`
+            );
+        };
 
         async function initializeSeeso() {
             const seeSo = new EasySeeSo();
@@ -66,7 +76,7 @@ const VideoGazeTracker = () => {
 
         initializeSeeso();
     }, []);
-    
+
     useEffect(() => {
         const onYouTubeIframeAPIReady = () => {
             const ytPlayer = new window.YT.Player("youtube-player", {
@@ -120,70 +130,66 @@ const VideoGazeTracker = () => {
     const onPlayerStateChange = (event) => {
         if (event.data === window.YT.PlayerState.PLAYING) {
             setIsPlaying(true);
-
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-
-            intervalRef.current = setInterval(() => {
-                const time = event.target.getCurrentTime();
-                setCurrentTime(time);
+            if (interval.current) clearInterval(interval.current);
+            interval.current = setInterval(() => {
+                if (player) { 
+                    const time = player.getCurrentTime();
+                    setCurrentTime(time);
+                }
             }, 100);
         } else {
             setIsPlaying(false);
-
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-                intervalRef.current = null;
-            }
+            if (interval.current) clearInterval(interval.current);
+            interval.current = null;
         }
     };
 
     useEffect(() => {
         return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-                intervalRef.current = null;
-            }
+            if (interval.current) clearInterval(interval.current);
         };
     }, []);
 
+
     useEffect(() => {
-        let videoX = gazeData.x - videoFrame.left;
-        let videoY = gazeData.y - videoFrame.top;
-        let attention = gazeData.eyemovementState;
+        const updateGazeData = () => {
+            let videoX = gazeData.x - videoFrame.left;
+            let videoY = gazeData.y - videoFrame.top;
+            let attention = gazeData.eyemovementState;
 
-        if (
-            !(0 <= videoX && videoX <= videoFrame.width) ||
-            !(0 <= videoY && videoY <= videoFrame.height)
-        ) {
-            videoX = NaN;
-            videoY = NaN;
-            attention = 3;
-        }
-
-        setVideoGaze({ x: videoX, y: videoY, attention: attention });
-
-        if (isPlaying) {
-            const alreadyRecorded = videoGazeData.some(
-                (record) => record.time === currentTime
-            );
-            if (!alreadyRecorded) {
-                setVideoGazeData((prevRecords) => [
-                    ...prevRecords,
-                    {
-                        time: currentTime,
-                        x: Math.round(videoX),
-                        y: Math.round(videoY),
-                        attention: attention,
-                    },
-                ]);
-                console.log(
-                    `Time: ${currentTime}, X: ${videoX}, Y: ${videoY}, attention: ${attention}`
-                );
+            // 화면 내 좌표가 아닐 경우 NaN 처리
+            if (!(0 <= videoX && videoX <= videoFrame.width) || !(0 <= videoY && videoY <= videoFrame.height)) {
+                videoX = NaN;
+                videoY = NaN;
+                attention = 3;
             }
+
+            // videoGaze 상태 업데이트
+            setVideoGaze({ x: videoX, y: videoY, attention: attention });
+
+            // isPlaying 상태에 따라 gazeData를 저장
+            if (isPlaying) {
+                const alreadyRecorded = videoGazeData.some(record => record.time === currentTime);
+                if (!alreadyRecorded) {
+                    setVideoGazeData((prevRecords) => [
+                        ...prevRecords,
+                        {
+                            time: currentTime,
+                            x: videoX,
+                            y: videoY,
+                            attention: attention,
+                        },
+                    ]);
+                }
+            }
+        };
+
+        // `isPlaying` 상태에 따라 업데이트 조건 적용
+        if (isPlaying) {
+            updateGazeData();
         }
-    }, [gazeData, videoFrame, currentTime, isPlaying]);
+
+    }, [gazeData, videoFrame, currentTime]);
 
     const handlePlay = () => {
         if (player && player.playVideo) {
@@ -210,7 +216,6 @@ const VideoGazeTracker = () => {
             console.error("Player is not ready or pauseVideo is not available");
         }
     };
-
     const handleBack = () => {
         if (player && player.pauseVideo) {
             if (stopTracking) {
@@ -243,7 +248,6 @@ const VideoGazeTracker = () => {
     };
 
     const saveCSVToServer = async () => {
-        setIsLoading(true);
         const formattedDate = getFormattedKSTDate();
 
         try {
@@ -254,24 +258,29 @@ const VideoGazeTracker = () => {
                 gazeData: videoGazeData,
             };
 
-            const response = await fetch("http://localhost:8080/api/save-gaze-data", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(dataToSend),
-            });
+            const response = await fetch(
+                "http://localhost:8080/api/save-gaze-data",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(dataToSend),
+                }
+            );
+
+            const result = await response.text();
 
             if (response.ok) {
                 console.log("파일이 서버에 성공적으로 저장되었습니다.");
-
+                console.log(result);
             } else {
                 console.error("서버에 파일 저장 실패");
+                console.error(result);
             }
-
         } catch (error) {
-            console.error("Error:", error);
-        } 
+            console.error("서버 요청 중 오류 발생:", error);
+        }
     };
 
     const handleAnalysis = () => {
@@ -280,7 +289,7 @@ const VideoGazeTracker = () => {
                 player.pauseVideo();
                 stopTracking();
                 saveCSVToServer();
-                // navigate("/Records");
+                navigate("/Records");
             } else {
                 console.error("stopTracking 함수가 아직 초기화되지 않았습니다.");
             }  
@@ -288,14 +297,15 @@ const VideoGazeTracker = () => {
             console.error("Player is not ready or pauseVideo is not available");
         }
     };
-    
+
+
     return (
         <div className='video-player-wrapper'>
             <iframe
                 id='youtube-player'
                 credentialless='true'
                 title='YouTube video player'
-                src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=http://localhost:9000`}
+                src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1`}
                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
                 allowFullScreen
                 loading='lazy'
@@ -304,20 +314,16 @@ const VideoGazeTracker = () => {
 
             <div className='info-container'>
                 <p>
-                재생 시간: {Math.floor(currentTime)}초, 시선 좌표: x: {Math.round(videoGaze.x)}, y: {Math.round(videoGaze.y)}
+                재생 시간: {currentTime}초, 시선 좌표: x: {videoGaze.x}, y: {videoGaze.y}
                 </p>
                 <p></p>
             </div>
-
             <div className='video-controls'>
                 <button onClick={handlePlay}>재생</button>
                 <button onClick={handlePause}>정지</button>
-                <button onClick={handleAnalysis} disabled={isLoading}>
-                    {isLoading ? "..." : "분석"}
-                </button>
+                <button onClick={handleAnalysis}>분석</button>
                 <a href='/' className='back-button' onClick={handleBack}> 홈 </a>
             </div>
-
             <div>
                 <canvas id='output'></canvas>
             </div>
