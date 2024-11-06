@@ -27,7 +27,6 @@ const VideoGazeTracker = () => {
     }
 
     useEffect(() => {
-        console.log(sx, sy)
         const onGaze = (gazeInfo) => {
             showGaze(gazeInfo);
             setGazeData(gazeInfo);
