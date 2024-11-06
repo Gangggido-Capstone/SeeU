@@ -3,7 +3,6 @@ import "regenerator-runtime/runtime";
 import EasySeeSo from "seeso/easy-seeso";
 import { useNavigate, useParams } from "react-router-dom";
 import { showGaze } from "./showGaze.js";
-import { sx, sy } from './SettingsPage';
 import "../../css/styles.css";
 import "../../css/VideoGazeTracker.css";
 
@@ -28,7 +27,6 @@ const VideoGazeTracker = () => {
     }
 
     useEffect(() => {
-        console.log(sx, sy)
         const onGaze = (gazeInfo) => {
             showGaze(gazeInfo);
             setGazeData(gazeInfo);
@@ -149,8 +147,8 @@ const VideoGazeTracker = () => {
     }, []);
 
     useEffect(() => {
-        let videoX = gazeData.x + parseInt(sx, 10) - videoFrame.left;
-        let videoY = gazeData.y + parseInt(sy, 10) - videoFrame.top;
+        let videoX = gazeData.x + - videoFrame.left;
+        let videoY = gazeData.y + - videoFrame.top;
         let attention = gazeData.eyemovementState;
 
         if (
