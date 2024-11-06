@@ -1,5 +1,3 @@
-import { sx, sy } from './SettingsPage';
-
 // show gaze information on screen.
 function showGazeInfoOnDom(gazeInfo) {
     // let gazeInfoDiv = document.getElementById("gazeInfo");
@@ -30,7 +28,7 @@ function showGazeDotOnDom(gazeInfo) {
         ctx.fillStyle = "rgba(250, 250, 250, 0.5)";
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.beginPath();
-        ctx.arc(gazeInfo.x + sx, gazeInfo.y + sy, 20, 0, Math.PI * 2, true);
+        ctx.arc(gazeInfo.x, gazeInfo.y, 20, 0, Math.PI * 2, true);
         ctx.fill();
     }
 }
