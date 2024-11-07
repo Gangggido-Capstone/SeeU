@@ -33,7 +33,7 @@ const MainPage = () => {
     };
 
     const handleSettingsClick = () => {
-        navigate("/Settings"); // 설정 페이지로 이동
+        navigate("/Settings");
     };
     const handleRecordClick =() => {
         navigate("/Records");
@@ -49,7 +49,7 @@ const MainPage = () => {
                 videos={searchResults.length > 0 ? searchResults : videos}
             />
             <img
-                src='/settings.png' // 절대 경로로 수정
+                src='/settings.png'
                 alt='Settings Icon'
                 className='settings-icon'
                 onClick={handleSettingsClick}
@@ -62,10 +62,6 @@ const MainPage = () => {
             />
         </div>
     );
-
-
-
-
 };
 
 export default MainPage;

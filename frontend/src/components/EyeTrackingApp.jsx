@@ -10,15 +10,10 @@ const EyeTrackingApp = () => {
         <BrowserRouter>
             <Routes>
                 <Route path='/' element={<MainPage />} />
-                <Route
-                    path='/play-video/:videoId'
-                    element={<VideoGazeTracker />}
-                />
+                <Route path='/play-video/:videoId' element={<VideoGazeTracker />}/>
                 <Route path='/youtube' element={<VideoGazeTracker />} />
-                <Route path='/settings' element={<SettingsPage />} />{" "}
-                {/* SettingsPage 추가 */}
-                <Route path='/Records' element={<RecordPage />} />{" "}
-                {/* RecordPagePage 추가 */}
+                <Route path='/settings' element={<SettingsPage />} />
+                <Route path='/Records' element={<RecordPage />} />
             </Routes>
         </BrowserRouter>
     );
