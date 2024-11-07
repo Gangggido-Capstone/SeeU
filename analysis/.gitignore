@@ -1,6 +1,0 @@
-*.pyc
-yolo11n.pt
-yolo11n-seg.pt
-video_download_temp.py
-video_gaze_visualization_temp.py
-video_score_cluster_temp.py
