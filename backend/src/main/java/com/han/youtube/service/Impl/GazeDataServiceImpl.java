@@ -157,6 +157,7 @@ public class GazeDataServiceImpl implements GazeDataService {
         File currentDir = new File("");
         String rootPath = currentDir.getAbsoluteFile().getParent();  // SeeU 경로
 
+        System.out.println("루트패스 : "+rootPath);
         // 항상 Data/GazeData 경로를 지정
         String filePath = Paths.get(rootPath, "frontend", "public", "data", "GazeData").normalize().toString();
         String videoCSV = Paths.get(filePath, videoId + "_" + watchDate + ".csv").toString();
