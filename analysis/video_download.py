@@ -1,6 +1,5 @@
 import os
 import yt_dlp
-import logging
 
 def get_root_path():
     # 현재 디렉토리에서 README.md 파일이 존재하는 경로를 루트로 설정
@@ -38,13 +37,6 @@ def download(video_id):
 
     
 if __name__ == "__main__":
-  
-    # video_id, video_csv는 스프링에서 넘겨야 함
-    # UrEHWclh7Co 삼성카드
-    # 0gkPFSvVvFw 전란
-    # fRaIcUhaXXQ 핫초코
-    # video_id = "0gkPFSvVvFw"
-    # video_csv = "0gkPFSvVvFw_2024-10-12-18-56-44.csv"
-    video_id = "fRaIcUhaXXQ"
+    video_id = ""
 
     video_only = download(video_id)

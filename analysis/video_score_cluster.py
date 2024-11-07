@@ -5,7 +5,6 @@ import pandas as pd
 import os
 
 def get_root_path():
-    # 현재 디렉토리에서 README.md 파일이 존재하는 경로를 루트로 설정
     root_dir = os.path.abspath(os.path.dirname(__file__))
     while not os.path.exists(os.path.join(root_dir, 'README.md')):
         root_dir = os.path.abspath(os.path.join(root_dir, '..'))
@@ -15,7 +14,6 @@ def get_root_path():
 def score_cluster(video_id, video_csv, sceneTime):
     root_path = get_root_path()
 
-    # CSV 파일 불러오기
     csv_path = os.path.join(root_path, "data", "GazeData")
     gaze_csv = pd.read_csv(os.path.join(csv_path, video_csv))
     
@@ -38,7 +36,7 @@ def score_cluster(video_id, video_csv, sceneTime):
             final_score.append(0)
             continue  # 다음 씬으로 넘어감
 
-        # dbscan = DBSCAN(eps=30 , min_samples=6)
+        # dbscan = DBSCAN(eps=27 , min_samples=6)
         dbscan = DBSCAN(eps=27, min_samples=6)
         labels = dbscan.fit_predict(gaze_data)
 
@@ -57,7 +55,6 @@ def score_cluster(video_id, video_csv, sceneTime):
         res = round(((focus_score1 * 0.7) + (focus_score2 * 0.3)) * 100, 2)
         final_score.append(res)
 
-        # print("start: " + str(start) + ", " + "end: " + str(end))
         print(f"({index + 1}) Time: {start:.2f} ~ {end:.2f}, Attention Score: {res}")
 
     # 리스트에 저장해 반환
@@ -77,14 +74,8 @@ def score_cluster(video_id, video_csv, sceneTime):
 
 
 if __name__ == "__main__":
-    # UrEHWclh7Co 삼성카드
-    # 0gkPFSvVvFw 전란
-    # fRaIcUhaXXQ 핫초코
-
-    # video_id = "fRaIcUhaXXQ"
-    # video_csv = "fRaIcUhaXXQ_2024-10-20-16-50-56.csv"
-    video_id = "qtw9CMdtwZg"
-    video_csv = "qtw9CMdtwZg_2024-10-28-19-12-38.csv"
+    video_id = ""
+    video_csv = ""
 
     # 영상 다운
     video_only = download(video_id)

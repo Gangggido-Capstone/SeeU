@@ -48,15 +48,8 @@ def main():
     print(f"python script end: {end - start:.5f} sec")
 
 if __name__ == "__main__":
-    
-    # UrEHWclh7Co 삼성카드
-    # 0gkPFSvVvFw 전란
-    # fRaIcUhaXXQ 핫초코
-    # video_id = "0gkPFSvVvFw"
-    # video_csv = "0gkPFSvVvFw_2024-10-12-18-56-44.csv"
-
-    video_id = "qtw9CMdtwZg"
-    video_csv = "qtw9CMdtwZg_2024-10-28-19-25-19.csv"
+    video_id = ""
+    video_csv = ""
     video_width, video_height = 965, 543
 
     main()

@@ -7,7 +7,6 @@ import cv2
 import os
 
 def get_root_path():
-    # 현재 디렉토리에서 README.md 파일이 존재하는 경로를 루트로 설정
     root_dir = os.path.abspath(os.path.dirname(__file__))
     while not os.path.exists(os.path.join(root_dir, 'README.md')):
         root_dir = os.path.abspath(os.path.join(root_dir, '..'))
@@ -45,13 +44,12 @@ def gazeVisualization(video_id, video_csv, video_only, video_width, video_height
         dbscan = DBSCAN(eps=27, min_samples=5)
         coords = gaze_csv[['X', 'Y']].values
         clustering = dbscan.fit(coords)
-        gaze_csv['Cluster'] = clustering.labels_  # 클러스터 라벨 추가
+        gaze_csv['Cluster'] = clustering.labels_
 
         # 색상 설정
         green_color = (0, 255, 0, 128)  # 초록색 (클러스터)
         red_color = (0, 0, 255, 128)    # 빨간색 (잡음)
 
-        # 클러스터 색상 설정: 클러스터가 -1이 아니면 초록색, 아니면 빨간색
         colors = {
             label: green_color if label != -1 else red_color
             for label in np.unique(clustering.labels_)
@@ -103,8 +101,8 @@ def gazeVisualization(video_id, video_csv, video_only, video_width, video_height
 if __name__ == "__main__":
     start = time.time()
 
-    video_id = "EOe8WfUov2s"
-    video_csv = "EOe8WfUov2s_2024-11-01-17-23-52.csv"
+    video_id = ""
+    video_csv = ""
     video_width, video_height = 965, 543
 
     video_only = download(video_id)

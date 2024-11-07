@@ -14,8 +14,6 @@ def split_scene(video_path, start_time, end_time, output_dir, scene_number):
 
 def split_video(video_path, scene_list, output_dir):
     os.makedirs(output_dir, exist_ok=True)
-    
-    # 분할 작업을 순차적으로 실행
     for i, (start, end) in enumerate(scene_list):
         split_scene(video_path, start, end, output_dir, i + 1)
 
@@ -29,7 +27,6 @@ def get_root_path():
 
 def detect(video_id, video_only):
     try:
-        # 루트 경로 가져오기
         root_path = get_root_path()
 
         # split_video 디렉토리 경로 설정
@@ -37,22 +34,14 @@ def detect(video_id, video_only):
         sceneTime = []
 
         if not os.path.exists(split_video_directory):
-            # 영상 불러오기
             video = open_video(video_only)
-
-            # 초당 프레임 수
             fps = cv2.VideoCapture(video_only).get(cv2.CAP_PROP_FPS)  
-            # 디텍터 생성, 임계값 25, 장면 당 최소 프레임 수, 분할 영상 최소 4초
-            content_detector = ContentDetector(threshold=25, min_scene_len = fps * 4)
+            content_detector = ContentDetector(threshold=25, min_scene_len = fps * 4) # 디텍터 생성, 임계값 25, 장면 당 최소 프레임 수, 분할 영상 최소 4초
 
-            # Scene Manager 생성
             scene_manager = SceneManager()
             scene_manager.add_detector(content_detector)
-
-            # detect 수행 (영상의 처음부터 끝까지 detect) =============================================
             scene_manager.detect_scenes(video, show_progress=True)
 
-            # `get_scene_list` 리스트의 시작과 끝 timecode pairs 을 리턴
             scene_list = scene_manager.get_scene_list()
             print(scene_list)
             
@@ -60,11 +49,10 @@ def detect(video_id, video_only):
             os.makedirs(os.path.dirname(scene_times_csv), exist_ok=True)
             with open(scene_times_csv, mode='w', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow(["Start", "End"])  # CSV 헤더
+                writer.writerow(["Start", "End"])
 
                 for scene in scene_list:
                     start, end = scene
-                    # 시작 시간과 끝 시간을 초 단위로 반올림하여 저장
                     if start.get_seconds() == 0:
                         start_time = round(start.get_seconds(), 4)
                     else:
@@ -76,10 +64,9 @@ def detect(video_id, video_only):
                     sceneTime.append((start_time, end_time))
 
                 if not sceneTime:
-                    # 영상의 길이를 가져오기 위해 VideoCapture 사용
                     video_capture = cv2.VideoCapture(video_only)
-                    total_frames = video_capture.get(cv2.CAP_PROP_FRAME_COUNT)  # 총 프레임 수 가져오기
-                    fps = video_capture.get(cv2.CAP_PROP_FPS)  # 초당 프레임 수 가져오기
+                    total_frames = video_capture.get(cv2.CAP_PROP_FRAME_COUNT)
+                    fps = video_capture.get(cv2.CAP_PROP_FPS)
                     
                     # 영상의 총 길이를 초 단위로 계산
                     total_duration = total_frames / fps
@@ -88,10 +75,10 @@ def detect(video_id, video_only):
                     start_time = 0.0
                     end_time = round(total_duration, 4)  # 소수점 이하 4자리까지 반올림
 
-                    writer.writerow([start_time, end_time])  # CSV 파일에 시작 시간과 끝 시간 저장
-                    sceneTime.append((start_time, end_time))  # sceneTime 리스트에 시작 시간과 끝 시간 추가
+                    writer.writerow([start_time, end_time])
+                    sceneTime.append((start_time, end_time))
                     
-                    video_capture.release()  # VideoCapture 객체 해제
+                    video_capture.release()
 
             print("Split time from CSV file:", sceneTime)
 
@@ -136,11 +123,7 @@ def detect(video_id, video_only):
         raise e
 
 if __name__ == "__main__":
-
-    # UrEHWclh7Co 삼성카드
-    # 0gkPFSvVvFw 전란
-    # fRaIcUhaXXQ 핫초코
-    video_id = "iJsWRpSetq0"
+    video_id = ""
     
     # 영상 다운
     video_only = download(video_id)
