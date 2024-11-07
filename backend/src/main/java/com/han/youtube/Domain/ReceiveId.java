@@ -19,7 +19,7 @@ public class ReceiveId {
     private String videoId;
     private String watchdata;
     private LinkedHashMap<String, Object> snippet;
-    private List<List<Object>> scoreList;  // List<List<Object>>로 수정
+    private List<List<Object>> scoreList;
     private String visualization;
     private List<Integer> attentionList;
 

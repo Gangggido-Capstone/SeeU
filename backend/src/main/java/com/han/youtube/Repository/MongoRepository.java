@@ -11,8 +11,6 @@ import java.util.List;
 @Repository
 public interface MongoRepository extends org.springframework.data.mongodb.repository.MongoRepository<ReceiveId,String> {
 
-    @Query(sort = "{_id: -1}")
-    List<ReceiveIdDto> findBy(Pageable pageable);
 
     @Query(value = "{}", sort = "{_id: -1}")
     List<ReceiveIdDto> findAllBy();
